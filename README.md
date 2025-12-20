@@ -1,73 +1,101 @@
-# React + TypeScript + Vite
+# BUkPulse 🎓📱
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **The Digital Heartbeat of Bayero University Kano.**
 
-Currently, two official plugins are available:
+![Project Status](https://img.shields.io/badge/Status-In%20Development-orange)
+![Tech Stack](https://img.shields.io/badge/Stack-React%20|%20TypeScript%20|%20Supabase-blue)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📖 About The Project
 
-## React Compiler
+**BUkPulse** is a centralized campus companion application designed specifically for the students and management of Bayero University Kano (BUK).
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+In a campus environment where information is often fragmented across WhatsApp groups and word-of-mouth, BUkPulse serves as the **"Single Source of Truth."** It bridges the communication gap between the university management, student bodies (SUG/Faculties), and the general student population.
 
-## Expanding the ESLint configuration
+This project was built to solve three main problems:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1.  **Misinformation:** Eliminating "fake news" by allowing only verified admins to post updates.
+2.  **Event Visibility:** Giving student organizations a dedicated space to publicize their programs.
+3.  **Security:** implementing modern, passwordless authentication to protect student data.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ✨ Key Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **📰 Verified News Feed:** Real-time updates from School Management and the Student Union.
+- **📅 Event Management:** Discover, RSVP, and get reminders for campus events.
+- **🔐 Passwordless Auth:** Secure login using Email OTP (No more forgotten passwords!).
+- **🛡️ Role-Based Access:** Distinct dashboards for Students, Admins, and Content Creators.
+- **📱 Mobile Responsive:** Optimized as a Progressive Web App (PWA) for use on any device.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Frontend:** React.js + TypeScript
+- **Build Tool:** Vite
+- **Styling:** Chakra UI
+- **Backend / Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth (Magic Link / OTP)
+- **Icons:** Lucide React
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Follow these steps to set up the project locally on your machine.
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1.  **Clone the repository**
+
+    ```bash
+    git clone [https://github.com/ade-tech/bukpulse.git](https://github.com/ade-tech/bukpulse.git)
+    cd bukpulse
+    ```
+
+2.  **Install dependencies**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Set up Environment Variables**
+    Create a `.env` file in the root directory and add your Supabase credentials:
+
+    ```env
+    VITE_SUPABASE_URL=your_supabase_project_url
+    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
+
+4.  **Run the development server**
+
+    ```bash
+    npm run dev
+    ```
+
+5.  **Open in Browser**
+    Visit `http://localhost:5173` to view the app.
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## 👤 Author
+
+**Adelopo Abdullah**
+
+- GitHub: [@ade-tech](https://github.com/ade-tech)
+- LinkedIn: [Adelopo Abdullah](https://linkedin.com/in/abdone)
+
+---
+
+_Built with ❤️ for Bayero University Kano._
