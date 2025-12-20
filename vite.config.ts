@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -6,6 +7,7 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   plugins: [
     react(),
+    tsconfigPaths(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
