@@ -42,7 +42,7 @@ export const semanticTokens = {
     "accent.primary": {
       value: {
         base: "{colors.blue.500}",
-        _dark: "{colors.blue.400}",
+        _dark: "{colors.blue.500}",
       },
     },
     "accent.primary.hover": {

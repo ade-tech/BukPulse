@@ -9,6 +9,7 @@ import AppLayout from "./components/appLayout";
 import Accounts from "./pages/accounts";
 import Events from "./pages/events";
 import News from "./pages/news";
+import AuthContextProvider from "./contexts/AuthContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,16 +22,18 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route index element={<Login />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/account" element={<Accounts />} />
-        </Route>
-      </Routes>
+      <AuthContextProvider>
+        <Toaster />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<Login />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/account" element={<Accounts />} />
+          </Route>
+        </Routes>
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 }
