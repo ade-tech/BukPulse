@@ -1,7 +1,7 @@
 import { Image } from "@chakra-ui/react";
 import { useColorModeValue } from "./color-mode";
 
-export default function Logo() {
+export default function Logo({ animation }: { animation?: string }) {
   const src = useColorModeValue(
     "/HorizontalLogoBbukp.svg",
     "/HorizontalLogoWbukp.svg"
@@ -19,6 +19,7 @@ export default function Logo() {
       pt={2}
       pl={2}
       draggable={false}
+      animation={animation}
     />
   );
 }

@@ -6,11 +6,16 @@ interface authContextValue {
   currentUser: User | null;
   currentSession: Session | null;
   isLoading: boolean;
+  role: RoleType | null;
+  isSuperAdmin: boolean;
+  setRole: React.Dispatch<React.SetStateAction<RoleType | null>>;
   setCurrentSession: React.Dispatch<React.SetStateAction<Session | null>>;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const AuthContext = createContext<authContextValue | undefined>(undefined);
+
+type RoleType = "user" | "admin" | "super_admin";
 
 export default function AuthContextProvider({
   children,
@@ -18,6 +23,8 @@ export default function AuthContextProvider({
   children: React.ReactNode;
 }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [role, setRole] = useState<RoleType | null>(null);
+  const isSuperAdmin = role === "super_admin";
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -26,6 +33,7 @@ export default function AuthContextProvider({
       const { data } = await supabase.auth.getSession();
       setCurrentSession(data.session);
       setCurrentUser(data.session?.user ?? null);
+      setRole(data.session?.user.user_metadata.role ?? null);
       setIsLoading(false);
     };
 
@@ -35,6 +43,7 @@ export default function AuthContextProvider({
       (_event, session) => {
         setCurrentSession(session);
         setCurrentUser(session?.user ?? null);
+        setRole(session?.user.user_metadata.role ?? null);
       }
     );
 
@@ -43,6 +52,9 @@ export default function AuthContextProvider({
   return (
     <AuthContext.Provider
       value={{
+        role,
+        isSuperAdmin,
+        setRole,
         isLoading,
         currentUser,
         currentSession,

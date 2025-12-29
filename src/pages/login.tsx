@@ -11,6 +11,7 @@ import { HiArrowLeft } from "react-icons/hi2";
 import { useSearchParams } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import AdminInputs from "@/components/ui/adminInputs";
+import { useverifyAdminOTP } from "@/hooks/useAuth";
 
 export interface AdminFormInputs {
   email: string;
@@ -19,6 +20,7 @@ export interface AdminFormInputs {
 
 export default function Login() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { verifyOTP } = useverifyAdminOTP();
 
   const {
     control,
@@ -57,7 +59,7 @@ export default function Login() {
           Back
         </Button>
       )}
-      <Stack flexBasis={"1/5"}>
+      <Stack flexBasis={"1/5"} px={3}>
         <Heading
           textStyle={"2xl"}
           lineHeight={1}
@@ -100,6 +102,11 @@ export default function Login() {
                     size={"xl"}
                     value={field.value}
                     onValueChange={(e) => field.onChange(e.value)}
+                    onValueComplete={() => {
+                      const email = getValues("email");
+                      const tokenString = getValues("otp").join("");
+                      verifyOTP({ email, token: tokenString });
+                    }}
                   >
                     <PinInput.HiddenInput />
                     <PinInput.Control w={"full"} ml={4}>

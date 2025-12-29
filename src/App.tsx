@@ -10,6 +10,10 @@ import Accounts from "./pages/accounts";
 import Events from "./pages/events";
 import News from "./pages/news";
 import AuthContextProvider from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ui/protectedRoute";
+import PublicRoute from "./components/ui/publicRoute";
+import Home from "./pages/home";
+import ErrorPage from "./pages/errorPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,11 +31,17 @@ function App() {
         {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         <Routes>
           <Route element={<AppLayout />}>
-            <Route index element={<Login />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/account" element={<Accounts />} />
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />
+            </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route index element={<Home />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/news" element={<News />} />
+              <Route path="/account" element={<Accounts />} />
+            </Route>
           </Route>
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </AuthContextProvider>
     </QueryClientProvider>
