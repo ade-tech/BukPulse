@@ -1,37 +1,56 @@
 import {
   Button,
-  Field,
   Heading,
-  Link,
-  PinInput,
+  HStack,
+  Link as ChakraLink,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { HiArrowLeft } from "react-icons/hi2";
-import { useSearchParams } from "react-router";
-import { Controller, useForm } from "react-hook-form";
-import AdminInputs from "@/components/ui/adminInputs";
-import { useverifyAdminOTP } from "@/hooks/useAuth";
+import { Link, useSearchParams } from "react-router";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import StudentInput from "@/components/ui/studentInputs";
+import { useUserSignUp } from "@/hooks/useAuth";
+import {
+  validateStudentDetails,
+} from "@/lib/validateStudentDetails";
+import { toaster } from "@/components/ui/toaster";
 
-export interface AdminFormInputs {
+export interface UserFormInputs {
   email: string;
-  otp: string[];
+  regNumber: string;
 }
 
 export default function Login() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { verifyOTP } = useverifyAdminOTP();
-
+  const { signUp, isSigningUp } = useUserSignUp();
   const {
-    control,
-    trigger,
     formState: { errors },
-    getValues,
-    setValue,
+    handleSubmit,
     register,
-  } = useForm<AdminFormInputs>({
-    mode: "onChange",
+  } = useForm<UserFormInputs>({
+    mode: "onBlur",
   });
+
+  const SubmitFn: SubmitHandler<UserFormInputs> = ({
+    regNumber,
+    email,
+  }: UserFormInputs) => {
+    const canbeValidated = validateStudentDetails({
+      regNumber,
+      email,
+    });
+
+    if (!canbeValidated) {
+      toaster.create({
+        title: "Login details does not match!",
+      });
+      return;
+    }
+
+    signUp({ email, regNumber });
+  };
+
   const page = Number(searchParams.get("page")) || 1;
   return (
     <Stack
@@ -47,7 +66,6 @@ export default function Login() {
         <Button
           onClick={() => {
             setSearchParams({ page: "1" });
-            setValue("otp", []);
           }}
           variant={"outline"}
           top={10}
@@ -59,14 +77,14 @@ export default function Login() {
           Back
         </Button>
       )}
-      <Stack flexBasis={"1/5"} px={3}>
+      <Stack mb={10} px={6}>
         <Heading
           textStyle={"2xl"}
           lineHeight={1}
           fontWeight={"bold"}
           color={"accent.primary"}
         >
-          {page === 1 ? "Moderator Sign In" : "Enter OTP"}
+          {page === 1 ? "Get Started" : "Enter OTP"}
         </Heading>
         <Text
           fontSize={"sm"}
@@ -75,70 +93,63 @@ export default function Login() {
           fontWeight={"light"}
         >
           {page === 1
-            ? "Sign in to moderate content, manage users, and maintain platform standards."
+            ? "Sign in to see what's happening in BUK right now."
             : "A one-time passcode has been sent to your email.Please check your inbox and enter the code below."}
         </Text>
       </Stack>
-      <form className="w-full flex overflow-hidden flex-col gap-4 items-center flex-1 pt-24">
-        {page === 1 && (
-          <AdminInputs
-            errors={errors}
-            register={register}
-            trigger={trigger}
-            getValues={getValues}
-            onClick={() => {
-              setSearchParams({ page: "2" });
-            }}
-          />
-        )}
-        {page === 2 && (
-          <Stack w={"11/12"} alignItems={"center"} justifyContent={"center"}>
-            <Field.Root w={"full"}>
-              <Controller
-                control={control}
-                name="otp"
-                render={({ field }) => (
-                  <PinInput.Root
-                    size={"xl"}
-                    value={field.value}
-                    onValueChange={(e) => field.onChange(e.value)}
-                    onValueComplete={() => {
-                      const email = getValues("email");
-                      const tokenString = getValues("otp").join("");
-                      verifyOTP({ email, token: tokenString });
-                    }}
-                  >
-                    <PinInput.HiddenInput />
-                    <PinInput.Control w={"full"} ml={4}>
-                      <PinInput.Input index={0} />
-                      <PinInput.Input index={1} />
-                      <PinInput.Input index={2} />
-                      <PinInput.Input index={3} />
-                      <PinInput.Input index={4} />
-                      <PinInput.Input index={5} />
-                    </PinInput.Control>
-                  </PinInput.Root>
-                )}
-              />
-            </Field.Root>
-          </Stack>
-        )}
+      <form
+        className="w-full flex overflow-hidden flex-col gap-4 items-center flex-1"
+        onSubmit={handleSubmit(SubmitFn)}
+      >
+        <StudentInput
+          errors={errors}
+          name="regNumber"
+          type="text"
+          placeholder="Enter your Registration  Number"
+          pattern={/^[A-Za-z]{3}\/\d{2}\/[A-Za-z]{3}\/\d{5}$/}
+          register={register}
+          errorText="Enter a correct registration  number"
+        />
+        <StudentInput
+          errors={errors}
+          name="email"
+          type="email"
+          placeholder="Enter your School Mail"
+          pattern={/^[a-zA-Z]{2,3}\d{7}\.[a-zA-Z]{3}@buk\.edu\.ng$/}
+          register={register}
+          errorText="Enter a verified Student Mail"
+        />
+
+        <Button
+          onClick={handleSubmit(SubmitFn)}
+          disabled={isSigningUp}
+          w={"11/12"}
+          size={"lg"}
+          bg={"accent.primary"}
+          rounded={"lg"}
+        >
+          Sign In
+        </Button>
       </form>
       {page === 1 && (
-        <Text mx={"auto"} mb={32} fontSize={"sm"}>
-          Not a Moderator?{" "}
-          <Link fontWeight={"semibold"} color={"accent.primary"}>
-            Sign In here
+        <HStack mb={48} mx={"auto"}>
+          <Text mx={"auto"} fontSize={"sm"}>
+            Want to moderate?
+          </Text>
+          <Link to={"/admin/login"}>
+            <Text fontSize={"sm"} color={"accent.primary"} fontWeight={"bold"}>
+              Sign In here
+            </Text>
           </Link>
-        </Text>
+        </HStack>
       )}
 
-      <Text mx={"auto"} mb={5} fontSize={"xs"} textAlign={"center"}>
+      <Text mx={"auto"} mb={5} px={4} fontSize={"2xs"} textAlign={"center"}>
         © 2025 BukPulse. All rights reserved. Your data is handled securely and
         in accordance with our{" "}
-        <Link fontWeight={"semibold"} color={"accent.primary"}>
+        <ChakraLink fontWeight={"semibold"} color={"accent.primary"}>
           privacy policy.
-        </Link>
+        </ChakraLink>
       </Text>
     </Stack>
   );

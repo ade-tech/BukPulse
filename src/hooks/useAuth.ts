@@ -1,5 +1,10 @@
-import type { otpVerificationParams } from "@/lib/types";
-import { checkAdminAddressValidity, verifyAdminOTP } from "@/Services/AuthAPI";
+import type { otpVerificationParams, studentSignInParams } from "@/lib/types";
+import {
+  checkAdminAddressValidity,
+  logout,
+  studentSignUp,
+  verifyAdminOTP,
+} from "@/Services/AuthAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCheckAdminAddressValidity = () => {
@@ -23,3 +28,20 @@ export const useverifyAdminOTP = () => {
 
   return { verifyOTP, isVerifyingOTP };
 };
+
+export const useLogout = () => {
+  const queryClient = useQueryClient();
+  const { mutate: logoutUser, isPending: isLoggingOut } = useMutation({
+    mutationFn: () => logout(),
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+
+  return { logoutUser, isLoggingOut };
+};
+export function useUserSignUp() {
+  const { mutate: signUp, isPending: isSigningUp } = useMutation({
+    mutationFn: ({ regNumber, email }: studentSignInParams) =>
+      studentSignUp({ regNumber, email }),
+  });
+  return { signUp, isSigningUp };
+}

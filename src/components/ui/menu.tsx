@@ -30,10 +30,12 @@ export default function Menu() {
       }
       p={1}
     >
-      <MenuBlock title="Home" icon={GoHomeFill} to="/" />
+      <MenuBlock title="For You" icon={GoHomeFill} to="/" />
       <MenuBlock title="Events" icon={IoCalendarClear} to="/events" />
       <MenuBlock title="News" icon={HiMiniNewspaper} to="/news" />
-      <MenuBlock title="Console" icon={MdAdminPanelSettings} to="/admin" />
+      {isSuperAdmin && (
+        <MenuBlock title="Console" icon={MdAdminPanelSettings} to="/admin" />
+      )}
       <MenuBlock title="Accounts" icon={RiAccountCircleFill} to="/account" />
     </Stack>
   );
