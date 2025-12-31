@@ -8,10 +8,14 @@ import {
   Grid,
   GridItem,
   Image,
+  Button,
 } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
+import { HiOutlineLogout } from "react-icons/hi";
+import { useLogout } from "@/hooks/useAuth";
 
 export default function Accounts() {
+  const { logoutUser, isLoggingOut } = useLogout();
   return (
     <Box
       w={"full"}
@@ -24,14 +28,28 @@ export default function Accounts() {
       overflowY={"auto"}
       textAlign={"center"}
       className="no-scrollbar"
+      pos={"relative"}
     >
+      <Button
+        onClick={() => logoutUser()}
+        variant={"outline"}
+        top={2}
+        left={3}
+        pos={"absolute"}
+        size={"xs"}
+        disabled={isLoggingOut}
+        rounded={"full"}
+      >
+        <HiOutlineLogout />
+        Logout
+      </Button>
       <Box
         w={"2/5"}
         maxW={"200px"}
         aspectRatio={1 / 1}
         mb={6}
         mx={"auto"}
-        mt={12}
+        mt={6}
       >
         <Avatar.Root size={"full"} colorPalette={"blue"}>
           <Avatar.Fallback name="Segun Adebayo" />

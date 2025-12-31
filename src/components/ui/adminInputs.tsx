@@ -1,4 +1,4 @@
-import type { AdminFormInputs } from "@/pages/login";
+import type { AdminFormInputs } from "@/pages/adminLogin";
 import { Button, Field, Input, Spinner, Stack } from "@chakra-ui/react";
 import { useState } from "react";
 import { useCheckAdminAddressValidity } from "@/hooks/useAuth";
@@ -40,7 +40,7 @@ export default function AdminInputs({
             title: "UnAuthorized Email",
           });
           return;
-        }else {
+        } else {
           toaster.create({
             title: "OTP has been sent!",
           });
