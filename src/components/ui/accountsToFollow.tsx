@@ -1,7 +1,7 @@
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import type React from "react";
 import { HiArrowLeft } from "react-icons/hi2";
-import AccountsCard from "./AccountsCard";
+import AccountsCard from "@/components/ui/AccountsCard";
 
 interface AccountsToFollow {
   setStep: React.Dispatch<React.SetStateAction<number>>;
