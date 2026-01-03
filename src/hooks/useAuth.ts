@@ -1,11 +1,17 @@
-import type { otpVerificationParams, studentSignInParams } from "@/lib/types";
+import type {
+  otpVerificationParams,
+  studentSignInParams,
+  UserOnbaordingInputs,
+} from "@/lib/types";
 import {
   checkAdminAddressValidity,
   logout,
   studentSignUp,
+  updateUserProfile as updateUserProfileAPI,
   verifyAdminOTP,
 } from "@/Services/AuthAPI";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { fecthAllModerators } from "@/Services/EventsAPI";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useCheckAdminAddressValidity = () => {
   const {
@@ -44,4 +50,21 @@ export function useUserSignUp() {
       studentSignUp({ regNumber, email }),
   });
   return { signUp, isSigningUp };
+}
+
+export function useUpdateUserProfile() {
+  const { mutate: updateUserProfile, isPending: isUpdatingUserProfile } =
+    useMutation({
+      mutationFn: ({ image, id, name }: UserOnbaordingInputs) =>
+        updateUserProfileAPI({ image, name, id }),
+    });
+  return { updateUserProfile, isUpdatingUserProfile };
+}
+
+export function useFetchModerators() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["All Moderators"],
+    queryFn: () => fecthAllModerators(),
+  });
+  return { data, isLoading };
 }

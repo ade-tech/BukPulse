@@ -66,18 +66,20 @@ export default function AdminLogin() {
           lineHeight={1}
           fontWeight={"bold"}
           color={"accent.primary"}
+          textAlign={"center"}
         >
-          {page === 1 ? "Moderator Sign In" : "Enter OTP"}
+          {page === 1 ? "Moderator Sign In" : "We've sent you a code"}
         </Heading>
         <Text
           fontSize={"sm"}
           lineHeight={1.3}
           color={"text.primary"}
           fontWeight={"light"}
+          textAlign={"center"}
         >
           {page === 1
             ? "Sign in to moderate content, manage users, and maintain platform standards."
-            : "A one-time passcode has been sent to your email.Please check your inbox and enter the code below."}
+            : `Enter it below to verify\n${getValues("email")}`}
         </Text>
       </Stack>
       <form className="w-full flex overflow-hidden flex-col gap-4 items-center flex-1 pt-24">

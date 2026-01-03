@@ -6,14 +6,11 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { HiArrowLeft } from "react-icons/hi2";
-import { Link, useSearchParams } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import StudentInput from "@/components/ui/studentInputs";
 import { useUserSignUp } from "@/hooks/useAuth";
-import {
-  validateStudentDetails,
-} from "@/lib/validateStudentDetails";
+import { validateStudentDetails } from "@/lib/validateStudentDetails";
 import { toaster } from "@/components/ui/toaster";
 
 export interface UserFormInputs {
@@ -22,7 +19,7 @@ export interface UserFormInputs {
 }
 
 export default function Login() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { signUp, isSigningUp } = useUserSignUp();
   const {
     formState: { errors },
@@ -48,10 +45,18 @@ export default function Login() {
       return;
     }
 
-    signUp({ email, regNumber });
+    signUp(
+      { email, regNumber },
+      {
+        onSuccess: ({ profile }) => {
+          toaster.create({ title: "Welcome bro!" });
+          if (profile) navigate("/onboarding");
+          if (profile === null) navigate("/");
+        },
+      }
+    );
   };
 
-  const page = Number(searchParams.get("page")) || 1;
   return (
     <Stack
       bg={"bg.page"}
@@ -62,39 +67,24 @@ export default function Login() {
       pos={"relative"}
       pt={32}
     >
-      {page === 2 && (
-        <Button
-          onClick={() => {
-            setSearchParams({ page: "1" });
-          }}
-          variant={"outline"}
-          top={10}
-          pos={"absolute"}
-          size={"xs"}
-          rounded={"full"}
-        >
-          <HiArrowLeft />
-          Back
-        </Button>
-      )}
       <Stack mb={10} px={6}>
         <Heading
           textStyle={"2xl"}
           lineHeight={1}
           fontWeight={"bold"}
+          textAlign={"center"}
           color={"accent.primary"}
         >
-          {page === 1 ? "Get Started" : "Enter OTP"}
+          Get Started
         </Heading>
         <Text
           fontSize={"sm"}
           lineHeight={1.3}
           color={"text.primary"}
+          textAlign={"center"}
           fontWeight={"light"}
         >
-          {page === 1
-            ? "Sign in to see what's happening in BUK right now."
-            : "A one-time passcode has been sent to your email.Please check your inbox and enter the code below."}
+          Sign in to see what's happening in BUK right now.
         </Text>
       </Stack>
       <form
@@ -131,18 +121,16 @@ export default function Login() {
           Sign In
         </Button>
       </form>
-      {page === 1 && (
-        <HStack mb={48} mx={"auto"}>
-          <Text mx={"auto"} fontSize={"sm"}>
-            Want to moderate?
+      <HStack mb={48} mx={"auto"}>
+        <Text mx={"auto"} fontSize={"sm"}>
+          Want to moderate?
+        </Text>
+        <Link to={"/admin/login"}>
+          <Text fontSize={"sm"} color={"accent.primary"} fontWeight={"bold"}>
+            Sign In here
           </Text>
-          <Link to={"/admin/login"}>
-            <Text fontSize={"sm"} color={"accent.primary"} fontWeight={"bold"}>
-              Sign In here
-            </Text>
-          </Link>
-        </HStack>
-      )}
+        </Link>
+      </HStack>
 
       <Text mx={"auto"} mb={5} px={4} fontSize={"2xs"} textAlign={"center"}>
         © 2025 BukPulse. All rights reserved. Your data is handled securely and
