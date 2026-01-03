@@ -15,6 +15,7 @@ import PublicRoute from "./components/ui/publicRoute";
 import Home from "./pages/home";
 import ErrorPage from "./pages/errorPage";
 import AdminLogin from "./pages/adminLogin";
+import UserOnbaording from "./pages/userOnbaording";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,11 +35,13 @@ function App() {
           <Route element={<AppLayout />}>
             <Route element={<PublicRoute />}>
               <Route path="/login" element={<Login />} />
+              {/* <Route path="/onboarding" element={<UserOnbaording />} /> */}
               <Route path="/admin/login" element={<AdminLogin />} />
             </Route>
             <Route element={<ProtectedRoute />}>
               <Route index element={<Home />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/onboarding" element={<UserOnbaording />} />
               <Route path="/news" element={<News />} />
               <Route path="/account" element={<Accounts />} />
             </Route>

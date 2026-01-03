@@ -1,15 +1,14 @@
-import type { Session, User } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/Services/supabase";
 
 interface authContextValue {
   currentUser: User | null;
-  currentSession: Session | null;
   isLoading: boolean;
   role: RoleType | null;
   isSuperAdmin: boolean;
   setRole: React.Dispatch<React.SetStateAction<RoleType | null>>;
-  setCurrentSession: React.Dispatch<React.SetStateAction<Session | null>>;
+
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
@@ -25,15 +24,22 @@ export default function AuthContextProvider({
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [role, setRole] = useState<RoleType | null>(null);
   const isSuperAdmin = role === "super_admin";
-  const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const init = async () => {
       setIsLoading(true);
-      const { data } = await supabase.auth.getSession();
-      setCurrentSession(data.session);
-      setCurrentUser(data.session?.user ?? null);
-      setRole(data.session?.user.user_metadata.role ?? null);
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data.user) {
+        await supabase.auth.signOut();
+        setCurrentUser(null);
+        setIsLoading(false);
+        setRole(null);
+        return;
+      }
+
+      setCurrentUser(data?.user ?? null);
+      setRole(data.user?.user_metadata.role ?? null);
       setIsLoading(false);
     };
 
@@ -41,7 +47,6 @@ export default function AuthContextProvider({
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setCurrentSession(session);
         setCurrentUser(session?.user ?? null);
         setRole(session?.user.user_metadata.role ?? null);
       }
@@ -57,8 +62,6 @@ export default function AuthContextProvider({
         setRole,
         isLoading,
         currentUser,
-        currentSession,
-        setCurrentSession,
         setCurrentUser,
       }}
     >

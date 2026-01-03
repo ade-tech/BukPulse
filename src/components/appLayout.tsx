@@ -18,52 +18,59 @@ export default function AppLayout() {
       p={0}
       m={0}
     >
-      <HStack w={"full"} p={3} alignItems={"center"} justifyContent={"space-between"}>
+      <HStack
+        w={"full"}
+        p={3}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+      >
         <Logo />
-        <HStack
-          bg={"bg.surface/60"}
-          boxShadow={"sm"}
-          backdropFilter="saturate(180%) blur(6px)"
-          rounded={"full"}
-          py={"2"}
-          px={3}
-        >
-          <NavLink
-            to={"/notification"}
-            className="
-              flex justify-center gap-1 flex-col items-center rounded-full h-full "
+        {currentUser && !currentUser.user_metadata.is_new && (
+          <HStack
+            bg={"bg.surface/60"}
+            boxShadow={"sm"}
+            backdropFilter="saturate(180%) blur(6px)"
+            rounded={"full"}
+            py={"2"}
+            px={3}
           >
-            {({ isActive }: { isActive: boolean }) => (
-              <>
-                <Box
-                  as={IoMdNotifications}
-                  boxSize={6}
-                  color={isActive ? "accent.primary" : "text.primary"}
-                  transition="all 0.2s ease-in-out"
-                />
-              </>
-            )}
-          </NavLink>
-          <NavLink
-            to={"/search"}
-            className="
+            <NavLink
+              to={"/notification"}
+              className="
               flex justify-center gap-1 flex-col items-center rounded-full h-full "
-          >
-            {({ isActive }: { isActive: boolean }) => (
-              <>
-                <Box
-                  as={IoSearch}
-                  boxSize={6}
-                  color={isActive ? "accent.primary" : "text.primary"}
-                  transition="all 0.2s ease-in-out"
-                />
-              </>
-            )}
-          </NavLink>
-        </HStack>
+            >
+              {({ isActive }: { isActive: boolean }) => (
+                <>
+                  <Box
+                    as={IoMdNotifications}
+                    boxSize={6}
+                    color={isActive ? "accent.primary" : "text.primary"}
+                    transition="all 0.2s ease-in-out"
+                  />
+                </>
+              )}
+            </NavLink>
+            <NavLink
+              to={"/search"}
+              className="
+              flex justify-center gap-1 flex-col items-center rounded-full h-full "
+            >
+              {({ isActive }: { isActive: boolean }) => (
+                <>
+                  <Box
+                    as={IoSearch}
+                    boxSize={6}
+                    color={isActive ? "accent.primary" : "text.primary"}
+                    transition="all 0.2s ease-in-out"
+                  />
+                </>
+              )}
+            </NavLink>
+          </HStack>
+        )}
       </HStack>
       <Outlet />
-      {currentUser && <Menu />}
+      {currentUser && !currentUser.user_metadata.is_new && <Menu />}
     </Stack>
   );
 }

@@ -17,7 +17,7 @@ export default function Menu() {
       bg={"bg.surface/60"}
       mx={"auto"}
       h={16}
-      pos={"absolute"}
+      pos={"fixed"}
       bottom={5}
       rounded={"full"}
       left={0}
