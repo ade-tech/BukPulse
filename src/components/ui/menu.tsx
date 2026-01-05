@@ -6,10 +6,10 @@ import { RiAccountCircleFill } from "react-icons/ri";
 import { MdAdminPanelSettings } from "react-icons/md";
 
 import MenuBlock from "./menuBlock";
-import { UseAuth } from "@/contexts/AuthContext";
+import { useCurrentUser } from "@/contexts/AuthContext";
 
 export default function Menu() {
-  const { isSuperAdmin, isLoading } = UseAuth();
+  const { isSuperAdmin, isLoading } = useCurrentUser();
   const hasAdminFeatures = !isLoading && isSuperAdmin;
   return (
     <Stack

@@ -1,7 +1,7 @@
 import AccountsToFollow from "@/components/ui/accountsToFollow";
 import ImageUpload from "@/components/ui/imageUpload";
 import { toaster } from "@/components/ui/toaster";
-import { UseAuth } from "@/contexts/AuthContext";
+import { useCurrentUser } from "@/contexts/AuthContext";
 import { useUpdateUserProfile } from "@/hooks/useAuth";
 import type { UserOnbaordingInputs } from "@/lib/types";
 import {
@@ -20,7 +20,7 @@ import { HiArrowLeft } from "react-icons/hi2";
 
 export default function UserOnbaording() {
   const [step, setStep] = useState<number>(0);
-  const { currentUser } = UseAuth();
+  const { currentUser } = useCurrentUser();
   const {
     register,
     formState: { errors },
@@ -234,7 +234,9 @@ export default function UserOnbaording() {
         )}
       </form>
 
-      {step === 2 && <AccountsToFollow setStep={setStep} />}
+      {step === 2 && (
+        <AccountsToFollow user_id={currentUser?.id!} setStep={setStep} />
+      )}
     </Stack>
   );
 }

@@ -1,12 +1,24 @@
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, Spinner, Text } from "@chakra-ui/react";
 import type React from "react";
 import { HiArrowLeft } from "react-icons/hi2";
-import AccountsCard from "./accountCard";
+import AccountsCard, { AccountsCardSkeleton } from "./accountCard";
+import { useFetchModerators, useUpdateNewUser } from "@/hooks/useAuth";
+import { useHasFollowedSomeone } from "@/hooks/useEvents";
+import { useNavigate } from "react-router";
 interface AccountsToFollow {
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  user_id: string;
 }
 
-export default function AccountsToFollow({ setStep }: AccountsToFollow) {
+export default function AccountsToFollow({
+  setStep,
+  user_id,
+}: AccountsToFollow) {
+  const naviagte = useNavigate();
+  const { data, isLoading } = useFetchModerators();
+  const { data: followershipStatus, isLoading: isLoadingStatus } =
+    useHasFollowedSomeone(user_id);
+  const { updateUser, isUpdatingUser } = useUpdateNewUser();
   return (
     <Box
       w={"full"}
@@ -62,13 +74,40 @@ export default function AccountsToFollow({ setStep }: AccountsToFollow) {
         alignItems={"flex-start"}
         px={4}
       >
-        <AccountsCard />
-        <AccountsCard />
-        <AccountsCard />
-        <AccountsCard />
-        <AccountsCard />
-        <AccountsCard />
+        {isLoading &&
+          Array.from({ length: 6 }).map((_, i) => (
+            <AccountsCardSkeleton key={i} />
+          ))}
+        {data?.map((curModerator) => (
+          <AccountsCard
+            id={user_id}
+            data={curModerator}
+            key={curModerator.id}
+          />
+        ))}
       </Box>
+      <Button
+        mb={8}
+        w={"91.67%"}
+        size={"lg"}
+        bg={"accent.primary"}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        rounded={"lg"}
+        disabled={!followershipStatus || isLoadingStatus || isUpdatingUser}
+        onClick={() => {
+          updateUser(undefined, {
+            onSuccess: () => naviagte("/"),
+          });
+        }}
+      >
+        {isLoadingStatus || isUpdatingUser ? (
+          <Spinner color={"text.primary"} size={"sm"} />
+        ) : (
+          "Next"
+        )}
+      </Button>
     </Box>
   );
 }

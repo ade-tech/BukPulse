@@ -7,6 +7,7 @@ import {
   checkAdminAddressValidity,
   logout,
   studentSignUp,
+  updateNewUser,
   updateUserProfile as updateUserProfileAPI,
   verifyAdminOTP,
 } from "@/Services/AuthAPI";
@@ -67,4 +68,12 @@ export function useFetchModerators() {
     queryFn: () => fecthAllModerators(),
   });
   return { data, isLoading };
+}
+
+export function useUpdateNewUser() {
+  const { mutate: updateUser, isPending: isUpdatingUser } = useMutation({
+    mutationFn: updateNewUser,
+  });
+
+  return { updateUser, isUpdatingUser };
 }

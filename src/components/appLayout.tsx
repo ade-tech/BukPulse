@@ -2,12 +2,12 @@ import { Box, HStack, Stack } from "@chakra-ui/react";
 import { NavLink, Outlet } from "react-router";
 import Menu from "./ui/menu";
 import Logo from "./ui/logo";
-import { UseAuth } from "@/contexts/AuthContext";
+import { useCurrentUser } from "@/contexts/AuthContext";
 import { IoMdNotifications } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 
 export default function AppLayout() {
-  const { currentUser } = UseAuth();
+  const { currentUser } = useCurrentUser();
   return (
     <Stack
       bg={"bg.page"}

@@ -1,9 +1,9 @@
-import { UseAuth } from "@/contexts/AuthContext";
+import { useCurrentUser } from "@/contexts/AuthContext";
 import { Navigate, Outlet, useLocation } from "react-router";
 import PagePreloader from "./pagePreloader";
 
 export default function ProtectedRoute() {
-  const { currentUser, isLoading } = UseAuth();
+  const { currentUser, isLoading } = useCurrentUser();
   const location = useLocation();
 
   if (isLoading) return <PagePreloader />;
