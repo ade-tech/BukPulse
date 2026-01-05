@@ -32,7 +32,7 @@ export default function StudentInput({
         animation: "400ms fadeOut  ease-out ",
       }}
     >
-      <Field.Root w={"full"} invalid={!!errors.email}>
+      <Field.Root w={"full"} invalid={!!errors[name]}>
         <Input
           {...register(name, {
             required: errorText,

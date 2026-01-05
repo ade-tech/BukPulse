@@ -49,9 +49,12 @@ export default function Login() {
       { email, regNumber },
       {
         onSuccess: ({ profile }) => {
-          toaster.create({ title: "Welcome bro!" });
+          toaster.create({ title: `Hello, ${profile?.name}` });
           if (profile) navigate("/onboarding");
-          if (profile === null) navigate("/");
+          else navigate("/");
+        },
+        onError: (error: any) => {
+          toaster.create({ title: error?.message ?? "Login failed" });
         },
       }
     );
