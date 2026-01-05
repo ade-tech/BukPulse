@@ -15,7 +15,6 @@ export const checkAdminAddressValidity = async (
     body: { email },
   });
   if (error) throw new Error("Unauthorized Email");
-  console.log(data);
   if ((data as UserConfirmationRespnse).allowed) {
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email,
@@ -53,7 +52,8 @@ export const studentSignUp = async ({
 }: studentSignInParams) => {
   const hasAccount = await checkUserExistence(regNumber);
   if (hasAccount) {
-    return { data: studentSignIn({ regNumber, email }), profile: null };
+    const user = await studentSignIn({ regNumber, email });
+    return { user, profile: null };
   }
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -107,13 +107,6 @@ export async function checkUserExistence(regNumber: string): Promise<boolean> {
     .maybeSingle();
 
   if (error) return false;
-
-  if (data && (data as Profile).name !== undefined) {
-    const { error } = await supabase.auth.updateUser({
-      data: { is_new: false },
-    });
-    if (error) throw new Error("An Error Occured 101");
-  }
 
   return !!data;
 }
