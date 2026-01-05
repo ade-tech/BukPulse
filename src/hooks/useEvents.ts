@@ -38,6 +38,9 @@ export function useFollowModerator() {
       queryClient.invalidateQueries({
         queryKey: ["Follow Event", followed_id, follower_id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["Has Followed", follower_id],
+      });
     },
   });
   return {
