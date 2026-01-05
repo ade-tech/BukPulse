@@ -70,7 +70,7 @@ export default function AuthContextProvider({
   );
 }
 
-export function UseAuth() {
+export function useCurrentUser() {
   const context = useContext(AuthContext);
 
   if (context === undefined)

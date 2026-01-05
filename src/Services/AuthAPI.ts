@@ -108,7 +108,7 @@ export async function checkUserExistence(regNumber: string): Promise<boolean> {
 
   if (error) return false;
 
-  if (data && (data as Profile).name !== null) {
+  if (data && (data as Profile).name !== undefined) {
     const { error } = await supabase.auth.updateUser({
       data: { is_new: false },
     });
@@ -125,7 +125,7 @@ export async function updateUserProfile({
 }: UserOnbaordingInputs) {
   const hasImage = !!image && image[0];
   const imagePath = hasImage
-    ? `artist/${crypto.randomUUID()}-${image[0].name}`
+    ? `users/${crypto.randomUUID()}-${image[0].name}`
     : "";
   const imageURL = `${supabaseUrl}/storage/v1/object/public/profile_images/${imagePath}`;
 
@@ -138,8 +138,15 @@ export async function updateUserProfile({
   }
   const { error } = await supabase
     .from("profiles")
-    .update({ name, image_url: hasImage ? imageURL : null })
+    .update(hasImage ? { name, image_url: imageURL } : { name })
     .eq("id", id);
 
   if (error) throw new Error("We could not update your profile");
+}
+
+export async function updateNewUser() {
+  const { error: profileUpdate } = await supabase.auth.updateUser({
+    data: { is_new: false },
+  });
+  if (profileUpdate) throw new Error("An Error Occured 101");
 }

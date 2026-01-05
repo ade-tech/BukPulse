@@ -16,6 +16,8 @@ export interface Profile {
   reg_number: string;
   email: string;
   name: string;
+  description: string;
+  image_url: string;
 }
 export interface UserOnbaordingInputs {
   image?: FileList;

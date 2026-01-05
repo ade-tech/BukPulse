@@ -1,3 +1,5 @@
+import { useCheckFollowStatus, useFollowModerator } from "@/hooks/useEvents";
+import type { Profile } from "@/lib/types";
 import {
   Box,
   Avatar,
@@ -6,11 +8,26 @@ import {
   Text,
   Button,
   Spacer,
+  SkeletonCircle,
+  Skeleton,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { HiPlus } from "react-icons/hi2";
 import { MdVerified } from "react-icons/md";
 
-export default function AccountsCard() {
+export default function AccountsCard({
+  data,
+  id,
+}: {
+  data: Profile;
+  id: string;
+}) {
+  const { followModerator, isFollowingModertor } = useFollowModerator();
+  const { data: followStatus } = useCheckFollowStatus({
+    followed_id: data.id,
+    follower_id: id,
+  });
+
   return (
     <Box
       w={"full"}
@@ -23,11 +40,11 @@ export default function AccountsCard() {
       borderBottomWidth={"1px"}
     >
       <Avatar.Root size={"xl"} colorPalette={"blue"}>
-        <Avatar.Fallback name="Segun Adebayo" />
-        <Avatar.Image src="https://bit.ly/sage-adebayo" />
+        <Avatar.Fallback name={data.name} />
+        <Avatar.Image src={data.image_url} />
       </Avatar.Root>
-      <Stack>
-        <HStack>
+      <Stack w={"full"}>
+        <HStack w={"full"}>
           <HStack display={"flex"} w={"full"}>
             <Text
               fontSize={"md"}
@@ -37,27 +54,56 @@ export default function AccountsCard() {
               fontWeight={"semibold"}
               lineHeight={1}
             >
-              BUK SUG
+              {data.name}
               <Box as={MdVerified} color="accent.primary" />
             </Text>
             <Spacer />
             <Button
-              variant={"outline"}
+              variant={followStatus ? "solid" : "outline"}
+              bg={followStatus ? "accent.primary" : "none"}
               borderColor={"accent.primary"}
-              borderWidth={"1px"}
-              color={"accent.primary"}
+              borderWidth={followStatus ? "none" : "1px"}
+              color={followStatus ? "text.primary" : "accent.primary"}
               size={"2xs"}
               rounded={"full"}
+              disabled={isFollowingModertor}
+              onClick={() => {
+                followModerator({ followed_id: data.id, follower_id: id });
+              }}
             >
               <HiPlus />
-              Follow
+              {followStatus ? "Following" : "Follow"}
             </Button>
           </HStack>
         </HStack>
         <Text lineHeight={1} fontWeight={"extralight"} fontSize={"xs"}>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore
-          praesentium cum blanditiis quam! Consequatur repudiandae.
+          {data.description}
         </Text>
+      </Stack>
+    </Box>
+  );
+}
+export function AccountsCardSkeleton() {
+  return (
+    <Box
+      w={"full"}
+      minH={"fit-content"}
+      display={"flex"}
+      gap={3}
+      justifyContent={"flex-start"}
+      px={4}
+      py={4}
+      borderBottomWidth={"1px"}
+    >
+      <SkeletonCircle size="16" />
+      <Stack w={"full"}>
+        <HStack w={"full"}>
+          <HStack display={"flex"} w={"full"}>
+            <Skeleton height="5" width="50%" rounded={"md"} />
+            <Spacer />
+          </HStack>
+        </HStack>
+        <SkeletonText noOfLines={2} rounded={"md"} />
       </Stack>
     </Box>
   );
