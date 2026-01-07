@@ -7,6 +7,7 @@ import type {
 } from "@/lib/types";
 import { supabase, supabaseUrl } from "./supabase";
 import type { User } from "@supabase/supabase-js";
+import { prepareImageUpload } from "@/lib/helper";
 
 export const checkAdminAddressValidity = async (
   email: string
@@ -116,16 +117,20 @@ export async function updateUserProfile({
   id,
   name,
 }: UserOnbaordingInputs) {
-  const hasImage = !!image && image[0];
-  const imagePath = hasImage
-    ? `users/${crypto.randomUUID()}-${image[0].name}`
-    : "";
-  const imageURL = `${supabaseUrl}/storage/v1/object/public/profile_images/${imagePath}`;
-
+  const {
+    hasImage,
+    image: imageTobeUploaded,
+    imagePath,
+    imageURL,
+  } = prepareImageUpload({
+    image,
+    bucketName: "profile_images",
+    folderPath: "users",
+  });
   if (hasImage) {
     const { error: imageUploadError } = await supabase.storage
       .from("profile_images")
-      .upload(imagePath, image[0]);
+      .upload(imagePath, imageTobeUploaded);
 
     if (imageUploadError) throw new Error("We could not upload the image");
   }

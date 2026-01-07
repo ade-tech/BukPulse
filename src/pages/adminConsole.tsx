@@ -20,12 +20,7 @@ export default function AdminConsole() {
       className="no-scrollbar"
       pos={"relative"}
     >
-      <Heading
-        textStyle={"2xl"}
-        lineHeight={2}
-        fontWeight={"bold"}
-        color={"white"}
-      >
+      <Heading textStyle={"2xl"} lineHeight={2} fontWeight={"bold"}>
         Admin Console
       </Heading>
       <Stack mt={5} w={"full"}>

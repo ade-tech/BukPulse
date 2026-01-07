@@ -18,6 +18,12 @@ import AdminLogin from "./pages/adminLogin";
 import UserOnbaording from "./pages/userOnbaording";
 import AdminConsole from "./pages/adminConsole";
 import AdminRoutes from "./components/ui/adminRoutes";
+import AdminEvents from "@/features/admin/events";
+import ApproveEvent from "./features/admin/approveEvent";
+import Feedback from "./features/admin/feedback";
+import FlaggedContents from "./features/admin/flaggedContents";
+import NewModerator from "./features/admin/newModerator";
+import Moderators from "./features/admin/moderators";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,12 +55,12 @@ function App() {
             <Route element={<AdminRoutes />}>
               <Route path="/admin">
                 <Route index element={<AdminConsole />} />
-                <Route path="view-events" element={<Events />} />
-                <Route path="approve-events" element={<UserOnbaording />} />
-                <Route path="feedback" element={<News />} />
-                <Route path="flagged-contents" element={<News />} />
-                <Route path="new-moderator" element={<Accounts />} />
-                <Route path="moderators" element={<AdminConsole />} />
+                <Route path="view-events" element={<AdminEvents />} />
+                <Route path="approve-events" element={<ApproveEvent />} />
+                <Route path="feedback" element={<Feedback />} />
+                <Route path="flagged-contents" element={<FlaggedContents />} />
+                <Route path="new-moderator" element={<NewModerator />} />
+                <Route path="moderators" element={<Moderators />} />
               </Route>
             </Route>
           </Route>

@@ -43,3 +43,23 @@ export interface ConsoleItemProps {
   to: string;
   isLast?: boolean;
 }
+
+export interface CreateNewModeratorInputs {
+  image?: FileList;
+  role: string;
+  description: string;
+  name: string;
+  email: string;
+}
+export interface ImagePrepResult {
+  hasImage: boolean;
+  image: File | null;
+  imagePath: string;
+  imageURL: string;
+}
+
+export interface ImagePrepOptions {
+  image?: FileList | null;
+  bucketName: string;
+  folderPath: string;
+}

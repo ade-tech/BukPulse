@@ -1,3 +1,3 @@
 export default function ApproveEvent() {
-  return <div></div>;
+  return <div>Approve</div>;
 }

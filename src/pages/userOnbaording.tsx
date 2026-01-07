@@ -3,6 +3,7 @@ import ImageUpload from "@/components/ui/imageUpload";
 import { toaster } from "@/components/ui/toaster";
 import { useCurrentUser } from "@/contexts/AuthContext";
 import { useUpdateUserProfile } from "@/hooks/useAuth";
+import { acceptedFormats } from "@/lib/constants";
 import type { UserOnbaordingInputs } from "@/lib/types";
 import {
   Box,
@@ -29,7 +30,7 @@ export default function UserOnbaording() {
     watch,
   } = useForm<UserOnbaordingInputs>();
   const image = watch("image");
-  const acceptedFormats = ["image/jpeg", " image/png", " image/svg+xml"];
+
   const { updateUserProfile, isUpdatingUserProfile } = useUpdateUserProfile();
 
   const SubmitHandler: SubmitHandler<UserOnbaordingInputs> = ({
@@ -88,13 +89,7 @@ export default function UserOnbaording() {
             </Text>
             <Box flex={1}>
               <ImageUpload
-                accepts={[
-                  "image/jpeg",
-                  "image/png",
-                  "image/gif",
-                  "image/webp",
-                  "image/svg+xml",
-                ]}
+                accepts={acceptedFormats}
                 error={errors.image}
                 register={register("image", {
                   validate: (imageFile) => {
