@@ -5,7 +5,7 @@ import type {
   UserConfirmationRespnse,
   UserOnbaordingInputs,
 } from "@/lib/types";
-import { supabase, supabaseUrl } from "./supabase";
+import { supabase } from "./supabase";
 import type { User } from "@supabase/supabase-js";
 import { prepareImageUpload } from "@/lib/helper";
 
