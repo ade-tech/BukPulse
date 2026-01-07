@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import EventCard from "./eventCard";
+import EventCard from "../components/ui/eventCard";
 import EventListCard from "@/components/ui/eventListCard";
 
 export default function Events() {

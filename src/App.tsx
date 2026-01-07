@@ -16,6 +16,14 @@ import Home from "./pages/home";
 import ErrorPage from "./pages/errorPage";
 import AdminLogin from "./pages/adminLogin";
 import UserOnbaording from "./pages/userOnbaording";
+import AdminConsole from "./pages/adminConsole";
+import AdminRoutes from "./components/ui/adminRoutes";
+import AdminEvents from "@/features/admin/events";
+import ApproveEvent from "./features/admin/approveEvent";
+import Feedback from "./features/admin/feedback";
+import FlaggedContents from "./features/admin/flaggedContents";
+import NewModerator from "./features/admin/newModerator";
+import Moderators from "./features/admin/moderators";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +43,6 @@ function App() {
           <Route element={<AppLayout />}>
             <Route element={<PublicRoute />}>
               <Route path="/login" element={<Login />} />
-              {/* <Route path="/onboarding" element={<UserOnbaording />} /> */}
               <Route path="/admin/login" element={<AdminLogin />} />
             </Route>
             <Route element={<ProtectedRoute />}>
@@ -44,6 +51,17 @@ function App() {
               <Route path="/onboarding" element={<UserOnbaording />} />
               <Route path="/news" element={<News />} />
               <Route path="/account" element={<Accounts />} />
+            </Route>
+            <Route element={<AdminRoutes />}>
+              <Route path="/admin">
+                <Route index element={<AdminConsole />} />
+                <Route path="view-events" element={<AdminEvents />} />
+                <Route path="approve-events" element={<ApproveEvent />} />
+                <Route path="feedback" element={<Feedback />} />
+                <Route path="flagged-contents" element={<FlaggedContents />} />
+                <Route path="new-moderator" element={<NewModerator />} />
+                <Route path="moderators" element={<Moderators />} />
+              </Route>
             </Route>
           </Route>
           <Route path="*" element={<ErrorPage />} />

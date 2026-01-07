@@ -1,3 +1,5 @@
+import type React from "react";
+
 export interface UserConfirmationRespnse {
   allowed: boolean;
 }
@@ -33,4 +35,31 @@ export interface FollowEventParams {
 export interface LikeEventParams {
   liker_id: string;
   post_id: string;
+}
+
+export interface ConsoleItemProps {
+  title: string;
+  icon: React.ReactElement;
+  to: string;
+  isLast?: boolean;
+}
+
+export interface CreateNewModeratorInputs {
+  image?: FileList;
+  role: string;
+  description: string;
+  name: string;
+  email: string;
+}
+export interface ImagePrepResult {
+  hasImage: boolean;
+  image: File | null;
+  imagePath: string;
+  imageURL: string;
+}
+
+export interface ImagePrepOptions {
+  image?: FileList | null;
+  bucketName: string;
+  folderPath: string;
 }

@@ -6,7 +6,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import StudentInput from "@/components/ui/studentInputs";
 import { useUserSignUp } from "@/hooks/useAuth";
@@ -20,6 +20,8 @@ export interface UserFormInputs {
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as any)?.from?.pathname ?? "/";
   const { signUp, isSigningUp } = useUserSignUp();
   const {
     formState: { errors },
@@ -51,7 +53,7 @@ export default function Login() {
         onSuccess: ({ profile }) => {
           toaster.create({ title: `Hello, ${profile?.name}` });
           if (profile) navigate("/onboarding");
-          else navigate("/");
+          else navigate(from, { replace: true });
         },
         onError: (error: any) => {
           toaster.create({ title: error?.message ?? "Login failed" });
