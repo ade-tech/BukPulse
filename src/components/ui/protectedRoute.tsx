@@ -7,7 +7,8 @@ export default function ProtectedRoute() {
   const location = useLocation();
 
   if (isLoading) return <PagePreloader />;
-  if (!isLoading && !currentUser) return <Navigate to={"/login"} replace />;
+  if (!isLoading && !currentUser)
+    return <Navigate to={"/login"} replace state={{ from: location }} />;
   if (!isLoading && currentUser && currentUser?.user_metadata.is_new) {
     if (location.pathname === "/onboarding") return <Outlet />;
     return <Navigate to={"/onboarding"} replace />;

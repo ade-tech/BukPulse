@@ -60,7 +60,7 @@ export default function AdminLogin() {
           Back
         </Button>
       )}
-      <Stack flexBasis={"1/5"} px={6}>
+      <Stack mx={"auto"} flexBasis={"1/5"} px={6}>
         <Heading
           textStyle={"2xl"}
           lineHeight={1}
@@ -102,6 +102,7 @@ export default function AdminLogin() {
                 name="otp"
                 render={({ field }) => (
                   <PinInput.Root
+                    mx={"auto"}
                     size={"xl"}
                     value={field.value}
                     onValueChange={(e) => field.onChange(e.value)}

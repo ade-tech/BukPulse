@@ -16,6 +16,8 @@ import Home from "./pages/home";
 import ErrorPage from "./pages/errorPage";
 import AdminLogin from "./pages/adminLogin";
 import UserOnbaording from "./pages/userOnbaording";
+import AdminConsole from "./pages/adminConsole";
+import AdminRoutes from "./components/ui/adminRoutes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +37,6 @@ function App() {
           <Route element={<AppLayout />}>
             <Route element={<PublicRoute />}>
               <Route path="/login" element={<Login />} />
-              {/* <Route path="/onboarding" element={<UserOnbaording />} /> */}
               <Route path="/admin/login" element={<AdminLogin />} />
             </Route>
             <Route element={<ProtectedRoute />}>
@@ -44,6 +45,17 @@ function App() {
               <Route path="/onboarding" element={<UserOnbaording />} />
               <Route path="/news" element={<News />} />
               <Route path="/account" element={<Accounts />} />
+            </Route>
+            <Route element={<AdminRoutes />}>
+              <Route path="/admin">
+                <Route index element={<AdminConsole />} />
+                <Route path="view-events" element={<Events />} />
+                <Route path="approve-events" element={<UserOnbaording />} />
+                <Route path="feedback" element={<News />} />
+                <Route path="flagged-contents" element={<News />} />
+                <Route path="new-moderator" element={<Accounts />} />
+                <Route path="moderators" element={<AdminConsole />} />
+              </Route>
             </Route>
           </Route>
           <Route path="*" element={<ErrorPage />} />

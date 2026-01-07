@@ -1,3 +1,5 @@
+import type React from "react";
+
 export interface UserConfirmationRespnse {
   allowed: boolean;
 }
@@ -33,4 +35,11 @@ export interface FollowEventParams {
 export interface LikeEventParams {
   liker_id: string;
   post_id: string;
+}
+
+export interface ConsoleItemProps {
+  title: string;
+  icon: React.ReactElement;
+  to: string;
+  isLast?: boolean;
 }
