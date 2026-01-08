@@ -8,7 +8,7 @@ export default function AdminRoutes() {
 
   if (isLoading) return <PagePreloader />;
   if (!isLoading && !isSuperAdmin)
-    return <Navigate to={"/login"} replace state={{ from: location }} />;
+    return <Navigate to={"/"} replace state={{ from: location }} />;
 
   if (!isLoading && currentUser && isSuperAdmin) return <Outlet />;
 }

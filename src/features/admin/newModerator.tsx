@@ -1,4 +1,5 @@
 import ImageUpload from "@/components/ui/imageUpload";
+import MiniButton from "@/components/ui/miniButton";
 import { toaster } from "@/components/ui/toaster";
 import { useCreateNewModerator } from "@/hooks/useAdmin";
 import { acceptedFormats } from "@/lib/constants";
@@ -67,16 +68,11 @@ export default function NewModerator() {
       pos={"relative"}
     >
       <HStack justifyContent={"flex-center"} w={"full"} gap={4} mb={10}>
-        <Button
-          onClick={() => navigate(-1)}
-          variant={"outline"}
-          size={"2xs"}
-          disabled={isCreatingModerator}
-          rounded={"full"}
-        >
+        <MiniButton onClick={() => navigate(-1)} disabled={isCreatingModerator}>
           <HiArrowLeft />
           Back
-        </Button>
+        </MiniButton>
+
         <Heading alignSelf={"center"} textStyle={"2xl"} fontWeight={"bold"}>
           Create Moderator
         </Heading>

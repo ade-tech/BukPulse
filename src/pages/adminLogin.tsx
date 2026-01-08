@@ -1,5 +1,4 @@
 import {
-  Button,
   Field,
   Heading,
   HStack,
@@ -13,6 +12,7 @@ import { Link, useSearchParams } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import AdminInputs from "@/components/ui/adminInputs";
 import { useverifyAdminOTP } from "@/hooks/useAuth";
+import MiniButton from "@/components/ui/miniButton";
 
 export interface AdminFormInputs {
   email: string;
@@ -45,7 +45,7 @@ export default function AdminLogin() {
       pt={32}
     >
       {page === 2 && (
-        <Button
+        <MiniButton
           onClick={() => {
             setSearchParams({ page: "1" });
             setValue("otp", []);
@@ -53,12 +53,10 @@ export default function AdminLogin() {
           variant={"outline"}
           top={10}
           pos={"absolute"}
-          size={"xs"}
-          rounded={"full"}
         >
           <HiArrowLeft />
           Back
-        </Button>
+        </MiniButton>
       )}
       <Stack mx={"auto"} flexBasis={"1/5"} px={6}>
         <Heading

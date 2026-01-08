@@ -1,5 +1,6 @@
 import AccountsToFollow from "@/components/ui/accountsToFollow";
 import ImageUpload from "@/components/ui/imageUpload";
+import MiniButton from "@/components/ui/miniButton";
 import { toaster } from "@/components/ui/toaster";
 import { useCurrentUser } from "@/contexts/AuthContext";
 import { useUpdateUserProfile } from "@/hooks/useAuth";
@@ -143,23 +144,20 @@ export default function UserOnbaording() {
             flexDir={"column"}
             pt={36}
           >
-            <Button
+            <MiniButton
               disabled={isUpdatingUserProfile}
               onClick={() => {
                 setStep((curStep) =>
                   curStep !== 0 ? (curStep -= 1) : curStep
                 );
               }}
-              variant={"outline"}
               top={2}
               left={5}
               pos={"absolute"}
-              size={"2xs"}
-              rounded={"full"}
             >
               <HiArrowLeft />
               Back
-            </Button>
+            </MiniButton>
             <Heading
               textStyle={"2xl"}
               lineHeight={2}
