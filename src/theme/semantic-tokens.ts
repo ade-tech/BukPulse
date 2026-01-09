@@ -2,7 +2,7 @@ export const semanticTokens = {
   colors: {
     "bg.page": {
       value: {
-        base: "{colors.gray.50}",
+        base: "{colors.gray.100}",
         _dark: "{colors.gray.950}",
       },
     },

@@ -1,3 +1,4 @@
+import type { ButtonProps } from "@chakra-ui/react";
 import type React from "react";
 
 export interface UserConfirmationRespnse {
@@ -63,3 +64,5 @@ export interface ImagePrepOptions {
   bucketName: string;
   folderPath: string;
 }
+
+export interface MiniButtonProps extends ButtonProps {}

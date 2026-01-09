@@ -4,6 +4,8 @@ import {
   ButtonGroup,
   HStack,
   Image,
+  Skeleton,
+  SkeletonText,
   Span,
   Stack,
   Text,
@@ -67,5 +69,77 @@ export default function EventCard() {
         </ButtonGroup>
       </Box>
     </Stack>
+  );
+}
+export function EventAdminCard() {
+  return (
+    <Stack
+      w={"full"}
+      bg={"bg.surface"}
+      rounded={"md"}
+      pos={"relative"}
+      maxW="470px"
+      mb={4}
+      pb={4}
+    >
+      <Box
+        aspectRatio={2.5 / 1}
+        w={"full"}
+        bg={"bg.muted"}
+        roundedTop={"lg"}
+        overflow="hidden"
+      >
+        <Image
+          roundedTop={"lg"}
+          src={"/Artboard 1.jpg"}
+          width="100%"
+          height="100%"
+          objectFit="cover"
+        />
+      </Box>
+      <Box px={4} pb={1} mt={2}>
+        <Text lineHeight={1.2} mb={2} fontWeight={"semibold"} fontSize={"lg"}>
+          The Importance of a good Family
+        </Text>
+        <HStack mt={1} gap={2}>
+          <HStack w={"2/5"} fontSize={"sm"} fontWeight={"light"}>
+            <Box as={IoCalendarClear} color={"accent.primary"} boxSize={5} />{" "}
+            <Text lineHeight={1.2}>
+              20th Dec, 2020.
+              <br /> 12PM WAT
+            </Text>
+          </HStack>
+          <HStack fontSize={"sm"} fontWeight={"light"}>
+            <Box as={FaLocationDot} color={"accent.primary"} boxSize={5} />{" "}
+            <Text>Online . Google Meet</Text>
+          </HStack>
+        </HStack>
+      </Box>
+    </Stack>
+  );
+}
+
+export function EventsCardSkeleton() {
+  return (
+    <Box
+      w={"full"}
+      h={"250px"}
+      gap={3}
+      justifyContent={"flex-start"}
+      px={4}
+      py={4}
+      bg={"bg.surface"}
+      rounded={"md"}
+    >
+      <Skeleton height="28" w={"full"} mb={2} rounded={"md"} />
+      <Stack w={"full"}>
+        <HStack w={"full"}>
+          <HStack display={"flex"} w={"full"}>
+            <Skeleton height="6" width="full" rounded={"md"} />
+          </HStack>
+        </HStack>
+        <SkeletonText noOfLines={2} rounded={"md"} />
+      </Stack>
+    </Box>
   );
 }

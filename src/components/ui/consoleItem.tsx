@@ -9,7 +9,12 @@ export default function ConsoleItem({
   isLast = false,
 }: ConsoleItemProps) {
   return (
-    <HStack mx={4} py={1} borderBottomWidth={isLast ? 0 : 1}>
+    <HStack
+      mx={4}
+      py={1}
+      borderColor={"bg.page"}
+      borderBottomWidth={isLast ? 0 : 1}
+    >
       <Link
         to={to}
         className={`${isLast ? "!pb-0" : "!pb-2"} flex items-center gap-2`}

@@ -8,11 +8,11 @@ import {
   Grid,
   GridItem,
   Image,
-  Button,
 } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";
 import { useLogout } from "@/hooks/useAuth";
+import MiniButton from "@/components/ui/miniButton";
 
 export default function Accounts() {
   const { logoutUser, isLoggingOut } = useLogout();
@@ -30,19 +30,18 @@ export default function Accounts() {
       className="no-scrollbar"
       pos={"relative"}
     >
-      <Button
+      <MiniButton
         onClick={() => logoutUser()}
         variant={"outline"}
         top={2}
-        left={3}
+        left={0}
         pos={"absolute"}
-        size={"xs"}
         disabled={isLoggingOut}
         rounded={"full"}
       >
         <HiOutlineLogout />
         Logout
-      </Button>
+      </MiniButton>
       <Box
         w={"2/5"}
         maxW={"200px"}
