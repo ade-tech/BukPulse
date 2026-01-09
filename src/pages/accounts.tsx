@@ -8,7 +8,6 @@ import {
   Grid,
   GridItem,
   Image,
-  Button,
 } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";

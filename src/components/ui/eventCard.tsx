@@ -128,6 +128,8 @@ export function EventsCardSkeleton() {
       justifyContent={"flex-start"}
       px={4}
       py={4}
+      bg={"bg.surface"}
+      rounded={"md"}
     >
       <Skeleton height="28" w={"full"} mb={2} rounded={"md"} />
       <Stack w={"full"}>

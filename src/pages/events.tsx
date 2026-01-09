@@ -1,5 +1,7 @@
 import { EventAdminCard } from "@/components/ui/eventCard";
-import EventListCard from "@/components/ui/eventListCard";
+import EventListCard, {
+  AdminEventListCard,
+} from "@/components/ui/eventListCard";
 import { Box, Tabs, Heading, IconButton } from "@chakra-ui/react";
 import { HiPlus } from "react-icons/hi2";
 
@@ -74,6 +76,7 @@ const Demo = () => {
       <Tabs.Content value="upcoming">
         <EventAdminCard />
         <EventListCard />
+        <AdminEventListCard />
       </Tabs.Content>
 
       <Tabs.Content value="projects">Manage your projects</Tabs.Content>
