@@ -3,7 +3,7 @@ import {
   checkFollowStatus,
   FollowModerator,
   hasFollowedSomone,
-} from "@/Services/EventsAPI";
+} from "@/Services/FollowAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useFollowModerator() {
