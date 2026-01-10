@@ -1,4 +1,4 @@
-import { useCheckFollowStatus, useFollowModerator } from "@/hooks/useEvents";
+import { useCheckFollowStatus, useFollowModerator } from "@/hooks/useFollow";
 import type { Profile } from "@/lib/types";
 import {
   Box,

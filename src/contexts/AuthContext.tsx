@@ -7,6 +7,7 @@ interface authContextValue {
   isLoading: boolean;
   role: RoleType | null;
   isSuperAdmin: boolean;
+  isAdmin: boolean;
   setRole: React.Dispatch<React.SetStateAction<RoleType | null>>;
 
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -24,6 +25,7 @@ export default function AuthContextProvider({
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [role, setRole] = useState<RoleType | null>(null);
   const isSuperAdmin = role === "super_admin";
+  const isAdmin = role === "admin" || role === "super_admin";
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const init = async () => {
@@ -60,6 +62,7 @@ export default function AuthContextProvider({
         role,
         isSuperAdmin,
         setRole,
+        isAdmin,
         isLoading,
         currentUser,
         setCurrentUser,

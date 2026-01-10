@@ -3,7 +3,7 @@ import type React from "react";
 import { HiArrowLeft } from "react-icons/hi2";
 import AccountsCard, { AccountsCardSkeleton } from "./accountCard";
 import { useFetchModerators, useUpdateNewUser } from "@/hooks/useAuth";
-import { useHasFollowedSomeone } from "@/hooks/useEvents";
+import { useHasFollowedSomeone } from "@/hooks/useFollow";
 import { useNavigate } from "react-router";
 interface AccountsToFollow {
   setStep: React.Dispatch<React.SetStateAction<number>>;

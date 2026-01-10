@@ -11,7 +11,7 @@ import {
   updateUserProfile as updateUserProfileAPI,
   verifyAdminOTP,
 } from "@/Services/AuthAPI";
-import { fecthAllModerators } from "@/Services/EventsAPI";
+import { fecthAllModerators } from "@/Services/FollowAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useCheckAdminAddressValidity = () => {
