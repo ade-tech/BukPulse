@@ -59,6 +59,31 @@ export default function Events() {
 
   const hasImage = imagePreview !== null;
 
+  if (!isAdmin)
+    return (
+      <Box
+        w={"full"}
+        h={"full"}
+        pt={2}
+        px={4}
+        rounded={"md"}
+        overflow={"hidden"}
+        overflowY={"auto"}
+        className="no-scrollbar"
+        pos={"relative"}
+      >
+        <Heading textStyle={"2xl"} ml={2} lineHeight={2} fontWeight={"bold"}>
+          Events
+        </Heading>
+        <Box
+          flex={1}
+          overflow={"hidden"}
+          overflowY={"scroll"}
+          className="no-scrollbar"
+        ></Box>
+      </Box>
+    );
+
   return (
     <Box
       w={"full"}

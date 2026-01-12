@@ -37,3 +37,9 @@ export const createNewEvent = async ({
   ]);
   if (error) throw error;
 };
+
+export const FetchRandomEvents = async () => {
+  const { data, error } = await supabase.from("events").select("*");
+  if (error) throw error;
+  return data as Event[];
+};
