@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/Services/supabase";
+import { useMutation } from "@tanstack/react-query";
+import { sendPushNotification } from "@/Services/NotificationAPI";
 
 const urlBase64ToUint8Array = (base64String: string) => {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -47,9 +49,7 @@ export const usePushNotifications = () => {
 
       setSubscription(existingSubscription);
       setIsSubscribed(!!existingSubscription);
-    } catch (err) {
-      console.error("Error checking subscription:", err);
-    }
+    } catch (err) {}
   };
 
   const requestPermission = async () => {
@@ -123,10 +123,8 @@ export const usePushNotifications = () => {
       setIsSubscribed(true);
       setLoading(false);
 
-      console.log("✅ Push notification subscription successful!");
       return true;
     } catch (err) {
-      console.error("Error subscribing to push:", err);
       setError(err instanceof Error ? err.message : "Failed to subscribe");
       setLoading(false);
       return false;
@@ -158,10 +156,8 @@ export const usePushNotifications = () => {
       setIsSubscribed(false);
       setLoading(false);
 
-      console.log("✅ Unsubscribed from push notifications");
       return true;
     } catch (err) {
-      console.error("Error unsubscribing:", err);
       setError(err instanceof Error ? err.message : "Failed to unsubscribe");
       setLoading(false);
       return false;
@@ -177,4 +173,13 @@ export const usePushNotifications = () => {
     subscribe,
     unsubscribe,
   };
+};
+
+export const useSendPushNotification = () => {
+  const { mutate: sendNotification, isPending: isSendingNotification } =
+    useMutation({
+      mutationFn: sendPushNotification,
+    });
+
+  return { sendNotification, isSendingNotification };
 };

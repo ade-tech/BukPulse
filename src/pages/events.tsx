@@ -7,8 +7,10 @@ import GeneralInput from "@/components/ui/generalInput";
 import MiniButton from "@/components/ui/miniButton";
 import { toaster } from "@/components/ui/toaster";
 import { useCurrentUser } from "@/contexts/AuthContext";
+import { useGetSuperAdminId } from "@/hooks/useAdmin";
 import { useCreateNewEvent } from "@/hooks/useEvent";
 import useGetImageURL from "@/hooks/useGetImageURL";
+import { useSendPushNotification } from "@/hooks/usePushNotifications";
 import type { CreateEventInputs } from "@/lib/types";
 import {
   Box,
@@ -56,6 +58,8 @@ export default function Events() {
   const watchedImage = watch("event_image");
   const { imagePreview } = useGetImageURL(watchedImage);
   const { createEvent, isCreatingEvent } = useCreateNewEvent();
+  const { sendNotification } = useSendPushNotification();
+  const adminID = useGetSuperAdminId();
 
   const hasImage = imagePreview !== null;
 
@@ -148,6 +152,13 @@ export default function Events() {
                   store.setOpen(false);
                   toaster.create({
                     title: "Event creation is Successful!",
+                  });
+                  sendNotification({
+                    userIds: [adminID!],
+                    title: "Event Approval Request",
+                    body: `${event_title}`,
+                    tag: "event",
+                    url: "/",
                   });
                 },
                 onError: () => {
