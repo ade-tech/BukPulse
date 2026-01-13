@@ -19,7 +19,6 @@ export const createModeratorAccount = async ({
     bucketName: "profile_images",
     folderPath: "users",
   });
-  console.log(hasImage, imageURL);
   if (hasImage) {
     const { error: imageUploadError } = await supabase.storage
       .from("profile_images")
@@ -40,4 +39,17 @@ export const createModeratorAccount = async ({
   });
 
   if (error) throw error;
+};
+
+export const getSuperAdminId = async (): Promise<string> => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("role", "super_admin")
+    .single();
+
+  if (error) {
+    throw new Error("We could not get it!");
+  }
+  return data.id;
 };

@@ -110,3 +110,12 @@ export interface AppDrawerProps {
   drawerTitle: string;
   placement: "top" | "bottom";
 }
+export interface SendNotificationParams {
+  userIds: string[];
+  title: string;
+  body: string;
+  url?: string;
+  tag?: string;
+  icon?: string;
+  badge?: string;
+}
