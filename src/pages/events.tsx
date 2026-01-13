@@ -153,13 +153,16 @@ export default function Events() {
                   toaster.create({
                     title: "Event creation is Successful!",
                   });
-                  sendNotification({
-                    userIds: [adminID!],
-                    title: "Event Approval Request",
-                    body: `${event_title}`,
-                    tag: "event",
-                    url: "/",
-                  });
+                    // Only send if we have a valid super admin id and it's not the sender
+                    if (adminID && adminID !== currentUser?.id) {
+                      sendNotification({
+                        userIds: [adminID],
+                        title: "Event Approval Request",
+                        body: `${event_title}`,
+                        tag: "event",
+                        url: "/",
+                      });
+                    }
                 },
                 onError: () => {
                   toaster.create({
@@ -194,7 +197,7 @@ export default function Events() {
                   flexDir={"column"}
                   alignItems={"center"}
                   justifyContent={"center"}
-                  bg={hasImage ? "white" : "none"}
+                  bg={hasImage ? "bg.surface/60" : "none"}
                   _groupHover={{
                     display: "flex",
                   }}

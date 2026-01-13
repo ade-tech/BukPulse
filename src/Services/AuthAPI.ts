@@ -43,6 +43,18 @@ export const verifyAdminOTP = async ({
 };
 
 export const logout = async () => {
+  // Remove any push subscriptions for this user so logged-out devices stop receiving pushes
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from("push_subscriptions").delete().eq("user_id", user.id);
+    }
+  } catch (e) {
+    // ignore errors here; proceed to sign out
+  }
+
   let { error } = await supabase.auth.signOut();
   if (error) throw new Error("We could not log you out");
 };

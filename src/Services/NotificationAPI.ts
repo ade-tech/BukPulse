@@ -16,6 +16,14 @@ export const sendPushNotification = async ({
     throw new Error("Not authenticated");
   }
 
+  // Validate recipients to avoid accidental broadcast when IDs are undefined
+  if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+    throw new Error("No recipients provided for notification");
+  }
+  if (userIds.some((id) => typeof id !== "string" || id.trim() === "")) {
+    throw new Error("Invalid recipient id in userIds");
+  }
+
   const { data, error } = await supabase.functions.invoke(
     "send-push-notifications",
     {
