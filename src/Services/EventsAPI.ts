@@ -188,3 +188,31 @@ export const isUserAttending = async (event_id: string) => {
   if (error) throw error;
   return !!data;
 };
+
+export const fetchPastAttendedEvents = async () => {
+  const { data: userData, error: authError } = await supabase.auth.getUser();
+  if (authError || !userData.user) throw new Error("Could not verify user");
+  const attender_id = userData.user.id;
+
+  const now = new Date().toISOString();
+
+  const { data, error } = await supabase
+    .from("event_attendees")
+    .select("events (*, profiles (name))")
+    .eq("attender_id", attender_id);
+
+  if (error) throw error;
+
+  const attendedEvents = data
+    ?.map((attendance: any) => attendance.events)
+    .filter((event: Event | null) => {
+      if (!event) return false;
+      return event.event_status === "approved" && event.event_date < now;
+    })
+    .sort(
+      (a: Event, b: Event) =>
+        new Date(b.event_date).getTime() - new Date(a.event_date).getTime()
+    ) as Event[];
+
+  return attendedEvents || [];
+};
