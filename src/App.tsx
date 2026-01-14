@@ -24,6 +24,8 @@ import Feedback from "./features/admin/feedback";
 import FlaggedContents from "./features/admin/flaggedContents";
 import NewModerator from "./features/admin/newModerator";
 import Moderators from "./features/admin/moderators";
+import EventDetails from "./components/ui/eventDetails";
+import ModeratorDetail from "./components/ui/ModeratorDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,6 +50,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route index element={<Home />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/events/:id" element={<EventDetails />} />
               <Route path="/onboarding" element={<UserOnbaording />} />
               <Route path="/news" element={<News />} />
               <Route path="/account" element={<Accounts />} />
@@ -57,10 +60,12 @@ function App() {
                 <Route index element={<AdminConsole />} />
                 <Route path="view-events" element={<AdminEvents />} />
                 <Route path="approve-events" element={<ApproveEvent />} />
+                <Route path="approve-events/:id" element={<EventDetails />} />
                 <Route path="feedback" element={<Feedback />} />
                 <Route path="flagged-contents" element={<FlaggedContents />} />
                 <Route path="new-moderator" element={<NewModerator />} />
                 <Route path="moderators" element={<Moderators />} />
+                <Route path="moderators/:id" element={<ModeratorDetail />} />
               </Route>
             </Route>
           </Route>

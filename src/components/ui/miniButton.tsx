@@ -1,5 +1,6 @@
 import type { MiniButtonProps } from "@/lib/types";
 import { Button } from "@chakra-ui/react";
+import { useNavigate } from "react-router";
 
 export default function MiniButton({
   onClick,
@@ -7,9 +8,10 @@ export default function MiniButton({
   disabled,
   ...props
 }: MiniButtonProps) {
+  const navigate = useNavigate();
   return (
     <Button
-      onClick={onClick}
+      onClick={onClick ? onClick : () => navigate(-1)}
       variant={"outline"}
       size={"xs"}
       disabled={disabled}

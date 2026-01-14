@@ -2,16 +2,18 @@ import AppDrawer from "@/components/ui/AppDrawer";
 import { EventAdminCard } from "@/components/ui/eventCard";
 import EventListCard, {
   AdminEventListCard,
+  EventListCardSkeleton,
 } from "@/components/ui/eventListCard";
+import Filter from "@/components/ui/filter";
 import GeneralInput from "@/components/ui/generalInput";
 import MiniButton from "@/components/ui/miniButton";
 import { toaster } from "@/components/ui/toaster";
 import { useCurrentUser } from "@/contexts/AuthContext";
 import { useGetSuperAdminId } from "@/hooks/useAdmin";
-import { useCreateNewEvent } from "@/hooks/useEvent";
+import { useCreateNewEvent, useFetchAllUpcomingEvents } from "@/hooks/useEvent";
 import useGetImageURL from "@/hooks/useGetImageURL";
 import { useSendPushNotification } from "@/hooks/usePushNotifications";
-import type { CreateEventInputs } from "@/lib/types";
+import { CATEGORIES, type Category, type CreateEventInputs } from "@/lib/types";
 import {
   Box,
   Tabs,
@@ -27,11 +29,14 @@ import {
   Icon,
   Input,
   Image,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { HiPlus } from "react-icons/hi2";
 import { LuUpload } from "react-icons/lu";
+import { PiEmptyBold } from "react-icons/pi";
 
 const inputCategories = createListCollection({
   items: [
@@ -60,12 +65,17 @@ export default function Events() {
   const { createEvent, isCreatingEvent } = useCreateNewEvent();
   const { sendNotification } = useSendPushNotification();
   const adminID = useGetSuperAdminId();
-
+  const [curState, setCurState] = useState<Category | "all">("all");
   const hasImage = imagePreview !== null;
+  const { upcomingEventsData, isFetchingEvents } = useFetchAllUpcomingEvents();
+  const filteredEvents =
+    curState === "all"
+      ? upcomingEventsData
+      : upcomingEventsData?.filter((cur) => cur.event_category === curState);
 
   if (!isAdmin)
     return (
-      <Box
+      <Stack
         w={"full"}
         h={"full"}
         pt={2}
@@ -79,13 +89,56 @@ export default function Events() {
         <Heading textStyle={"2xl"} ml={2} lineHeight={2} fontWeight={"bold"}>
           Events
         </Heading>
-        <Box
-          flex={1}
-          overflow={"hidden"}
-          overflowY={"scroll"}
-          className="no-scrollbar"
-        ></Box>
-      </Box>
+        <Filter
+          filterValues={["all", ...CATEGORIES]}
+          filterState={curState}
+          filterUpdate={setCurState}
+        />
+
+        <Box w={"full"} flex={1} overflow={"hidden"} overflowY={"auto"}>
+          {isFetchingEvents &&
+            Array.from({ length: 5 }).map((_, i) => (
+              <EventListCardSkeleton key={i} />
+            ))}
+
+          {filteredEvents?.length === 0 ? (
+            <Box
+              w={"full"}
+              h={"4/5"}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              flexDir={"column"}
+            >
+              <PiEmptyBold size={"48"} className="mb-3!" />
+              <Text
+                mx={"auto"}
+                fontSize={"3xl"}
+                display={"flex"}
+                gap={1}
+                alignItems={"center"}
+                fontWeight={"extrabold"}
+                lineHeight={1}
+              >
+                Nothing Here!
+              </Text>
+              <Text
+                display={"inline-block"}
+                fontWeight={"light"}
+                fontSize={"md"}
+              >
+                {curState === "all"
+                  ? "No upcoming Events now, Check back later"
+                  : "No Upcoming Events for this category"}
+              </Text>
+            </Box>
+          ) : (
+            filteredEvents?.map((cur) => (
+              <EventListCard usedBy="user" data={cur} key={cur.id} />
+            ))
+          )}
+        </Box>
+      </Stack>
     );
 
   return (
@@ -153,16 +206,16 @@ export default function Events() {
                   toaster.create({
                     title: "Event creation is Successful!",
                   });
-                    // Only send if we have a valid super admin id and it's not the sender
-                    if (adminID && adminID !== currentUser?.id) {
-                      sendNotification({
-                        userIds: [adminID],
-                        title: "Event Approval Request",
-                        body: `${event_title}`,
-                        tag: "event",
-                        url: "/",
-                      });
-                    }
+                  // Only send if we have a valid super admin id and it's not the sender
+                  if (adminID && adminID !== currentUser?.id) {
+                    sendNotification({
+                      userIds: [adminID],
+                      title: "Event Approval Request",
+                      body: `${event_title}`,
+                      tag: "event",
+                      url: "/",
+                    });
+                  }
                 },
                 onError: () => {
                   toaster.create({
@@ -454,7 +507,6 @@ const EventTabs = () => {
       </Tabs.List>
       <Tabs.Content value="upcoming">
         <EventAdminCard />
-        <EventListCard />
         <AdminEventListCard />
       </Tabs.Content>
 

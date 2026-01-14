@@ -22,7 +22,7 @@ export default function AccountsCard({
   data: Profile;
   id: string;
 }) {
-  const { followModerator, isFollowingModertor } = useFollowModerator();
+  const { followModerator } = useFollowModerator();
   const { data: followStatus } = useCheckFollowStatus({
     followed_id: data.id,
     follower_id: id,
@@ -66,7 +66,6 @@ export default function AccountsCard({
               color={followStatus ? "text.primary" : "accent.primary"}
               size={"2xs"}
               rounded={"full"}
-              disabled={isFollowingModertor}
               onClick={() => {
                 followModerator({ followed_id: data.id, follower_id: id });
               }}
