@@ -24,8 +24,9 @@ export default function ModeratorCard({ data }: { data: Profile }) {
       justifyContent={"flex-start"}
       px={4}
       pt={3}
+      bg={"bg.surface"}
+      rounded={"md"}
       pb={4}
-      borderBottomWidth={"1px"}
     >
       <Avatar.Root size={"xl"} colorPalette={"blue"}>
         <Avatar.Fallback name={data.name} />
@@ -58,7 +59,7 @@ export default function ModeratorCard({ data }: { data: Profile }) {
             </Button>
           </HStack>
         </HStack>
-        <Text lineHeight={1} mb={2} fontWeight={"extralight"} fontSize={"xs"}>
+        <Text lineHeight={1} fontWeight={"extralight"} fontSize={"xs"}>
           {data.description}
         </Text>
       </Stack>
@@ -75,17 +76,16 @@ export function ModeratorsCardSkeleton() {
       justifyContent={"flex-start"}
       px={4}
       py={4}
-      borderBottomWidth={"1px"}
     >
       <SkeletonCircle size="16" />
       <Stack w={"full"}>
         <HStack w={"full"}>
           <HStack display={"flex"} w={"full"}>
-            <Skeleton height="5" width="50%" rounded={"md"} />
+            <Skeleton height="5" width="50%" rounded={"sm"} />
             <Spacer />
           </HStack>
         </HStack>
-        <SkeletonText noOfLines={2} rounded={"md"} />
+        <SkeletonText noOfLines={2} rounded={"sm"} />
       </Stack>
     </Box>
   );
