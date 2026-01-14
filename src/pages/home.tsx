@@ -1,4 +1,4 @@
-// import { PushNotificationButton } from "@/components/pushNotificationButton";
+import { PushNotificationButton } from "@/components/pushNotificationButton";
 import PostCard from "@/components/ui/postCard";
 import { Box } from "@chakra-ui/react";
 
@@ -14,7 +14,7 @@ export default function Home() {
       overflowY={"auto"}
       className="no-scrollbar"
     >
-      {/* <PushNotificationButton /> */}
+      <PushNotificationButton />
       <PostCard />
       <PostCard />
       <PostCard />
