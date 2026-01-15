@@ -10,14 +10,30 @@ import {
   Image,
   SkeletonCircle,
   Skeleton,
+  Icon,
+  Spacer,
+  Switch,
+  Button,
 } from "@chakra-ui/react";
-import { MdVerified } from "react-icons/md";
+import { MdFeedback, MdVerified } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";
 import MiniButton from "@/components/ui/miniButton";
-import { PiEmptyBold } from "react-icons/pi";
+import { PiEmptyBold, PiListDashesFill } from "react-icons/pi";
 import type { AccountContainerProps } from "@/lib/types";
 import { useGetUserOtherProfileData } from "@/hooks/useProfile";
+import { GrNext } from "react-icons/gr";
 import { formatNumbers } from "@/lib/FormatNumbers";
+import AccountItem from "./accountItem";
+import { BsPeopleFill } from "react-icons/bs";
+import { RiNotification2Fill } from "react-icons/ri";
+import { Link } from "react-router";
+import { useForm } from "react-hook-form";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { toaster } from "./toaster";
+
+interface NotificationFormInput {
+  notificationsEnabled: boolean;
+}
 
 export function AdminAccount({
   logoutUser,
@@ -154,9 +170,60 @@ export function AdminAccount({
 }
 export function UserAccount({
   logoutUser,
+  profile,
+  isloading,
   isLoggingOut,
 }: AccountContainerProps) {
-  return (
+  const { isSubscribed, loading, subscribe, unsubscribe } =
+    usePushNotifications();
+  const { register, watch } = useForm<NotificationFormInput>({
+    defaultValues: {
+      notificationsEnabled: isSubscribed,
+    },
+  });
+
+  const notificationsEnabled = watch("notificationsEnabled");
+
+  const handleNotificationToggle = async (enabled: boolean) => {
+    try {
+      if (enabled) {
+        const success = await subscribe();
+        if (success) {
+          toaster.create({
+            title: "Notifications enabled!",
+            type: "success",
+          });
+        } else {
+          toaster.create({
+            title: "Failed to enable notifications",
+            type: "error",
+          });
+        }
+      } else {
+        const success = await unsubscribe();
+        if (success) {
+          toaster.create({
+            title: "Notifications disabled",
+            type: "success",
+          });
+        } else {
+          toaster.create({
+            title: "Failed to disable notifications",
+            type: "error",
+          });
+        }
+      }
+    } catch (error) {
+      toaster.create({
+        title: "Error updating notification settings",
+        type: "error",
+      });
+    }
+  };
+
+  return isloading ? (
+    <UserAccountPreLoader />
+  ) : (
     <Box
       w={"full"}
       h={"full"}
@@ -170,29 +237,10 @@ export function UserAccount({
       className="no-scrollbar"
       pos={"relative"}
     >
-      <MiniButton
-        onClick={() => logoutUser()}
-        variant={"outline"}
-        top={2}
-        left={0}
-        pos={"absolute"}
-        disabled={isLoggingOut}
-        rounded={"full"}
-      >
-        <HiOutlineLogout />
-        Logout
-      </MiniButton>
-      <Box
-        w={"1/5"}
-        maxW={"200px"}
-        aspectRatio={1 / 1}
-        mb={6}
-        mx={"auto"}
-        mt={6}
-      >
+      <Box maxW={"200px"} aspectRatio={1 / 1} mb={6} mx={"auto"} mt={6} h={40}>
         <Avatar.Root size={"full"} colorPalette={"blue"}>
-          <Avatar.Fallback name="Segun Adebayo" />
-          <Avatar.Image src="https://bit.ly/sage-adebayo" />
+          <Avatar.Fallback name={profile?.name} />
+          <Avatar.Image src={profile?.image_url} />
         </Avatar.Root>
       </Box>
       <Stack gap={3}>
@@ -200,73 +248,134 @@ export function UserAccount({
           <Text
             mx={"auto"}
             fontSize={"xl"}
-            display={"flex"}
-            gap={1}
-            alignItems={"center"}
             fontWeight={"semibold"}
             lineHeight={1}
           >
-            The Student Union Government
-            <Box as={MdVerified} color="accent.primary" />
+            {profile?.name}
           </Text>
         </HStack>
-        <Text lineHeight={0.5} fontWeight={"light"} fontSize={"md"}>
-          Official Account of the SUG President
+        <Text lineHeight={1} fontWeight={"light"} fontSize={"md"}>
+          {profile?.reg_number}
         </Text>
       </Stack>
-      <HStack mt={6} gap={3} justifyContent={"center"}>
-        <Text
-          display={"inline-block"}
-          lineHeight={0.5}
-          fontWeight={"light"}
-          fontSize={"md"}
-        >
-          <Span fontWeight={"bold"}> 23.5K</Span> Followers
+      <Stack mt={12} w={"full"} textAlign={"left"} px={5}>
+        <Text ml={2} fontWeight={"bold"} textStyle={"lg"}>
+          General
         </Text>
-        <Text color={"accent.primary"}>|</Text>
-        <Text
-          display={"inline-block"}
-          lineHeight={0.5}
-          fontWeight={"light"}
-          fontSize={"md"}
+        <Stack
+          w={"full"}
+          gap={2}
+          py={3}
+          mx={"auto"}
+          bg={"bg.surface"}
+          rounded={"xl"}
+          color={"accent.primary"}
         >
-          <Span fontWeight={"bold"}> 5</Span> Post
+          <AccountItem>
+            {
+              <HStack color={"text.secondary"} w={"full"} mb={2}>
+                <Icon size={"md"}>
+                  <RiNotification2Fill />
+                </Icon>
+                <Text fontWeight={"semibold"}>Receive Notifications</Text>
+                <Spacer />
+                <Switch.Root
+                  variant={"solid"}
+                  colorPalette={"blue"}
+                  size={"lg"}
+                  checked={notificationsEnabled}
+                  onCheckedChange={({ checked }) => {
+                    handleNotificationToggle(checked);
+                  }}
+                  disabled={loading}
+                >
+                  <Switch.HiddenInput {...register("notificationsEnabled")} />
+                  <Switch.Control />
+                  <Switch.Label />
+                </Switch.Root>
+              </HStack>
+            }
+          </AccountItem>
+          <AccountItem>
+            {
+              <Link
+                to={"/event-history"}
+                className="flex w-full items-center mb-2! gap-2"
+              >
+                <Icon color={"text.secondary"} size={"md"}>
+                  <PiListDashesFill />
+                </Icon>
+                <Text fontWeight={"semibold"} color={"text.secondary"}>
+                  Events History
+                </Text>
+                <Spacer />
+                <Icon mr={2} color={"text.secondary"}>
+                  <GrNext />
+                </Icon>
+              </Link>
+            }
+          </AccountItem>
+          <AccountItem isLast={true}>
+            {
+              <Link
+                to={"/people-following"}
+                className="flex w-full items-center  gap-2"
+              >
+                <Icon color={"text.secondary"} size={"md"}>
+                  <BsPeopleFill />
+                </Icon>
+                <Text fontWeight={"semibold"} color={"text.secondary"}>
+                  People you follow
+                </Text>
+                <Spacer />
+                <Icon mr={2} color={"text.secondary"}>
+                  <GrNext />
+                </Icon>
+              </Link>
+            }
+          </AccountItem>
+        </Stack>
+      </Stack>
+      <Stack mt={8} w={"full"} textAlign={"left"} px={5}>
+        <Text ml={2} fontWeight={"bold"} textStyle={"lg"}>
+          Feedbacks
         </Text>
-      </HStack>
-      <Grid w={"full"} gap={1} mt={6} templateColumns={"repeat(3, 1fr)"}>
-        <GridItem aspectRatio={1 / 1} bg={"bg.surface"}>
-          <Image
-            src={"/Artboard 1.jpg"}
-            width="100%"
-            height="100%"
-            objectFit="cover"
-          />
-        </GridItem>
-        <GridItem aspectRatio={1 / 1} bg={"bg.surface"}>
-          <Image
-            src={"/Artboard 1.jpg"}
-            width="100%"
-            height="100%"
-            objectFit="cover"
-          />
-        </GridItem>
-        <GridItem aspectRatio={1 / 1} bg={"bg.surface"}>
-          <Image
-            src={"/Artboard 1.jpg"}
-            width="100%"
-            height="100%"
-            objectFit="cover"
-          />
-        </GridItem>
-        <GridItem aspectRatio={1 / 1} bg={"bg.surface"}>
-          <Image
-            src={"/Artboard 1.jpg"}
-            width="100%"
-            height="100%"
-            objectFit="cover"
-          />
-        </GridItem>
-      </Grid>
+        <Stack
+          w={"full"}
+          gap={2}
+          py={3}
+          mx={"auto"}
+          bg={"bg.surface"}
+          rounded={"xl"}
+          color={"accent.primary"}
+        >
+          <AccountItem isLast={true}>
+            {
+              <Link to={"/"} className="flex w-full items-center gap-2">
+                <Icon color={"text.secondary"} size={"md"}>
+                  <MdFeedback />
+                </Icon>
+                <Text fontWeight={"semibold"} color={"text.secondary"}>
+                  Send Feedback
+                </Text>
+              </Link>
+            }
+          </AccountItem>
+        </Stack>
+      </Stack>
+      <Button
+        onClick={() => logoutUser()}
+        rounded={"lg"}
+        mt={12}
+        disabled={isLoggingOut}
+        w={"1/2"}
+        size={"xl"}
+        bg={"red.600"}
+        color={"white"}
+      >
+        <HiOutlineLogout />
+        Logout
+      </Button>
     </Box>
   );
 }
@@ -306,6 +415,33 @@ export function AdminAccountPreLoader() {
           </GridItem>
         ))}
       </Grid>
+    </Box>
+  );
+}
+export function UserAccountPreLoader() {
+  return (
+    <Box
+      w={"full"}
+      h={"full"}
+      maxW={"570px"}
+      mx={"auto"}
+      pt={2}
+      rounded={"md"}
+      overflow={"hidden"}
+      overflowY={"auto"}
+      textAlign={"center"}
+      className="no-scrollbar"
+      pos={"relative"}
+    >
+      <Box w={"1/3"} mb={6} mx={"auto"} mt={6} aspectRatio={1 / 1}>
+        <SkeletonCircle size="40" />
+      </Box>
+      <Stack gap={1} w={"full"}>
+        <HStack w={"1/2"} h={"12"} mx={"auto"}>
+          <Skeleton height="8" w={"full"} rounded={"md"} />
+        </HStack>
+        <Skeleton height="5" w={"3/4"} mx={"auto"} rounded={"sm"} />
+      </Stack>
     </Box>
   );
 }

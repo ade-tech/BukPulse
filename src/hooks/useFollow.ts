@@ -3,6 +3,7 @@ import {
   checkFollowStatus,
   FollowModerator,
   hasFollowedSomone,
+  fetchFollowedUsers,
 } from "@/Services/FollowAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -68,4 +69,13 @@ export function useHasFollowedSomeone(follower_id: string) {
     queryFn: ({ queryKey }) => hasFollowedSomone(queryKey[1]),
   });
   return { data, isLoading };
+}
+
+export function useFetchFollowedUsers(follower_id: string) {
+  const { data: followedUsers, isLoading: isLoadingFollowedUsers } = useQuery({
+    queryKey: ["Followed Users", follower_id],
+    queryFn: ({ queryKey }) => fetchFollowedUsers(queryKey[1]),
+    enabled: !!follower_id,
+  });
+  return { followedUsers, isLoadingFollowedUsers };
 }

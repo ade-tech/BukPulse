@@ -64,3 +64,27 @@ export async function hasFollowedSomone(follower_id: string) {
   if (error) throw error;
   return (count ?? 0) > 0;
 }
+
+export async function fetchFollowedUsers(follower_id: string) {
+  const { data: followsData, error: followsError } = await supabase
+    .from("follows")
+    .select("followed_id")
+    .eq("follower_id", follower_id);
+
+  if (followsError) throw new Error("We could not fetch followed users");
+
+  if (!followsData || followsData.length === 0) {
+    return [];
+  }
+
+  const followedIds = followsData.map((follow: any) => follow.followed_id);
+
+  const { data: profiles, error: profilesError } = await supabase
+    .from("profiles")
+    .select("*")
+    .in("id", followedIds);
+
+  if (profilesError) throw new Error("We could not fetch user profiles");
+
+  return profiles as Profile[];
+}

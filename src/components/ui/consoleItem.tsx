@@ -12,7 +12,7 @@ export default function ConsoleItem({
     <HStack
       mx={4}
       py={1}
-      borderColor={"bg.page"}
+      borderColor={"text.secondary/10"}
       borderBottomWidth={isLast ? 0 : 1}
     >
       <Link

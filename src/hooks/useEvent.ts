@@ -9,6 +9,7 @@ import {
   isUserAttending,
   getPendingEvents,
   rejectEventApproval,
+  fetchPastAttendedEvents,
 } from "@/Services/EventsAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -190,4 +191,15 @@ export function userejectEventApproval() {
     },
   });
   return { mutate, isPending };
+}
+
+export function useFetchPastAttendedEvents() {
+  const { data: pastAttendedEvents, isLoading: isLoadingPastEvents } = useQuery(
+    {
+      queryKey: ["Past Attended Events"],
+      queryFn: fetchPastAttendedEvents,
+    }
+  );
+
+  return { pastAttendedEvents, isLoadingPastEvents };
 }

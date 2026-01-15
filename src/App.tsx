@@ -26,6 +26,8 @@ import NewModerator from "./features/admin/newModerator";
 import Moderators from "./features/admin/moderators";
 import EventDetails from "./components/ui/eventDetails";
 import ModeratorDetail from "./components/ui/ModeratorDetail";
+import EventHistory from "./pages/eventHistory";
+import PeopleFollowing from "./pages/peopleFollowing";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +56,8 @@ function App() {
               <Route path="/onboarding" element={<UserOnbaording />} />
               <Route path="/news" element={<News />} />
               <Route path="/account" element={<Accounts />} />
+              <Route path="/event-history" element={<EventHistory />} />
+              <Route path="/people-following" element={<PeopleFollowing />} />
             </Route>
             <Route element={<AdminRoutes />}>
               <Route path="/admin">
