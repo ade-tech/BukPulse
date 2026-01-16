@@ -12,6 +12,9 @@ import {
 } from "@chakra-ui/react";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoCalendarClear } from "react-icons/io5";
+import { format, parse } from "date-fns";
+import type { Event } from "@/lib/types";
+import { Link } from "react-router";
 
 export default function EventCard() {
   return (
@@ -71,51 +74,57 @@ export default function EventCard() {
     </Stack>
   );
 }
-export function EventAdminCard() {
+export function EventAdminCard({ data }: { data: Event }) {
   return (
-    <Stack
-      w={"full"}
-      bg={"bg.surface"}
-      rounded={"md"}
-      pos={"relative"}
-      maxW="470px"
-      mb={4}
-      pb={4}
+    <Link
+      to={`/admin/approve-events/${data.id}`}
+      style={{ textDecoration: "none", width: "100%" }}
     >
-      <Box
-        aspectRatio={2.5 / 1}
+      <Stack
         w={"full"}
-        bg={"bg.muted"}
-        roundedTop={"lg"}
-        overflow="hidden"
+        bg={"bg.surface"}
+        rounded={"md"}
+        pos={"relative"}
+        maxW="470px"
+        mb={4}
+        pb={4}
       >
-        <Image
+        <Box
+          aspectRatio={2.5 / 1}
+          w={"full"}
+          bg={"bg.muted"}
           roundedTop={"lg"}
-          src={"/Artboard 1.jpg"}
-          width="100%"
-          height="100%"
-          objectFit="cover"
-        />
-      </Box>
-      <Box px={4} pb={1} mt={2}>
-        <Text lineHeight={1.2} mb={2} fontWeight={"semibold"} fontSize={"lg"}>
-          The Importance of a good Family
-        </Text>
-        <HStack mt={1} gap={2}>
-          <HStack w={"2/5"} fontSize={"sm"} fontWeight={"light"}>
-            <Box as={IoCalendarClear} color={"accent.primary"} boxSize={5} />{" "}
-            <Text lineHeight={1.2}>
-              20th Dec, 2020.
-              <br /> 12PM WAT
-            </Text>
+          overflow="hidden"
+        >
+          <Image
+            roundedTop={"lg"}
+            src={data.event_image_url}
+            width="100%"
+            height="100%"
+            objectFit="cover"
+          />
+        </Box>
+        <Box px={4} pb={1} mt={2}>
+          <Text lineHeight={1.2} mb={2} fontWeight={"semibold"} fontSize={"lg"}>
+            {data.event_title}
+          </Text>
+          <HStack mt={1} gap={2}>
+            <HStack w={"2/5"} fontSize={"sm"} fontWeight={"light"}>
+              <Box as={IoCalendarClear} color={"accent.primary"} boxSize={5} />{" "}
+              <Text lineHeight={1.2}>
+                {format(new Date(data.event_date), "do MMM, yyyy")}.
+                <br />{" "}
+                {format(parse(data.event_time, "HH:mm:ss", new Date()), "h:mm a")}
+              </Text>
+            </HStack>
+            <HStack fontSize={"sm"} fontWeight={"light"}>
+              <Box as={FaLocationDot} color={"accent.primary"} boxSize={5} />{" "}
+              <Text>{data.event_location}</Text>
+            </HStack>
           </HStack>
-          <HStack fontSize={"sm"} fontWeight={"light"}>
-            <Box as={FaLocationDot} color={"accent.primary"} boxSize={5} />{" "}
-            <Text>Online . Google Meet</Text>
-          </HStack>
-        </HStack>
-      </Box>
-    </Stack>
+        </Box>
+      </Stack>
+    </Link>
   );
 }
 
