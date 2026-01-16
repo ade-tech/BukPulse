@@ -10,6 +10,7 @@ import {
   getPendingEvents,
   rejectEventApproval,
   fetchPastAttendedEvents,
+  fetchAllPastEvents,
 } from "@/Services/EventsAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -39,10 +40,10 @@ export function useFetchEvent(id: string) {
 
   return { eventData, isFetchingEvent };
 }
-export function useFetchAllUpcomingEvents() {
+export function useFetchAllUpcomingEvents(creatorId?: string) {
   const { data: upcomingEventsData, isLoading: isFetchingEvents } = useQuery({
-    queryKey: ["Upcoming Events"],
-    queryFn: fetchAllUpcomingEvents,
+    queryKey: ["Upcoming Events", creatorId],
+    queryFn: () => fetchAllUpcomingEvents(creatorId),
   });
 
   return { upcomingEventsData, isFetchingEvents };
@@ -205,4 +206,13 @@ export function useFetchPastAttendedEvents() {
   );
 
   return { pastAttendedEvents, isLoadingPastEvents };
+}
+
+export function useFetchAllPastEvents(creatorId?: string) {
+  const { data: pastEvents, isLoading: isLoadingPastEvents } = useQuery({
+    queryKey: ["All Past Events", creatorId],
+    queryFn: () => fetchAllPastEvents(creatorId),
+  });
+
+  return { pastEvents, isLoadingPastEvents };
 }

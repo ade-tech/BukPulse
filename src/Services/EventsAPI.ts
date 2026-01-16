@@ -48,15 +48,26 @@ export const fetchEvent = async (id: string) => {
   if (error) throw error;
   return data as Event;
 };
-export const fetchAllUpcomingEvents = async () => {
+export const fetchAllUpcomingEvents = async (creatorId?: string) => {
+  const { data: userData, error: authError } = await supabase.auth.getUser();
+  if (authError || !userData.user) throw new Error("Could not verify user");
+
+  const userRole = userData.user.user_metadata.role;
   const now = new Date().toISOString();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("events")
     .select("*, profiles ( name )")
     .eq("event_status", "approved")
-    .gt("event_date", now)
-    .order("event_date", { ascending: true });
+    .gt("event_date", now);
+
+  // If creatorId is provided (for admin role), filter by creator_id
+  // super_admin sees all events, admin only sees their own
+  if (creatorId && userRole !== "super_admin") {
+    query = query.eq("creator_id", creatorId);
+  }
+
+  const { data, error } = await query.order("event_date", { ascending: true });
 
   if (error) throw error;
 
@@ -217,4 +228,30 @@ export const fetchPastAttendedEvents = async () => {
     ) as Event[];
 
   return attendedEvents || [];
+};
+
+export const fetchAllPastEvents = async (creatorId?: string) => {
+  const { data: userData, error: authError } = await supabase.auth.getUser();
+  if (authError || !userData.user) throw new Error("Could not verify user");
+
+  const userRole = userData.user.user_metadata.role;
+  const now = new Date().toISOString();
+
+  let query = supabase
+    .from("events")
+    .select("*, profiles ( name )")
+    .eq("event_status", "approved")
+    .lt("event_date", now);
+
+  // If creatorId is provided (for admin role), filter by creator_id
+  // super_admin sees all events, admin only sees their own
+  if (creatorId && userRole !== "super_admin") {
+    query = query.eq("creator_id", creatorId);
+  }
+
+  const { data, error } = await query.order("event_date", { ascending: false });
+
+  if (error) throw error;
+
+  return data as Event[];
 };
