@@ -54,11 +54,12 @@ export default function Events() {
     register,
     control,
     watch,
+    reset,
     setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateEventInputs>();
-  const { currentUser, isAdmin } = useCurrentUser();
+  const { currentUser, isAdmin, isSuperAdmin } = useCurrentUser();
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const watchedImage = watch("event_image");
   const { imagePreview } = useGetImageURL(watchedImage);
@@ -199,10 +200,12 @@ export default function Events() {
                 event_location,
                 event_time,
                 event_title,
+                isSuperAdmin,
               },
               {
                 onSuccess: () => {
                   store.setOpen(false);
+                  reset();
                   toaster.create({
                     title: "Event creation is Successful!",
                   });
@@ -250,9 +253,10 @@ export default function Events() {
                   flexDir={"column"}
                   alignItems={"center"}
                   justifyContent={"center"}
-                  bg={hasImage ? "bg.surface/60" : "none"}
+                  bg={hasImage ? "bg.surface/70" : "none"}
                   _groupHover={{
                     display: "flex",
+                    bg: "bg.surface/70",
                   }}
                 >
                   <Icon size="md" color="accent.primary" mb={2}>
@@ -441,6 +445,7 @@ export default function Events() {
                   placeholder="Select Event Date"
                   errors={errors}
                   type="date"
+                  defaultValue={new Date().toISOString().split("T")[0]}
                 />
                 <GeneralInput<CreateEventInputs>
                   name="event_time"
@@ -449,6 +454,10 @@ export default function Events() {
                   placeholder="Select Time"
                   errors={errors}
                   type="time"
+                  defaultValue={new Date()
+                    .toTimeString()
+                    .split(" ")[0]
+                    .slice(0, 5)}
                 />
               </HStack>
               <Button

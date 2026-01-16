@@ -66,11 +66,6 @@ export default function AdminConsole() {
             to="/admin/approve-events"
             title="Approve Events"
             icon={<MdEmojiEvents />}
-          />
-          <ConsoleItem
-            to="/admin/view-events"
-            title="Events History"
-            icon={<PiListDashesFill />}
             isLast={true}
           />
         </Stack>

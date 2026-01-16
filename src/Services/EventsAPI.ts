@@ -11,6 +11,7 @@ export const createNewEvent = async ({
   event_location,
   event_time,
   event_title,
+  isSuperAdmin = false,
 }: CreateEventInputs) => {
   const { image, imagePath, imageURL } = prepareImageUpload({
     image: event_image,
@@ -19,7 +20,7 @@ export const createNewEvent = async ({
   });
 
   const { error: imageUploadError } = await supabase.storage
-    .from("profile_images")
+    .from("events_images")
     .upload(imagePath, image);
 
   if (imageUploadError) throw new Error("We could not upload the image");
@@ -33,6 +34,7 @@ export const createNewEvent = async ({
       event_time,
       event_title,
       event_image_url: imageURL,
+      event_status: isSuperAdmin ? "approved" : "pending",
     },
   ]);
   if (error) throw error;

@@ -4,9 +4,10 @@ import type {
   FieldValues,
   Path,
 } from "react-hook-form";
-import { Field, Input } from "@chakra-ui/react";
+import { Field, Input, type InputProps } from "@chakra-ui/react";
 
-interface GeneralInputProps<T extends FieldValues> {
+interface GeneralInputProps<T extends FieldValues>
+  extends Omit<InputProps, "name" | "type" | "pattern"> {
   register: UseFormRegister<T>;
   pattern?: RegExp;
   errorText: string;
@@ -24,6 +25,7 @@ export default function GeneralInput<T extends FieldValues>({
   register,
   placeholder,
   pattern,
+  ...props
 }: GeneralInputProps<T>) {
   return (
     <Field.Root w={"full"} invalid={!!errors[name]}>
@@ -46,6 +48,7 @@ export default function GeneralInput<T extends FieldValues>({
           border: "none",
         }}
         bg={"bg.surface"}
+        {...props}
         placeholder={placeholder}
         _placeholder={{
           fontSize: "sm",
