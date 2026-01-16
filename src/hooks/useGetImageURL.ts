@@ -14,7 +14,7 @@ export default function useGetImageURL(
     const file: File | undefined =
       (image as FileList)?.[0] ?? (image as File | undefined);
 
-    if (!file) {
+    if (!file || !(file instanceof File)) {
       setImagePreview(null);
       return;
     }

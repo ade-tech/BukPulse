@@ -106,6 +106,7 @@ export interface CreateEventInputs {
   event_category: Category[];
   event_location: string;
   rejection_reason?: string;
+  isSuperAdmin?: boolean;
 }
 
 interface DrawerStore {

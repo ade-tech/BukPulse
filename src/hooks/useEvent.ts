@@ -109,6 +109,9 @@ export function useAttendEvent() {
       queryClient.invalidateQueries({ queryKey: ["Event", event_id] });
       queryClient.invalidateQueries({ queryKey: ["EventAttendees", event_id] });
       queryClient.invalidateQueries({ queryKey: ["IsAttending", event_id] });
+      queryClient.invalidateQueries({
+        queryKey: ["Upcoming Events", event_id],
+      });
     },
   });
 
