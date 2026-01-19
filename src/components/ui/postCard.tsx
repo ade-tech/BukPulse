@@ -1,34 +1,65 @@
-import { Box, Image, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Image,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import PostHeader from "./postHeader";
-import PostActions from "./postActions";
+import PostActions, { PostActionsDefault } from "./postActions";
+import type { Post } from "@/lib/types";
 
-export default function PostCard() {
+export default function PostCard({ data }: { data: Post }) {
   return (
     <Stack w={"full"} bg={"bg.surface"} rounded={"md"} maxW="470px" mb={4}>
-      <PostHeader />
+      <PostHeader profiles={data.profiles} />
       <Box px={4} pb={1}>
         <Text lineHeight={1.2} fontWeight={"light"} fontSize={"md"}>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima
+          {data.post_caption}
         </Text>
       </Box>
-      <Box aspectRatio={1 / 1} w={"full"} bg={"bg.muted"} overflow={"hidden"}>
-        <Image
-          src={"/Artboard 1.jpg"}
-          width="100%"
-          height="100%"
-          objectFit="cover"
-        />
-      </Box>
+      {data.post_image_url && (
+        <Box aspectRatio={1 / 1} w={"full"} overflow={"hidden"}>
+          <Image
+            src={data.post_image_url}
+            width="100%"
+            height="100%"
+            objectFit="cover"
+          />
+        </Box>
+      )}
       <PostActions />
     </Stack>
   );
 }
 
-//    bgGradient="linear(to-tr, yellow.400, pink.500, purple.600)"
-
-//  <IconButton
-//           icon={<MoreHorizontal size={20} />}
-//           variant="ghost"
-//           size="sm"
-//           aria-label="More options"
-//         />
+export function PostCardSkeleton() {
+  return (
+    <Stack
+      w={"full"}
+      bg={"bg.surface"}
+      rounded={"md"}
+      maxW="470px"
+      py={4}
+      mb={4}
+    >
+      <HStack gap="4" mb={2} px={4}>
+        <SkeletonCircle size="12" />
+        <Stack flex="1">
+          <Skeleton height="4" />
+          <Skeleton height="4" width="80%" />
+        </Stack>
+      </HStack>
+      <Box pb={1} px={4}>
+        <SkeletonText noOfLines={2} rounded={"sm"} />
+      </Box>
+      <Box aspectRatio={1 / 1} w={"full"} overflow={"hidden"}>
+        <Skeleton height="full" width="100%" />
+      </Box>
+      <PostActionsDefault />
+    </Stack>
+  );
+}

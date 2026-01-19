@@ -1,14 +1,15 @@
+import type { Post } from "@/lib/types";
 import { Avatar, HStack, Text, Stack, Box } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
 
-export default function PostHeader() {
+export default function PostHeader({ profiles }: Pick<Post, "profiles">) {
   return (
     <HStack px={4} py={3} gap={4}>
       <Avatar.Root size={"xl"} colorPalette={"blue"}>
         <Avatar.Fallback name="Segun Adebayo" />
         <Avatar.Image src="https://bit.ly/sage-adebayo" />
       </Avatar.Root>
-      <Stack>
+      <Stack gap={1}>
         <HStack>
           <Text
             fontSize={"md"}
@@ -18,11 +19,11 @@ export default function PostHeader() {
             fontWeight={"semibold"}
             lineHeight={1}
           >
-            Adelopo Abdullah <Box as={MdVerified} color="accent.primary" />
+            {profiles?.name} <Box as={MdVerified} color="accent.primary" />
           </Text>
         </HStack>
-        <Text lineHeight={0.5} fontWeight={"light"} fontSize={"xs"}>
-          Student Union Government
+        <Text lineHeight={1} fontWeight={"light"} fontSize={"xs"}>
+          {profiles?.description}
         </Text>
       </Stack>
     </HStack>

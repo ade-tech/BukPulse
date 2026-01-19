@@ -27,6 +27,7 @@ const Filter = ({
   return (
     <HStack
       w={"full"}
+      px={4}
       mb={3}
       zIndex={20}
       overflow={"hidden"}
