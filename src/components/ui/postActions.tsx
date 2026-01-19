@@ -16,10 +16,7 @@ export default function PostActions() {
             onClick={() => setIsLiked(!isLiked)}
             aria-label="Like post"
           >
-            <Box
-              as={isLiked ? BiSolidLike : BiLike}
-              boxSize={6}
-            />
+            <Box as={isLiked ? BiSolidLike : BiLike} boxSize={6} />
           </IconButton>
           <Text fontWeight={"semibold"} fontSize={"sm"}>
             122
@@ -47,6 +44,18 @@ export default function PostActions() {
           <Box as={RiShare2Line} boxSize={6} />
         </IconButton>
       </HStack>
+    </HStack>
+  );
+}
+export function PostActionsDefault() {
+  return (
+    <HStack px={4}>
+      <IconButton variant="ghost" size="sm" aria-label="Like post">
+        <Box as={BiLike} boxSize={6} />
+      </IconButton>
+      <IconButton variant="ghost" size="sm" aria-label="Like post">
+        <Box as={FaRegComment} boxSize={6} />
+      </IconButton>
     </HStack>
   );
 }

@@ -139,11 +139,20 @@ export interface Post {
   id: string;
   created_at: string;
   poster_id: string;
-  post_image_url: string;
+  post_image_url?: string;
   post_caption: string;
+  profiles: {
+    name: string;
+    description: string;
+  };
 }
 export interface OtherProfileInformation {
   followersCount: number;
   totalPosts: number;
   posts: Post[];
+}
+export interface CreateNewsInput {
+  poster_id: string;
+  post_image: FileList;
+  post_caption: string;
 }

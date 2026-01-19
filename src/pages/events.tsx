@@ -30,14 +30,19 @@ export default function Events() {
       w={"full"}
       h={"full"}
       pt={2}
-      px={4}
       rounded={"md"}
       overflow={"hidden"}
       overflowY={"auto"}
       className="no-scrollbar"
       pos={"relative"}
     >
-      <Heading textStyle={"2xl"} ml={2} lineHeight={2} fontWeight={"bold"}>
+      <Heading
+        textStyle={"2xl"}
+        ml={2}
+        lineHeight={1}
+        fontWeight={"bold"}
+        px={4}
+      >
         Events
       </Heading>
       <Filter
@@ -46,7 +51,7 @@ export default function Events() {
         filterUpdate={setCurState}
       />
 
-      <Box w={"full"} flex={1} overflow={"hidden"} overflowY={"auto"}>
+      <Box w={"full"} flex={1} overflow={"hidden"} overflowY={"auto"} px={4}>
         {isFetchingEvents &&
           Array.from({ length: 5 }).map((_, i) => (
             <EventListCardSkeleton key={i} />
