@@ -73,8 +73,11 @@ export const fetchAllUpcomingEvents = async (creatorId?: string) => {
 
   return data as Event[];
 };
-export const FetchRandomEvents = async () => {
-  const { data, error } = await supabase.from("events").select("*");
+export const FetchLatestEvents = async () => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .order("created_at", { ascending: false });
   if (error) throw error;
   return data as Event[];
 };
@@ -224,7 +227,7 @@ export const fetchPastAttendedEvents = async () => {
     })
     .sort(
       (a: Event, b: Event) =>
-        new Date(b.event_date).getTime() - new Date(a.event_date).getTime()
+        new Date(b.event_date).getTime() - new Date(a.event_date).getTime(),
     ) as Event[];
 
   return attendedEvents || [];
