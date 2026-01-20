@@ -156,3 +156,11 @@ export interface CreateNewsInput {
   post_image: FileList;
   post_caption: string;
 }
+export interface FetchNewsParams {
+  limit?: number;
+  lastPostDate?: string | null;
+}
+export interface FetchNewsResponse {
+  posts: Post[];
+  hasMore: boolean;
+}

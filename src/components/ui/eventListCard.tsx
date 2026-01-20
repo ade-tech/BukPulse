@@ -82,7 +82,11 @@ export default function EventListCard({
             </HStack>
             <HStack>
               <Box as={FaLocationDot} color={"accent.primary"} boxSize={3} />{" "}
-              <Text>{data.event_location}</Text>
+              <Text>
+                {data.event_location.length > 20
+                  ? `${data.event_location.slice(0, 20)}...`
+                  : data.event_location}
+              </Text>
             </HStack>
           </HStack>
         </Stack>
