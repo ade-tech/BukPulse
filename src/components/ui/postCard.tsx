@@ -11,11 +11,49 @@ import {
 import PostHeader from "./postHeader";
 import PostActions, { PostActionsDefault } from "./postActions";
 import type { Post } from "@/lib/types";
+import { useCurrentUser } from "@/contexts/AuthContext";
+import { useCheckFollowStatus, useFollowModerator } from "@/hooks/useFollow";
 
 export default function PostCard({ data }: { data: Post }) {
+  const { currentUser } = useCurrentUser();
+  const isOwnPost = currentUser?.id === data.poster_id;
+
+  const { data: isFollowing, isLoading: checkingFollow } = useCheckFollowStatus(
+    {
+      followed_id: data.poster_id,
+      follower_id: currentUser?.id || "",
+    },
+  );
+
+  const { followModerator, isFollowingModertor } = useFollowModerator();
+
+  const handleFollow = () => {
+    if (!currentUser?.id) return;
+
+    followModerator({
+      follower_id: currentUser.id,
+      followed_id: data.poster_id,
+    });
+  };
+
   return (
-    <Stack w={"full"} bg={"bg.surface"} rounded={"md"} maxW="470px" mb={4}>
-      <PostHeader profiles={data.profiles} />
+    <Stack
+      w={"full"}
+      bg={"bg.surface"}
+      rounded={"md"}
+      maxW="470px"
+      mb={4}
+      pos={"relative"}
+    >
+      <PostHeader
+        isMakeEffect={isFollowingModertor}
+        profiles={data.profiles}
+        isFollowing={!!isFollowing}
+        isChecking={checkingFollow}
+        isOwnPost={isOwnPost}
+        handleFollow={handleFollow}
+        currentUser={currentUser}
+      />
       <Box px={4} pb={1}>
         <Text lineHeight={1.2} fontWeight={"light"} fontSize={"md"}>
           {data.post_caption}

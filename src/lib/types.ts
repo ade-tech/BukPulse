@@ -159,6 +159,8 @@ export interface CreateNewsInput {
 export interface FetchNewsParams {
   limit?: number;
   lastPostDate?: string | null;
+  userId?: string | null;
+  followedOnly?: boolean;
 }
 export interface FetchNewsResponse {
   posts: Post[];
