@@ -29,8 +29,13 @@ export function useCreateNews() {
 
   return { createNews, isCreatingNews };
 }
-export const useFetchNewsForFeed = () => {
+
+export const useFetchNewsForFeed = (
+  feedType: "for-you" | "news" = "for-you",
+  userId?: string | null,
+) => {
   const queryClient = useQueryClient();
+  const followedOnly = feedType === "news";
 
   const {
     data,
@@ -42,8 +47,13 @@ export const useFetchNewsForFeed = () => {
     error,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["feed", "for-you"],
-    queryFn: async ({ pageParam }) => fetchPosts({ lastPostDate: pageParam }),
+    queryKey: ["feed", feedType, userId],
+    queryFn: async ({ pageParam }) =>
+      fetchPosts({
+        lastPostDate: pageParam,
+        userId,
+        followedOnly,
+      }),
     getNextPageParam: (lastPage) => {
       if (!lastPage.hasMore) return undefined;
       const lastPost = lastPage.posts[lastPage.posts.length - 1];
@@ -54,12 +64,12 @@ export const useFetchNewsForFeed = () => {
   });
 
   const addNewPostsToFeed = async (sinceDate: string) => {
-    const newItems = await fetchNewPosts(sinceDate);
+    const newItems = await fetchNewPosts(sinceDate, userId, followedOnly);
 
     if (newItems.length === 0) return;
 
     queryClient.setQueryData<InfiniteData<FetchNewsResponse>>(
-      ["feed", "for-you"],
+      ["feed", feedType, userId],
       (oldData) => {
         if (!oldData) return oldData;
         const firstPage = oldData.pages[0];
@@ -74,6 +84,7 @@ export const useFetchNewsForFeed = () => {
       },
     );
   };
+
   const posts = data?.pages.flatMap((page) => page.posts) ?? [];
   const latestPostDate = posts[0]?.created_at || null;
 
@@ -90,7 +101,6 @@ export const useFetchNewsForFeed = () => {
     addNewPostsToFeed,
   };
 };
-("use client");
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/Services/supabase";
@@ -119,7 +129,6 @@ export const useNewPosts = ({
           table: "posts",
         },
         (payload) => {
-          console.log(payload, latestPostDate);
           if (payload.new.created_at > latestPostDate) {
             setNewPostsCount((prev) => prev + 1);
           }

@@ -17,6 +17,7 @@ export async function fetchLatestTenNews() {
   if (error) throw error;
   return data as Post[];
 }
+
 export const CreateNews = async ({
   post_caption,
   poster_id,
@@ -44,30 +45,69 @@ export const CreateNews = async ({
   ]);
   if (error) throw error;
 };
+
 export const fetchPosts = async ({
   limit = 10,
   lastPostDate,
+  userId,
+  followedOnly = false,
 }: FetchNewsParams): Promise<FetchNewsResponse> => {
   let query = supabase
     .from("posts")
     .select("*, profiles(name , description)")
     .order("created_at", { ascending: false })
     .limit(limit);
+
   if (lastPostDate) {
     query = query.lt("created_at", lastPostDate);
   }
+
+  if (followedOnly && userId) {
+    const { data: followedUsers } = await supabase
+      .from("follows")
+      .select("followed_id")
+      .eq("follower_id", userId);
+
+    if (followedUsers && followedUsers.length > 0) {
+      const followedIds = followedUsers.map((f) => f.followed_id);
+      query = query.in("poster_id", followedIds);
+    } else {
+      return { posts: [], hasMore: false };
+    }
+  }
+
   const { data, error } = await query;
   if (error) throw error;
   const hasMore = data.length === limit;
   return { posts: data as Post[], hasMore };
 };
 
-export const fetchNewPosts = async (sinceDate: string): Promise<Post[]> => {
-  const { data, error } = await supabase
+export const fetchNewPosts = async (
+  sinceDate: string,
+  userId?: string | null,
+  followedOnly: boolean = false,
+): Promise<Post[]> => {
+  let query = supabase
     .from("posts")
     .select("*, profiles(name , description)")
     .gt("created_at", sinceDate)
     .order("created_at", { ascending: false });
+
+  if (followedOnly && userId) {
+    const { data: followedUsers } = await supabase
+      .from("follows")
+      .select("followed_id")
+      .eq("follower_id", userId);
+
+    if (followedUsers && followedUsers.length > 0) {
+      const followedIds = followedUsers.map((f) => f.followed_id);
+      query = query.in("poster_id", followedIds);
+    } else {
+      return [];
+    }
+  }
+
+  const { data, error } = await query;
 
   if (error) throw error;
 

@@ -79,7 +79,7 @@ export default function Home() {
       {isFetchingNextPage && <PostCardSkeleton />}
 
       {!hasNextPage && posts.length > 0 && (
-        <Box textAlign="center" py={8} color="gray.500">
+        <Box textAlign="center" pb={24} color="gray.500">
           You've reached the end! 🎉
         </Box>
       )}

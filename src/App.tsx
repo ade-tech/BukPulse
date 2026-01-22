@@ -28,6 +28,7 @@ import EventDetails from "./components/ui/eventDetails";
 import ModeratorDetail from "./components/ui/ModeratorDetail";
 import EventHistory from "./pages/eventHistory";
 import PeopleFollowing from "./pages/peopleFollowing";
+import { PwaInstallDrawer } from "./components/ui/PWAInstallPrompt";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,7 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <PwaInstallDrawer />
       <AuthContextProvider>
         <Toaster />
         {/* <ReactQueryDevtools initialIsOpen={false} /> */}
