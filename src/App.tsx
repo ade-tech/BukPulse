@@ -29,6 +29,7 @@ import ModeratorDetail from "./components/ui/ModeratorDetail";
 import EventHistory from "./pages/eventHistory";
 import PeopleFollowing from "./pages/peopleFollowing";
 import { PwaInstallDrawer } from "./components/ui/PWAInstallPrompt";
+import NewsDetail from "./components/ui/NewsDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,6 +58,7 @@ function App() {
               <Route path="/events/:id" element={<EventDetails />} />
               <Route path="/onboarding" element={<UserOnbaording />} />
               <Route path="/news" element={<News />} />
+              <Route path="/news/:id" element={<NewsDetail />} />
               <Route path="/account" element={<Accounts />} />
               <Route path="/event-history" element={<EventHistory />} />
               <Route path="/people-following" element={<PeopleFollowing />} />

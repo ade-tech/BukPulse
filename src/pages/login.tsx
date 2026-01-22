@@ -51,14 +51,14 @@ export default function Login() {
       { email, regNumber },
       {
         onSuccess: ({ profile }) => {
-          toaster.create({ title: `Hello, ${profile?.name}` });
+          toaster.create({ title: `Welcome Back.` });
           if (profile) navigate("/onboarding");
           else navigate(from, { replace: true });
         },
         onError: (error: any) => {
           toaster.create({ title: error?.message ?? "Login failed" });
         },
-      }
+      },
     );
   };
 

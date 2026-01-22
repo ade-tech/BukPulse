@@ -141,9 +141,12 @@ export interface Post {
   poster_id: string;
   post_image_url?: string;
   post_caption: string;
+  post_likes: string;
+  post_comments: string;
   profiles: {
     name: string;
     description: string;
+    image_url: string;
   };
 }
 export interface OtherProfileInformation {
@@ -165,4 +168,29 @@ export interface FetchNewsParams {
 export interface FetchNewsResponse {
   posts: Post[];
   hasMore: boolean;
+}
+export interface NotificationParams {
+  actorId: string;
+  title: string;
+  body: string;
+  url: string;
+  tag: string;
+}
+export interface AddCommentParams {
+  comment: string;
+  commenter_id: string;
+  post_id: string;
+}
+export interface Comment {
+  id: string;
+  created_at: string;
+  comment: string;
+  post_id: string;
+  commenter_id: string;
+  profiles: {
+    name: string;
+    image_url: string | null;
+    reg_number: string;
+    role: string;
+  } | null;
 }

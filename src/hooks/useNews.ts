@@ -1,10 +1,15 @@
 import type { FetchNewsResponse } from "@/lib/types";
 import {
+  addComment,
   CreateNews as CreateNewsAPI,
+  fetchCommentForPost,
   fetchLatestTenNews,
   fetchNewPosts,
+  fetchNewsDetail,
   fetchPosts,
 } from "@/Services/NewsAPI";
+import { likePost, unlikePost, checkIfUserLikedPost } from "@/Services/NewsAPI";
+import { useCurrentUser } from "@/contexts/AuthContext";
 import {
   useInfiniteQuery,
   useMutation,
@@ -102,8 +107,9 @@ export const useFetchNewsForFeed = (
   };
 };
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/Services/supabase";
+import { playSound, sounds } from "@/lib/Sounds";
 
 interface UseNewPostsProps {
   latestPostDate: string | null;
@@ -146,5 +152,204 @@ export const useNewPosts = ({
   return {
     newPostsCount,
     resetCount,
+  };
+};
+
+export const useFetchNewsById = (id: string) => {
+  const { data: post, isLoading: isFetching } = useQuery({
+    queryKey: ["News", id],
+    queryFn: ({ queryKey }) => fetchNewsDetail(queryKey[1]),
+    enabled: !!id,
+  });
+
+  return { post, isFetching };
+};
+
+export const useAddComment = () => {
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: addComment,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["Comments for", variables.post_id],
+      });
+    },
+  });
+  return { mutate, isPending };
+};
+export const useFetchCommentsForPosts = (id: string) => {
+  const { data: comments, isLoading: isFetchingComments } = useQuery({
+    queryKey: ["Comments for", id],
+    queryFn: ({ queryKey }) => fetchCommentForPost(queryKey[1]),
+    enabled: !!id,
+  });
+
+  return { comments, isFetchingComments };
+};
+
+export const useLike = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: like, isPending: isLiking } = useMutation({
+    mutationFn: likePost,
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({
+        queryKey: ["isLiked", variables.postId, variables.userId],
+      });
+
+      const previousIsLiked = queryClient.getQueryData([
+        "isLiked",
+        variables.postId,
+        variables.userId,
+      ]);
+
+      queryClient.setQueryData(
+        ["isLiked", variables.postId, variables.userId],
+        true,
+      );
+
+      return { previousIsLiked };
+    },
+    onSuccess: () => {
+      playSound(sounds.like);
+    },
+    onError: (error, variables, context) => {
+      console.error("Error liking post:", error);
+      playSound(sounds.error);
+
+      if (context?.previousIsLiked !== undefined) {
+        queryClient.setQueryData(
+          ["isLiked", variables.postId, variables.userId],
+          context.previousIsLiked,
+        );
+      }
+    },
+    onSettled: (_data, _, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["isLiked", variables.postId, variables.userId],
+      });
+    },
+  });
+
+  return { like, isLiking };
+};
+
+export const useUnlike = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: unlike, isPending: isUnliking } = useMutation({
+    mutationFn: unlikePost,
+    onMutate: async (variables) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: ["isLiked", variables.postId, variables.userId],
+      });
+
+      // Snapshot previous value
+      const previousIsLiked = queryClient.getQueryData([
+        "isLiked",
+        variables.postId,
+        variables.userId,
+      ]);
+
+      // Optimistically update like status
+      queryClient.setQueryData(
+        ["isLiked", variables.postId, variables.userId],
+        false,
+      );
+
+      // Return context for rollback
+      return { previousIsLiked };
+    },
+    onSuccess: () => {
+      playSound(sounds.success);
+    },
+    onError: (error, variables, context) => {
+      console.error("Error unliking post:", error);
+      playSound(sounds.error);
+
+      // Rollback to previous value
+      if (context?.previousIsLiked !== undefined) {
+        queryClient.setQueryData(
+          ["isLiked", variables.postId, variables.userId],
+          context.previousIsLiked,
+        );
+      }
+    },
+    onSettled: (_data, _error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["isLiked", variables.postId, variables.userId],
+      });
+    },
+  });
+
+  return { unlike, isUnliking };
+};
+
+export const useIsLiked = (postId: string) => {
+  const { currentUser } = useCurrentUser();
+
+  const { data: isLiked, isLoading } = useQuery({
+    queryKey: ["isLiked", postId, currentUser?.id],
+    queryFn: () =>
+      checkIfUserLikedPost({
+        postId,
+        userId: currentUser?.id!,
+      }),
+    enabled: !!currentUser?.id && !!postId,
+  });
+
+  return { isLiked: isLiked ?? false, isLoading };
+};
+
+export const usePostLike = (postId: string) => {
+  const { currentUser } = useCurrentUser();
+  const { like, isLiking } = useLike();
+  const { unlike, isUnliking } = useUnlike();
+  const { isLiked, isLoading: isCheckingLike } = useIsLiked(postId);
+
+  const toggleLike = () => {
+    if (!currentUser?.id) return;
+
+    if (isLiked) {
+      unlike({ postId, userId: currentUser.id });
+    } else {
+      like({ postId, userId: currentUser.id });
+    }
+  };
+
+  return {
+    isLiked,
+    toggleLike,
+    isLoading: isLiking || isUnliking || isCheckingLike,
+  };
+};
+
+export const useOptimisticLike = (postId: string, initialLikes: number) => {
+  const { isLiked, toggleLike, isLoading } = usePostLike(postId);
+  const [optimisticLikes, setOptimisticLikes] = useState(initialLikes);
+  const isTogglingRef = useRef(false);
+
+  useEffect(() => {
+    if (!isTogglingRef.current) {
+      setOptimisticLikes(initialLikes);
+    }
+  }, [initialLikes]);
+
+  const handleToggle = () => {
+    isTogglingRef.current = true;
+    setOptimisticLikes((prev) => (isLiked ? Math.max(prev - 1, 0) : prev + 1));
+    toggleLike();
+
+    setTimeout(() => {
+      isTogglingRef.current = false;
+    }, 500);
+  };
+
+  return {
+    likes: optimisticLikes,
+    isLiked,
+    toggleLike: handleToggle,
+    isLoading,
   };
 };

@@ -3,6 +3,8 @@ import type {
   Post,
   FetchNewsParams,
   FetchNewsResponse,
+  AddCommentParams,
+  Comment,
 } from "@/lib/types";
 import { supabase } from "./supabase";
 import { prepareImageUpload } from "@/lib/helper";
@@ -10,7 +12,7 @@ import { prepareImageUpload } from "@/lib/helper";
 export async function fetchLatestTenNews() {
   const { data, error } = await supabase
     .from("posts")
-    .select("*, profiles(name , description)")
+    .select("*, profiles(name ,image_url, description)")
     .order("created_at", { ascending: false })
     .limit(10);
 
@@ -54,7 +56,7 @@ export const fetchPosts = async ({
 }: FetchNewsParams): Promise<FetchNewsResponse> => {
   let query = supabase
     .from("posts")
-    .select("*, profiles(name , description)")
+    .select("*, profiles(name ,image_url,  description)")
     .order("created_at", { ascending: false })
     .limit(limit);
 
@@ -89,7 +91,7 @@ export const fetchNewPosts = async (
 ): Promise<Post[]> => {
   let query = supabase
     .from("posts")
-    .select("*, profiles(name , description)")
+    .select("*, profiles(name ,image_url, description)")
     .gt("created_at", sinceDate)
     .order("created_at", { ascending: false });
 
@@ -112,4 +114,104 @@ export const fetchNewPosts = async (
   if (error) throw error;
 
   return data || [];
+};
+
+export const fetchNewsDetail = async (id: string) => {
+  const { data: post, error } = await supabase
+    .from("posts")
+    .select("*, profiles(name,image_url, description)")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return post as Post;
+};
+
+export const addComment = async ({
+  comment,
+  commenter_id,
+  post_id,
+}: AddCommentParams) => {
+  const { error } = await supabase.from("comments").insert([
+    {
+      comment,
+      commenter_id,
+      post_id,
+    },
+  ]);
+  if (error) throw error;
+};
+
+export const fetchCommentForPost = async (postId: string) => {
+  const { data, error } = await supabase
+    .from("comments")
+    .select(
+      `
+      *,
+      profiles:commenter_id (
+        name,
+        image_url,
+        reg_number,
+        role
+      )
+    `,
+    )
+    .eq("post_id", postId)
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+
+  return data as Comment[];
+};
+
+export interface LikeParams {
+  postId: string;
+  userId: string;
+}
+
+export const likePost = async ({ postId, userId }: LikeParams) => {
+  const { data, error } = await supabase
+    .from("likes")
+    .insert({
+      post_id: postId,
+      liker_id: userId,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const unlikePost = async ({ postId, userId }: LikeParams) => {
+  const { data, error } = await supabase
+    .from("likes")
+    .delete()
+    .eq("post_id", postId)
+    .eq("liker_id", userId)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const checkIfUserLikedPost = async ({ postId, userId }: LikeParams) => {
+  const { data, error } = await supabase
+    .from("likes")
+    .select("id")
+    .eq("post_id", postId)
+    .eq("liker_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return !!data;
 };

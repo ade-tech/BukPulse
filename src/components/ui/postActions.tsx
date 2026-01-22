@@ -1,11 +1,27 @@
+import { useOptimisticLike } from "@/hooks/useNews";
+import { formatNumbers } from "@/lib/FormatNumbers";
 import { Box, HStack, Text, IconButton } from "@chakra-ui/react";
-import { useState } from "react";
 import { BiSolidLike, BiLike } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa6";
-import { RiShare2Line } from "react-icons/ri";
+import { Link } from "react-router";
 
-export default function PostActions() {
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+export default function PostActions({
+  commentDestination,
+  comments,
+  post_id,
+  likes,
+}: {
+  commentDestination: string;
+  comments: number;
+  likes: number;
+  post_id: string;
+}) {
+  const {
+    likes: likedata,
+    isLiked,
+    toggleLike,
+    isLoading,
+  } = useOptimisticLike(post_id, likes);
   return (
     <HStack px={4} pb={3}>
       <HStack gap={3}>
@@ -13,36 +29,24 @@ export default function PostActions() {
           <IconButton
             variant="ghost"
             size="sm"
-            onClick={() => setIsLiked(!isLiked)}
-            aria-label="Like post"
+            onClick={toggleLike}
+            disabled={isLoading}
+            aria-label={isLiked ? "Unlike post" : "Like post"}
           >
             <Box as={isLiked ? BiSolidLike : BiLike} boxSize={6} />
           </IconButton>
-          <Text fontWeight={"semibold"} fontSize={"sm"}>
-            122
+          <Text fontWeight="semibold" fontSize="sm">
+            {formatNumbers(likedata)}
           </Text>
         </HStack>
-        <HStack gap={0}>
-          <IconButton
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsLiked(!isLiked)}
-            aria-label="Like post"
-          >
+        <Link className="flex items-center" to={commentDestination}>
+          <IconButton variant="ghost" size="sm" aria-label="Like post">
             <Box as={FaRegComment} boxSize={6} />
           </IconButton>
           <Text fontWeight={"semibold"} fontSize={"sm"}>
-            3
+            {formatNumbers(comments)}
           </Text>
-        </HStack>
-        <IconButton
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsLiked(!isLiked)}
-          aria-label="Like post"
-        >
-          <Box as={RiShare2Line} boxSize={6} />
-        </IconButton>
+        </Link>
       </HStack>
     </HStack>
   );

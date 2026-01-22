@@ -1,4 +1,4 @@
-import type { SendNotificationParams } from "@/lib/types";
+import type { NotificationParams, SendNotificationParams } from "@/lib/types";
 import { supabase } from "./supabase";
 
 export const sendPushNotification = async ({
@@ -34,7 +34,7 @@ export const sendPushNotification = async ({
         url,
         tag,
       },
-    }
+    },
   );
 
   if (error) {
@@ -114,4 +114,22 @@ export const checkPushSubscriptionStatus = async () => {
 
   if (error) throw error;
   return !!data;
+};
+
+export const notifyFollowers = async ({
+  actorId,
+  title,
+  url,
+  body,
+  tag,
+}: NotificationParams) => {
+  await supabase.functions.invoke("notify-followers", {
+    body: {
+      actorId,
+      title,
+      body,
+      url,
+      tag,
+    },
+  });
 };

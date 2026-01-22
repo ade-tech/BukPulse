@@ -1,5 +1,14 @@
+import { getTime } from "@/lib/GetTime";
 import type { Post } from "@/lib/types";
-import { Avatar, HStack, Text, Stack, Box, Button } from "@chakra-ui/react";
+import {
+  Avatar,
+  HStack,
+  Text,
+  Stack,
+  Box,
+  Button,
+  Span,
+} from "@chakra-ui/react";
 import type { User } from "@supabase/supabase-js";
 import { MdVerified } from "react-icons/md";
 
@@ -11,6 +20,7 @@ interface PostHeaderProps {
   isFollowing: boolean;
   currentUser: User | null;
   isMakeEffect: boolean;
+  created_at: string;
 }
 
 export default function PostHeader({
@@ -18,6 +28,7 @@ export default function PostHeader({
   isChecking,
   isFollowing,
   isOwnPost,
+  created_at,
   currentUser,
   isMakeEffect,
   handleFollow,
@@ -27,7 +38,7 @@ export default function PostHeader({
     <HStack px={4} py={3} gap={4}>
       <Avatar.Root size={"xl"} colorPalette={"blue"}>
         <Avatar.Fallback name="Segun Adebayo" />
-        <Avatar.Image src="https://bit.ly/sage-adebayo" />
+        <Avatar.Image src={profiles.image_url} />
       </Avatar.Root>
       <Stack gap={1}>
         <HStack>
@@ -39,7 +50,17 @@ export default function PostHeader({
             fontWeight={"semibold"}
             lineHeight={1}
           >
-            {profiles?.name} <Box as={MdVerified} color="accent.primary" />
+            {profiles?.name}
+            <Box as={MdVerified} color="accent.primary" />
+            <Span
+              fontSize={"sm"}
+              mt={0.5}
+              mr={1}
+              color={"text.secondary"}
+              fontWeight={"light"}
+            >
+              {getTime(created_at)}
+            </Span>{" "}
             {canShow && (
               <Button
                 ml={2}

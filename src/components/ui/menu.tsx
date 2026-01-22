@@ -4,13 +4,23 @@ import { IoCalendarClear } from "react-icons/io5";
 import { HiMiniNewspaper } from "react-icons/hi2";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { MdAdminPanelSettings } from "react-icons/md";
+import { useLocation } from "react-router";
 
 import MenuBlock from "./menuBlock";
 import { useCurrentUser } from "@/contexts/AuthContext";
-
 export default function Menu() {
   const { isSuperAdmin, isLoading } = useCurrentUser();
+  const location = useLocation();
+  const shouldHideMenu = () => {
+    const path = location.pathname;
+
+    const hiddenRoutes = [/^\/news\/[^/]+$/, /^\/events\/[^/]+$/];
+
+    return hiddenRoutes.some((pattern) => pattern.test(path));
+  };
   const hasAdminFeatures = !isLoading && isSuperAdmin;
+
+  if (shouldHideMenu()) return null;
   return (
     <Stack
       w={hasAdminFeatures ? "11/12" : "10/12"}

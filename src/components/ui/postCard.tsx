@@ -13,9 +13,23 @@ import PostActions, { PostActionsDefault } from "./postActions";
 import type { Post } from "@/lib/types";
 import { useCurrentUser } from "@/contexts/AuthContext";
 import { useCheckFollowStatus, useFollowModerator } from "@/hooks/useFollow";
+import { Link } from "react-router";
+import MiniButton from "./miniButton";
+import { HiArrowLeft } from "react-icons/hi2";
+import { useState } from "react";
 
-export default function PostCard({ data }: { data: Post }) {
+export default function PostCard({
+  data,
+  isShowingDetail = false,
+  isFull = false,
+}: {
+  data: Post;
+  isFull?: boolean;
+  isShowingDetail?: boolean;
+}) {
   const { currentUser } = useCurrentUser();
+  const [showFull, setShowFull] = useState<boolean>(false);
+  const isLongText = data.post_caption.length > 200;
   const isOwnPost = currentUser?.id === data.poster_id;
 
   const { data: isFollowing, isLoading: checkingFollow } = useCheckFollowStatus(
@@ -39,37 +53,74 @@ export default function PostCard({ data }: { data: Post }) {
   return (
     <Stack
       w={"full"}
-      bg={"bg.surface"}
+      bg={isFull ? "bg.page" : "bg.surface"}
       rounded={"md"}
       maxW="470px"
       mb={4}
       pos={"relative"}
     >
-      <PostHeader
-        isMakeEffect={isFollowingModertor}
-        profiles={data.profiles}
-        isFollowing={!!isFollowing}
-        isChecking={checkingFollow}
-        isOwnPost={isOwnPost}
-        handleFollow={handleFollow}
-        currentUser={currentUser}
-      />
-      <Box px={4} pb={1}>
-        <Text lineHeight={1.2} fontWeight={"light"} fontSize={"md"}>
-          {data.post_caption}
-        </Text>
-      </Box>
-      {data.post_image_url && (
-        <Box aspectRatio={1 / 1} w={"full"} overflow={"hidden"}>
-          <Image
-            src={data.post_image_url}
-            width="100%"
-            height="100%"
-            objectFit="cover"
+      <HStack gap={0}>
+        {isShowingDetail && (
+          <HStack w={"fit"} ml={3}>
+            <MiniButton ml={0} bg={"bg.surface"}>
+              <HiArrowLeft />
+            </MiniButton>
+          </HStack>
+        )}
+        <Box flex={1}>
+          <PostHeader
+            created_at={data.created_at}
+            isMakeEffect={isFollowingModertor}
+            profiles={data.profiles}
+            isFollowing={!!isFollowing}
+            isChecking={checkingFollow}
+            isOwnPost={isOwnPost}
+            handleFollow={handleFollow}
+            currentUser={currentUser}
           />
         </Box>
-      )}
-      <PostActions />
+      </HStack>
+      <Link className="w-full" to={`/news/${data.id}`}>
+        <Box px={4} pb={1}>
+          <Text lineHeight={1.2} fontWeight={"light"} fontSize={"md"} mb={2}>
+            {!isLongText || showFull || isShowingDetail
+              ? data.post_caption
+              : `${data.post_caption.slice(0, 200)}...`}
+            {isLongText && !isShowingDetail && (
+              <Box
+                as="span"
+                fontWeight="bold"
+                color="accent.primary"
+                cursor="pointer"
+                ml={2}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowFull(!showFull);
+                }}
+              >
+                {showFull ? "See less" : "See more"}
+              </Box>
+            )}
+          </Text>
+        </Box>
+        {data.post_image_url && (
+          <Box aspectRatio={1 / 1} w={"full"} overflow={"hidden"}>
+            <Image
+              src={data.post_image_url}
+              width="100%"
+              height="100%"
+              objectFit="cover"
+            />
+          </Box>
+        )}
+      </Link>
+      <PostActions
+        post_id={data.id}
+        likes={+data.post_likes}
+        comments={+data.post_comments}
+        commentDestination={`/news/${data.id}`}
+      />
     </Stack>
   );
 }
