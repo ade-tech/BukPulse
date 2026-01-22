@@ -10,11 +10,12 @@ interface GeneralInputProps<T extends FieldValues>
   extends Omit<InputProps, "name" | "type" | "pattern"> {
   register: UseFormRegister<T>;
   pattern?: RegExp;
-  errorText: string;
+  errorText?: string;
   name: Path<T>;
   errors: FieldErrors<T>;
   type?: "text" | "email" | "password" | "number" | "date" | "time";
   placeholder: string;
+  // variant ?:
 }
 
 export default function GeneralInput<T extends FieldValues>({

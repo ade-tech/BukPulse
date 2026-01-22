@@ -7,6 +7,7 @@ import {
   Icon,
   Box,
   useDisclosure,
+  CloseButton,
 } from "@chakra-ui/react";
 import { MdGetApp, MdIosShare } from "react-icons/md";
 
@@ -82,13 +83,11 @@ export const PwaInstallDrawer = () => {
     >
       <Drawer.Backdrop />
       <Drawer.Positioner>
-        <Drawer.Content borderTopRadius="xl">
+        <Drawer.Content borderTopRadius="xl" bg={"bg.page"}>
           <Drawer.Header borderBottomWidth="1px">
             <Drawer.Title>Install App Experience</Drawer.Title>
             <Drawer.CloseTrigger asChild>
-              <Button size="sm" variant="ghost">
-                X
-              </Button>
+              <CloseButton size="md" rounded={"full"} bg={"bg.surface"} />
             </Drawer.CloseTrigger>
           </Drawer.Header>
 
@@ -102,10 +101,10 @@ export const PwaInstallDrawer = () => {
               {isIOS ? (
                 <Box
                   p={4}
-                  bg="gray.50"
+                  bg="bg.surface"
                   borderRadius="md"
                   border="1px dashed"
-                  borderColor="gray.300"
+                  borderColor="bg.surface"
                 >
                   <Text fontSize="sm" fontWeight="bold" mb={2}>
                     To install on iOS:
@@ -114,9 +113,15 @@ export const PwaInstallDrawer = () => {
                     fontSize="sm"
                     display="flex"
                     alignItems="center"
-                    gap={2}
+                    justifyContent={"flex-start"}
+                    gap={1}
                   >
-                    1. Tap the Share button <Icon as={MdIosShare} boxSize={5} />
+                    1. Tap the Share button{" "}
+                    <Icon
+                      as={MdIosShare}
+                      boxSize={5}
+                      color={"accent.primary"}
+                    />
                   </Text>
                   <Text fontSize="sm">
                     2. Scroll down and select "Add to Home Screen"
@@ -124,9 +129,11 @@ export const PwaInstallDrawer = () => {
                 </Box>
               ) : (
                 <Button
-                  colorPalette="blue"
+                  bg={"accent.primary"}
                   size="lg"
-                  width="full"
+                  rounded={"xl"}
+                  width="11/12"
+                  mx={"auto"}
                   onClick={handleInstallClick}
                 >
                   <Icon as={MdGetApp} mr={2} />
@@ -137,7 +144,15 @@ export const PwaInstallDrawer = () => {
           </Drawer.Body>
 
           <Drawer.Footer>
-            <Button variant="ghost" mr={3} onClick={handleDismiss}>
+            <Button
+              variant="solid"
+              bg={"bg.surface"}
+              rounded={"full"}
+              color={"text.primary"}
+              mr={3}
+              mb={2}
+              onClick={handleDismiss}
+            >
               Maybe later
             </Button>
           </Drawer.Footer>

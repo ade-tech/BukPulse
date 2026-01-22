@@ -95,7 +95,7 @@ export function AdminAccount({
             <Box as={MdVerified} color="accent.primary" />
           </Text>
         </HStack>
-        <Text lineHeight={0.5} fontWeight={"light"} fontSize={"md"}>
+        <Text lineHeight={1.2} px={3} fontWeight={"light"} fontSize={"md"}>
           {profile?.description}
         </Text>
       </Stack>
@@ -154,16 +154,18 @@ export function AdminAccount({
       <Grid w={"full"} gap={1} mt={6} templateColumns={"repeat(3, 1fr)"}>
         {otherInfo &&
           otherInfo.posts.length > 0 &&
-          otherInfo.posts.map((curPost) => (
-            <GridItem aspectRatio={1 / 1} bg={"bg.surface"} key={curPost.id}>
-              <Image
-                src={curPost.post_image_url}
-                width="100%"
-                height="100%"
-                objectFit="cover"
-              />
-            </GridItem>
-          ))}
+          otherInfo.posts.map((curPost) =>
+            curPost.post_image_url ? (
+              <GridItem aspectRatio={1 / 1} bg={"bg.surface"} key={curPost.id}>
+                <Image
+                  src={curPost.post_image_url}
+                  width="100%"
+                  height="100%"
+                  objectFit="cover"
+                />
+              </GridItem>
+            ) : null,
+          )}
       </Grid>
     </Box>
   );

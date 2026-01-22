@@ -52,7 +52,9 @@ export default function EventListCard({
       </Box>
       <Stack gap={1}>
         <Text lineHeight={1.1} fontWeight={"bold"} fontSize={"md"}>
-          {data.event_title}
+          {data.event_title.length > 25
+            ? `${data.event_title.slice(0, 25)}...`
+            : data.event_title}
         </Text>
         <Stack gap={0} fontSize={"sm"}>
           <Text>
@@ -83,8 +85,8 @@ export default function EventListCard({
             <HStack>
               <Box as={FaLocationDot} color={"accent.primary"} boxSize={3} />{" "}
               <Text>
-                {data.event_location.length > 20
-                  ? `${data.event_location.slice(0, 20)}...`
+                {data.event_location.length > 15
+                  ? `${data.event_location.slice(0, 15)}...`
                   : data.event_location}
               </Text>
             </HStack>

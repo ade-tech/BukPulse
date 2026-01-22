@@ -37,6 +37,7 @@ import AppDrawer from "./AppDrawer";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Capitalize } from "@/lib/Captialize";
 import { useCurrentUser } from "@/contexts/AuthContext";
+import { playSound, sounds } from "@/lib/Sounds";
 interface EventRejectionFormInput {
   rejection_reason: string;
 }
@@ -142,7 +143,7 @@ export default function EventDetails() {
                   <Text>
                     {format(
                       parse(eventData.event_time, "HH:mm:ss", new Date()),
-                      "h:mm a"
+                      "h:mm a",
                     )}
                   </Text>
                 )}
@@ -164,6 +165,7 @@ export default function EventDetails() {
                   onClick={() => {
                     approveEvent(eventData?.id!, {
                       onSuccess: () => {
+                        playSound(sounds.success);
                         toaster.create({
                           title: "Event Approved!",
                         });
@@ -202,10 +204,11 @@ export default function EventDetails() {
                             toaster.create({
                               title: "Approval Rejection Successful!",
                             });
+                            playSound(sounds.success);
                             store.setOpen(false);
                             navigate(-1);
                           },
-                        }
+                        },
                       );
                     };
                     return (
@@ -278,11 +281,13 @@ export default function EventDetails() {
                   onClick={() => {
                     if (isAttending) {
                       unattend(eventData?.id!);
+                      playSound(sounds.error);
                       toaster.create({
                         title: "You have unattended the event",
                       });
                     } else {
                       attend(eventData?.id!);
+                      playSound(sounds.success);
                       toaster.create({ title: "You are now attending" });
                     }
                   }}
