@@ -5,7 +5,6 @@ import type {
   FetchNewsResponse,
   AddCommentParams,
   Comment,
-  Event,
 } from "@/lib/types";
 import { supabase } from "./supabase";
 import { prepareImageUpload } from "@/lib/helper";
