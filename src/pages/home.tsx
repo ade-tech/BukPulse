@@ -20,7 +20,6 @@ export default function Home() {
     latestPostDate,
     enabled: true,
   });
-  console.log(newPostsCount);
 
   const observerRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);

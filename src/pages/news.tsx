@@ -157,7 +157,7 @@ export default function News() {
         )}
 
         <AppDrawer
-          drawerTitle="Create New Event"
+          drawerTitle="Create New Post"
           placement="bottom"
           trigger={
             <IconButton
@@ -182,7 +182,6 @@ export default function News() {
                 { post_caption, post_image, poster_id },
                 {
                   onSuccess: (data) => {
-                    console.log(data);
                     playSound(sounds.success);
                     notifyFollowers(
                       {
@@ -193,8 +192,7 @@ export default function News() {
                         tag: "news_post",
                       },
                       {
-                        onError: (error) => {
-                          console.error(error);
+                        onError: () => {
                           toaster.error({
                             title: "Notification sending Error",
                           });
@@ -208,8 +206,7 @@ export default function News() {
                       title: "Posted Successfully ✅",
                     });
                   },
-                  onError: (error) => {
-                    console.error(error);
+                  onError: () => {
                     toaster.error({
                       title: "We could not make that happen!",
                     });

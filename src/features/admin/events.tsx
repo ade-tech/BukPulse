@@ -79,6 +79,7 @@ export default function Events() {
 
   const { upcomingEventsData, isFetchingEvents } =
     useFetchAllUpcomingEvents(creatorId);
+
   const { pastEvents, isLoadingPastEvents } = useFetchAllPastEvents(creatorId);
 
   if (isAuthLoading) {
@@ -219,7 +220,7 @@ export default function Events() {
                       title: "We could not create the event",
                     });
                   },
-                }
+                },
               );
             };
             return (
@@ -307,7 +308,7 @@ export default function Events() {
                           if (!files?.[0]) return true;
                           return (
                             ["image/jpeg", "image/png"].includes(
-                              files[0].type
+                              files[0].type,
                             ) || "Only jpg/png"
                           );
                         },
@@ -642,7 +643,7 @@ export default function Events() {
                     title: "We could not create the event",
                   });
                 },
-              }
+              },
             );
           };
           return (
