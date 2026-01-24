@@ -10,6 +10,8 @@ import {
   useFetchNewsForFeed,
   useNewPosts,
 } from "@/hooks/useNews";
+import { useNotifyFollowers } from "@/hooks/usePushNotifications";
+import { playSound, sounds } from "@/lib/Sounds";
 import type { CreateNewsInput } from "@/lib/types";
 import {
   Heading,
@@ -60,6 +62,7 @@ export default function News() {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const observerRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
+  const { notifyFollowers } = useNotifyFollowers();
 
   const watchedImage = watch("post_image");
   const { imagePreview } = useGetImageURL(watchedImage);
@@ -178,7 +181,16 @@ export default function News() {
               createNews(
                 { post_caption, post_image, poster_id },
                 {
-                  onSuccess: () => {
+                  onSuccess: (data) => {
+                    playSound(sounds.success);
+                    notifyFollowers({
+                      actorId: poster_id,
+                      title: `${data.profiles.name || "Someone"} posted an update!`,
+                      body: post_caption || "Check out this new post!",
+                      url: `/news/${data.id}`,
+                      tag: "news_post",
+                    });
+
                     store.setOpen(false);
                     reset();
                     toaster.success({

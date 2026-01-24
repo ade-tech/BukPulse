@@ -5,6 +5,7 @@ import type {
   FetchNewsResponse,
   AddCommentParams,
   Comment,
+  Event,
 } from "@/lib/types";
 import { supabase } from "./supabase";
 import { prepareImageUpload } from "@/lib/helper";
@@ -38,14 +39,19 @@ export const CreateNews = async ({
 
     if (imageUploadError) throw new Error("We could not upload the image");
   }
-  const { error } = await supabase.from("posts").insert([
-    {
-      post_caption,
-      poster_id,
-      post_image_url: hasImage ? imageURL : null,
-    },
-  ]);
+  const { data, error } = await supabase
+    .from("posts")
+    .insert([
+      {
+        post_caption,
+        poster_id,
+        post_image_url: hasImage ? imageURL : null,
+      },
+    ])
+    .select()
+    .single();
   if (error) throw error;
+  return data as Event;
 };
 
 export const fetchPosts = async ({
@@ -151,6 +157,7 @@ export const fetchCommentForPost = async (postId: string) => {
         name,
         image_url,
         reg_number,
+        description,
         role
       )
     `,

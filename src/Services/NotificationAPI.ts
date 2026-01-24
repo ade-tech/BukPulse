@@ -16,7 +16,6 @@ export const sendPushNotification = async ({
     throw new Error("Not authenticated");
   }
 
-  // Validate recipients to avoid accidental broadcast when IDs are undefined
   if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
     throw new Error("No recipients provided for notification");
   }
@@ -123,13 +122,24 @@ export const notifyFollowers = async ({
   body,
   tag,
 }: NotificationParams) => {
-  await supabase.functions.invoke("notify-followers", {
-    body: {
-      actorId,
-      title,
-      body,
-      url,
-      tag,
-    },
-  });
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      "notify-followers",
+      {
+        body: {
+          actorId,
+          title,
+          body,
+          url,
+          tag,
+        },
+      },
+    );
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Failed to notify followers:", error);
+    throw error;
+  }
 };

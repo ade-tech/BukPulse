@@ -5,6 +5,7 @@ import AccountsCard, { AccountsCardSkeleton } from "./accountCard";
 import { useFetchModerators, useUpdateNewUser } from "@/hooks/useAuth";
 import { useHasFollowedSomeone } from "@/hooks/useFollow";
 import { useNavigate } from "react-router";
+import MiniButton from "./miniButton";
 interface AccountsToFollow {
   setStep: React.Dispatch<React.SetStateAction<number>>;
   user_id: string;
@@ -29,20 +30,18 @@ export default function AccountsToFollow({
       overflow={"hidden"}
       pt={8}
     >
-      <Button
+      <MiniButton
         onClick={() => {
           setStep((curStep) => (curStep !== 0 ? (curStep -= 1) : curStep));
         }}
-        variant={"outline"}
         top={1}
+        bg={"bg.surface"}
         left={5}
         pos={"absolute"}
-        size={"2xs"}
-        rounded={"full"}
       >
         <HiArrowLeft />
         Back
-      </Button>
+      </MiniButton>
       <Heading
         textStyle={"2xl"}
         lineHeight={2}

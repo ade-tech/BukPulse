@@ -14,7 +14,11 @@ export default function Menu() {
   const shouldHideMenu = () => {
     const path = location.pathname;
 
-    const hiddenRoutes = [/^\/news\/[^/]+$/, /^\/events\/[^/]+$/];
+    const hiddenRoutes = [
+      /^\/news\/[^/]+$/,
+      /^\/events\/[^/]+$/,
+      /^\/account$/,
+    ];
 
     return hiddenRoutes.some((pattern) => pattern.test(path));
   };
