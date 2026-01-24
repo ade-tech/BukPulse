@@ -46,7 +46,7 @@ export default function News() {
 
   const { newPostsCount, resetCount } = useNewPosts({
     latestPostDate,
-    enabled: true,
+    enabled: false,
   });
 
   const {
@@ -182,14 +182,25 @@ export default function News() {
                 { post_caption, post_image, poster_id },
                 {
                   onSuccess: (data) => {
+                    console.log(data);
                     playSound(sounds.success);
-                    notifyFollowers({
-                      actorId: poster_id,
-                      title: `${data.profiles.name || "Someone"} posted an update!`,
-                      body: post_caption || "Check out this new post!",
-                      url: `/news/${data.id}`,
-                      tag: "news_post",
-                    });
+                    notifyFollowers(
+                      {
+                        actorId: poster_id,
+                        title: `${data?.profiles?.name || "Someone"} posted an update!`,
+                        body: post_caption || "Check out this new post!",
+                        url: `/news/${data?.id}`,
+                        tag: "news_post",
+                      },
+                      {
+                        onError: (error) => {
+                          console.error(error);
+                          toaster.error({
+                            title: "Notification sending Error",
+                          });
+                        },
+                      },
+                    );
 
                     store.setOpen(false);
                     reset();
@@ -197,7 +208,8 @@ export default function News() {
                       title: "Posted Successfully ✅",
                     });
                   },
-                  onError: () => {
+                  onError: (error) => {
+                    console.error(error);
                     toaster.error({
                       title: "We could not make that happen!",
                     });
