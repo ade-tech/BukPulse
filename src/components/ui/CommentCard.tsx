@@ -43,7 +43,7 @@ export default function CommentCard({
               <Text
                 fontSize={"md"}
                 display={"flex"}
-                gap={1}
+                gap={0.5}
                 alignItems={"center"}
                 fontWeight={"semibold"}
                 lineHeight={1}
@@ -60,8 +60,10 @@ export default function CommentCard({
               </Span>
             </HStack>
           </HStack>
-          <Text lineHeight={1} fontWeight={"extralight"} fontSize={"sm"}>
-            {profiles?.reg_number}
+          <Text lineHeight={1} fontWeight={"extralight"} fontSize={"xs"}>
+            {profiles?.role === "admin" || profiles?.role === "super_admin"
+              ? profiles?.description
+              : profiles?.reg_number}
           </Text>
         </Stack>
       </HStack>

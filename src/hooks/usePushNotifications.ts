@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/Services/supabase";
 import { useMutation } from "@tanstack/react-query";
-import { sendPushNotification } from "@/Services/NotificationAPI";
+import {
+  notifyFollowers as notifyFollowersAPI,
+  sendPushNotification,
+} from "@/Services/NotificationAPI";
 
 const urlBase64ToUint8Array = (base64String: string) => {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -21,7 +24,7 @@ const urlBase64ToUint8Array = (base64String: string) => {
 export const usePushNotifications = () => {
   const [isSupported, setIsSupported] = useState(false);
   const [subscription, setSubscription] = useState<PushSubscription | null>(
-    null
+    null,
   );
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -114,7 +117,7 @@ export const usePushNotifications = () => {
           },
           {
             onConflict: "user_id,endpoint",
-          }
+          },
         );
 
       if (dbError) throw dbError;
@@ -182,4 +185,12 @@ export const useSendPushNotification = () => {
     });
 
   return { sendNotification, isSendingNotification };
+};
+export const useNotifyFollowers = () => {
+  const { mutate: notifyFollowers, isPending: isNotifyingFollowers } =
+    useMutation({
+      mutationFn: notifyFollowersAPI,
+    });
+
+  return { notifyFollowers, isNotifyingFollowers };
 };

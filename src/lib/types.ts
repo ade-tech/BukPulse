@@ -190,6 +190,7 @@ export interface Comment {
   profiles: {
     name: string;
     image_url: string | null;
+    description: string;
     reg_number: string;
     role: string;
   } | null;

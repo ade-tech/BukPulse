@@ -46,7 +46,7 @@ export default function UserOnbaording() {
           console.error(error);
           toaster.create({ title: "Error Occured" });
         },
-      }
+      },
     );
   };
   return (
@@ -148,10 +148,11 @@ export default function UserOnbaording() {
               disabled={isUpdatingUserProfile}
               onClick={() => {
                 setStep((curStep) =>
-                  curStep !== 0 ? (curStep -= 1) : curStep
+                  curStep !== 0 ? (curStep -= 1) : curStep,
                 );
               }}
               top={2}
+              bg={"bg.surface"}
               left={5}
               pos={"absolute"}
             >

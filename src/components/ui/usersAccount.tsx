@@ -43,7 +43,6 @@ export function AdminAccount({
   isLoggingOut,
 }: AccountContainerProps) {
   const { otherInfo } = useGetUserOtherProfileData(user_id!);
-  console.log(otherInfo);
   return isloading ? (
     <AdminAccountPreLoader />
   ) : (
