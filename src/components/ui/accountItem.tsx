@@ -3,9 +3,11 @@ import type { ReactNode } from "react";
 
 export default function AccountItem({
   isLast,
+  bg,
   children,
 }: {
   isLast?: boolean;
+  bg?: string;
   children: ReactNode;
 }) {
   return (
@@ -14,6 +16,7 @@ export default function AccountItem({
       py={1}
       borderColor={"text.secondary/10"}
       borderBottomWidth={isLast ? 0 : 1}
+      bg={bg}
     >
       {children}
     </HStack>

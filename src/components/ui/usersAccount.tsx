@@ -14,6 +14,7 @@ import {
   Spacer,
   Switch,
   Button,
+  IconButton,
 } from "@chakra-ui/react";
 import { MdFeedback, MdVerified } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";
@@ -24,12 +25,15 @@ import { useGetUserOtherProfileData } from "@/hooks/useProfile";
 import { GrNext } from "react-icons/gr";
 import { formatNumbers } from "@/lib/FormatNumbers";
 import AccountItem from "./accountItem";
+import { TbSettingsFilled } from "react-icons/tb";
 import { BsPeopleFill } from "react-icons/bs";
 import { RiNotification2Fill } from "react-icons/ri";
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toaster } from "./toaster";
+import { HiArrowLeft } from "react-icons/hi2";
+import AppDrawer from "./AppDrawer";
 
 interface NotificationFormInput {
   notificationsEnabled: boolean;
@@ -43,6 +47,53 @@ export function AdminAccount({
   isLoggingOut,
 }: AccountContainerProps) {
   const { otherInfo } = useGetUserOtherProfileData(user_id!);
+  const { isSubscribed, loading, subscribe, unsubscribe } =
+    usePushNotifications();
+  const { register, watch } = useForm<NotificationFormInput>({
+    defaultValues: {
+      notificationsEnabled: isSubscribed,
+    },
+  });
+
+  const notificationsEnabled = watch("notificationsEnabled");
+
+  const handleNotificationToggle = async (enabled: boolean) => {
+    try {
+      if (enabled) {
+        const success = await subscribe();
+        if (success) {
+          toaster.create({
+            title: "Notifications enabled!",
+            type: "success",
+          });
+        } else {
+          toaster.create({
+            title: "Failed to enable notifications",
+            type: "error",
+          });
+        }
+      } else {
+        const success = await unsubscribe();
+        if (success) {
+          toaster.create({
+            title: "Notifications disabled",
+            type: "success",
+          });
+        } else {
+          toaster.create({
+            title: "Failed to disable notifications",
+            type: "error",
+          });
+        }
+      }
+    } catch (error) {
+      toaster.create({
+        title: "Error updating notification settings",
+        type: "error",
+      });
+    }
+  };
+
   return isloading ? (
     <AdminAccountPreLoader />
   ) : (
@@ -61,18 +112,71 @@ export function AdminAccount({
       className="no-scrollbar"
       pos={"relative"}
     >
-      <MiniButton
-        onClick={() => logoutUser()}
-        variant={"outline"}
-        top={2}
-        left={0}
-        pos={"absolute"}
-        disabled={isLoggingOut}
-        rounded={"full"}
-      >
-        <HiOutlineLogout />
-        Logout
+      <MiniButton top={2} bg={"bg.surface"} left={0} pos={"absolute"}>
+        <HiArrowLeft />
+        Back
       </MiniButton>
+      <AppDrawer
+        trigger={
+          <IconButton
+            size={"xl"}
+            top={4}
+            right={4}
+            pos={"fixed"}
+            bg={"bg.surface/60"}
+            boxShadow={"sm"}
+            backdropFilter="saturate(180%) blur(6px)"
+            rounded={"full"}
+            color={"text.primary"}
+          >
+            <TbSettingsFilled />
+          </IconButton>
+        }
+        drawerTitle="Settings"
+        drawerContent={
+          <Stack w={"full"} gap={4}>
+            <Stack w={"full"} bg={"bg.surface"} pt={3} rounded={"md"} my={4}>
+              <AccountItem isLast={true} bg="bg.surface">
+                <HStack color={"text.secondary"} w={"full"} mb={2}>
+                  <Icon size={"md"}>
+                    <RiNotification2Fill />
+                  </Icon>
+                  <Text fontWeight={"semibold"}>Receive Notifications</Text>
+                  <Spacer />
+                  <Switch.Root
+                    variant={"solid"}
+                    colorPalette={"blue"}
+                    size={"lg"}
+                    checked={notificationsEnabled}
+                    onCheckedChange={({ checked }) => {
+                      handleNotificationToggle(checked);
+                    }}
+                    disabled={loading}
+                  >
+                    <Switch.HiddenInput {...register("notificationsEnabled")} />
+                    <Switch.Control />
+                    <Switch.Label />
+                  </Switch.Root>
+                </HStack>
+              </AccountItem>
+            </Stack>
+            <Button
+              onClick={() => logoutUser()}
+              rounded={"lg"}
+              disabled={isLoggingOut}
+              w={"full"}
+              size={"xl"}
+              bg={"red.600"}
+              color={"white"}
+            >
+              <HiOutlineLogout />
+              Logout
+            </Button>
+          </Stack>
+        }
+        placement="bottom"
+      />
+
       <Box maxW={"200px"} aspectRatio={1 / 1} mb={6} mx={"auto"} mt={6} h={40}>
         <Avatar.Root size={"full"} colorPalette={"blue"}>
           <Avatar.Fallback name={profile?.name} />
@@ -238,6 +342,10 @@ export function UserAccount({
       className="no-scrollbar"
       pos={"relative"}
     >
+      <MiniButton top={2} bg={"bg.surface"} pos={"absolute"}>
+        <HiArrowLeft />
+        Back
+      </MiniButton>
       <Box maxW={"200px"} aspectRatio={1 / 1} mb={6} mx={"auto"} mt={6} h={40}>
         <Avatar.Root size={"full"} colorPalette={"blue"}>
           <Avatar.Fallback name={profile?.name} />

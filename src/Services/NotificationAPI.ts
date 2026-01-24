@@ -143,3 +143,32 @@ export const notifyFollowers = async ({
     throw error;
   }
 };
+
+export const notifyAllUsers = async ({
+  title,
+  body,
+  url,
+  tag,
+  excludeAdmins = true,
+}: NotificationParams) => {
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      "notify-all-users",
+      {
+        body: {
+          title,
+          body,
+          url,
+          tag,
+          excludeAdmins,
+        },
+      },
+    );
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Failed to notify all users:", error);
+    throw error;
+  }
+};

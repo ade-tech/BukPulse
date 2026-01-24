@@ -8,6 +8,7 @@ import {
   SkeletonText,
   Span,
   Stack,
+  Tag,
   Text,
 } from "@chakra-ui/react";
 import { FaLocationDot } from "react-icons/fa6";
@@ -15,6 +16,7 @@ import { IoCalendarClear } from "react-icons/io5";
 import { format, parse } from "date-fns";
 import type { Event } from "@/lib/types";
 import { Link } from "react-router";
+import { Capitalize } from "@/lib/Captialize";
 
 export default function EventCard() {
   return (
@@ -89,6 +91,15 @@ export function EventAdminCard({ data }: { data: Event }) {
         mb={4}
         pb={4}
       >
+        <Tag.Root
+          pos={"absolute"}
+          top={2}
+          right={2}
+          rounded={"md"}
+          colorPalette={data.event_status === "pending" ? "orange" : "green"}
+        >
+          <Tag.Label>{Capitalize(data.event_status)}</Tag.Label>
+        </Tag.Root>
         <Box
           aspectRatio={2.5 / 1}
           w={"full"}
@@ -109,12 +120,15 @@ export function EventAdminCard({ data }: { data: Event }) {
             {data.event_title}
           </Text>
           <HStack mt={1} gap={2}>
-            <HStack w={"2/5"} fontSize={"sm"} fontWeight={"light"}>
+            <HStack w={"1/2"} fontSize={"sm"} fontWeight={"light"}>
               <Box as={IoCalendarClear} color={"accent.primary"} boxSize={5} />{" "}
               <Text lineHeight={1.2}>
                 {format(new Date(data.event_date), "do MMM, yyyy")}.
                 <br />{" "}
-                {format(parse(data.event_time, "HH:mm:ss", new Date()), "h:mm a")}
+                {format(
+                  parse(data.event_time, "HH:mm:ss", new Date()),
+                  "h:mm a",
+                )}
               </Text>
             </HStack>
             <HStack fontSize={"sm"} fontWeight={"light"}>

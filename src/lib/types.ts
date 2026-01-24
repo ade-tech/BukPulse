@@ -175,6 +175,7 @@ export interface NotificationParams {
   body: string;
   url: string;
   tag: string;
+  excludeAdmins?: boolean;
 }
 export interface AddCommentParams {
   comment: string;

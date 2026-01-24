@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/Services/supabase";
 import { useMutation } from "@tanstack/react-query";
 import {
+  notifyAllUsers as notifyAllUsersAPI,
   notifyFollowers as notifyFollowersAPI,
   sendPushNotification,
 } from "@/Services/NotificationAPI";
@@ -193,4 +194,12 @@ export const useNotifyFollowers = () => {
     });
 
   return { notifyFollowers, isNotifyingFollowers };
+};
+export const useNotifyAllUsers = () => {
+  const { mutate: notifyAllUsers, isPending: isNotifyingAllUsers } =
+    useMutation({
+      mutationFn: notifyAllUsersAPI,
+    });
+
+  return { notifyAllUsers, isNotifyingAllUsers };
 };

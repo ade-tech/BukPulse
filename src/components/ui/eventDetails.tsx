@@ -38,19 +38,25 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { Capitalize } from "@/lib/Captialize";
 import { useCurrentUser } from "@/contexts/AuthContext";
 import { playSound, sounds } from "@/lib/Sounds";
+import {
+  useNotifyAllUsers,
+  useSendPushNotification,
+} from "@/hooks/usePushNotifications";
 interface EventRejectionFormInput {
   rejection_reason: string;
 }
 
 export default function EventDetails() {
   const { id } = useParams();
-  const { isSuperAdmin } = useCurrentUser();
+  const { isSuperAdmin, currentUser } = useCurrentUser();
   const navigate = useNavigate();
   const { eventData, isFetchingEvent } = useFetchEvent(id!);
+  const { notifyAllUsers } = useNotifyAllUsers();
   const { attendeesCount, isLoadingAttendees } = useFetchEventAttendees(id!);
   const { isAttending, isChecking } = useIsAttending(id!);
   const { attend, isPending: isAttendingMutate } = useAttendEvent();
   const { unattend, isPending: isUnattendingMutate } = useUnattendEvent();
+  const { sendNotification } = useSendPushNotification();
   const {
     register,
     handleSubmit,
@@ -157,25 +163,34 @@ export default function EventDetails() {
           <ButtonGroup w={"11/12"} mt={5}>
             {isSuperAdmin ? (
               <>
-                <Button
-                  rounded={"full"}
-                  w={"1/2"}
-                  disabled={isPending}
-                  bg={"accent.primary"}
-                  onClick={() => {
-                    approveEvent(eventData?.id!, {
-                      onSuccess: () => {
-                        playSound(sounds.success);
-                        toaster.create({
-                          title: "Event Approved!",
-                        });
-                        navigate(-1);
-                      },
-                    });
-                  }}
-                >
-                  Approve
-                </Button>
+                {eventData?.event_status === "pending" && (
+                  <Button
+                    rounded={"full"}
+                    w={"1/2"}
+                    disabled={isPending}
+                    bg={"accent.primary"}
+                    onClick={() => {
+                      approveEvent(eventData?.id!, {
+                        onSuccess: () => {
+                          notifyAllUsers({
+                            actorId: currentUser?.id!,
+                            title: `New Event: ${eventData.event_title}`,
+                            url: `/events/${eventData.id}`,
+                            body: `${eventData.event_description}`,
+                            tag: "new-event",
+                          });
+                          playSound(sounds.success);
+                          toaster.create({
+                            title: "Event Approved!",
+                          });
+                          navigate(-1);
+                        },
+                      });
+                    }}
+                  >
+                    Approve
+                  </Button>
+                )}
                 <AppDrawer
                   placement="bottom"
                   trigger={
@@ -200,7 +215,14 @@ export default function EventDetails() {
                           reason: rejection_reason,
                         },
                         {
-                          onSuccess: () => {
+                          onSuccess: (data) => {
+                            sendNotification({
+                              userIds: [data.creator_id],
+                              title: "Event Approval Rejected",
+                              body: `Event was rejected because ${data.rejection_reason}`,
+                              url: `/events/${data.id}`,
+                              tag: "event-rejection",
+                            });
                             toaster.create({
                               title: "Approval Rejection Successful!",
                             });
