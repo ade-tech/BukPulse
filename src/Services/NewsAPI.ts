@@ -5,7 +5,6 @@ import type {
   FetchNewsResponse,
   AddCommentParams,
   Comment,
-  Event,
 } from "@/lib/types";
 import { supabase } from "./supabase";
 import { prepareImageUpload } from "@/lib/helper";
@@ -48,10 +47,17 @@ export const CreateNews = async ({
         post_image_url: hasImage ? imageURL : null,
       },
     ])
-    .select()
+    .select(
+      `
+    *,
+    profiles:poster_id (
+      name, description, image_url
+    )
+  `,
+    )
     .single();
   if (error) throw error;
-  return data as Event;
+  return data as Post;
 };
 
 export const fetchPosts = async ({
