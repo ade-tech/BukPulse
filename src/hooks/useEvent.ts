@@ -15,8 +15,13 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useCreateNewEvent() {
+  const queryClient = useQueryClient();
   const { mutate: createEvent, isPending: isCreatingEvent } = useMutation({
     mutationFn: createNewEvent,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["Upcoming Events"],
+      }),
   });
 
   return { createEvent, isCreatingEvent };
@@ -90,7 +95,7 @@ export function useAttendEvent() {
 
       queryClient.setQueryData(
         ["EventAttendees", event_id],
-        (old: number | undefined) => (old ?? 0) + 1
+        (old: number | undefined) => (old ?? 0) + 1,
       );
       queryClient.setQueryData(["IsAttending", event_id], true);
 
@@ -99,11 +104,11 @@ export function useAttendEvent() {
     onError: (_err, event_id, context: any) => {
       queryClient.setQueryData(
         ["EventAttendees", event_id],
-        context?.previousCount
+        context?.previousCount,
       );
       queryClient.setQueryData(
         ["IsAttending", event_id],
-        context?.previousIsAttending
+        context?.previousIsAttending,
       );
     },
     onSettled: (_data, _err, event_id) => {
@@ -140,7 +145,7 @@ export function useUnattendEvent() {
 
       queryClient.setQueryData(
         ["EventAttendees", event_id],
-        (old: number | undefined) => Math.max((old ?? 1) - 1, 0)
+        (old: number | undefined) => Math.max((old ?? 1) - 1, 0),
       );
       queryClient.setQueryData(["IsAttending", event_id], false);
 
@@ -149,11 +154,11 @@ export function useUnattendEvent() {
     onError: (_err, event_id, context: any) => {
       queryClient.setQueryData(
         ["EventAttendees", event_id],
-        context?.previousCount
+        context?.previousCount,
       );
       queryClient.setQueryData(
         ["IsAttending", event_id],
-        context?.previousIsAttending
+        context?.previousIsAttending,
       );
     },
     onSettled: (_data, _err, event_id) => {
@@ -202,7 +207,7 @@ export function useFetchPastAttendedEvents() {
     {
       queryKey: ["Past Attended Events"],
       queryFn: fetchPastAttendedEvents,
-    }
+    },
   );
 
   return { pastAttendedEvents, isLoadingPastEvents };
