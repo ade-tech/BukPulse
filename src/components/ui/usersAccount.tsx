@@ -342,7 +342,7 @@ export function UserAccount({
       className="no-scrollbar"
       pos={"relative"}
     >
-      <MiniButton top={2} bg={"bg.surface"} pos={"absolute"}>
+      <MiniButton top={2} bg={"bg.surface"} left={0} pos={"absolute"}>
         <HiArrowLeft />
         Back
       </MiniButton>

@@ -24,20 +24,26 @@ export const createNewEvent = async ({
     .upload(imagePath, image);
 
   if (imageUploadError) throw new Error("We could not upload the image");
-  const { error } = await supabase.from("events").insert([
-    {
-      creator_id,
-      event_date,
-      event_category: event_category.join(""),
-      event_description,
-      event_location,
-      event_time,
-      event_title,
-      event_image_url: imageURL,
-      event_status: isSuperAdmin ? "approved" : "pending",
-    },
-  ]);
+  const { data, error } = await supabase
+    .from("events")
+    .insert([
+      {
+        creator_id,
+        event_date,
+        event_category: event_category.join(""),
+        event_description,
+        event_location,
+        event_time,
+        event_title,
+        event_image_url: imageURL,
+        event_status: isSuperAdmin ? "approved" : "pending",
+      },
+    ])
+    .select()
+    .single();
   if (error) throw error;
+
+  return data as Event;
 };
 export const fetchEvent = async (id: string) => {
   const { data, error } = await supabase
