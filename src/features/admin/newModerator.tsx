@@ -49,7 +49,7 @@ export default function NewModerator() {
           toaster.create({
             title: error.message,
           }),
-      }
+      },
     );
   };
 
@@ -68,7 +68,7 @@ export default function NewModerator() {
       pos={"relative"}
     >
       <HStack justifyContent={"flex-center"} w={"full"} gap={4} mb={10}>
-        <MiniButton onClick={() => navigate(-1)} disabled={isCreatingModerator}>
+        <MiniButton ml={0} disabled={isCreatingModerator}>
           <HiArrowLeft />
           Back
         </MiniButton>

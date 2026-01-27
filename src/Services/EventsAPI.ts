@@ -59,21 +59,26 @@ export const fetchAllUpcomingEvents = async (creatorId?: string) => {
   if (authError || !userData.user) throw new Error("Could not verify user");
 
   const userRole = userData.user.user_metadata.role;
-  const now = new Date().toISOString();
+
+  const now = new Date();
+  const todayDate = now.toISOString().split("T")[0];
+  const currentTime = now.toISOString().split("T")[1].split(".")[0];
 
   let query = supabase
     .from("events")
     .select("*, profiles ( name )")
     .eq("event_status", "approved")
-    .gt("event_date", now);
+    .or(
+      `event_date.gt.${todayDate},and(event_date.eq.${todayDate},event_time.gt.${currentTime})`,
+    )
+    .order("event_date", { ascending: true })
+    .order("event_time", { ascending: true });
 
-  // If creatorId is provided (for admin role), filter by creator_id
-  // super_admin sees all events, admin only sees their own
   if (creatorId && userRole !== "super_admin") {
     query = query.eq("creator_id", creatorId);
   }
 
-  const { data, error } = await query.order("event_date", { ascending: true });
+  const { data, error } = await query;
 
   if (error) throw error;
 
