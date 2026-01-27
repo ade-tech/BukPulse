@@ -30,6 +30,13 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { HiPlus } from "react-icons/hi2";
 import { LuUpload } from "react-icons/lu";
 
+/**
+ * Renders the News feed UI including post list, infinite-scroll loading, new-post indicator, and an admin-only create-post drawer.
+ *
+ * The component displays loading skeletons, an empty-state message, and PostCard entries for fetched posts. It exposes a scroll sentinel to load additional pages, a button to reveal newly available posts, and—when the current user is an admin—a bottom drawer that allows creating a new post with a caption and an optional image (JPEG/PNG up to 5 MB). Creating a post triggers the post-creation flow, follower notifications, and success/error toasts.
+ *
+ * @returns The rendered News feed JSX element.
+ */
 export default function News() {
   const { currentUser, isAdmin } = useCurrentUser();
 

@@ -22,6 +22,15 @@ export interface AdminFormInputs {
   otp: string[];
 }
 
+/**
+ * Render the moderator sign-in UI with email entry, OTP input, resend cooldown, and verification.
+ *
+ * The component manages a two-step flow: collecting an email to send an OTP, then accepting a 6-digit
+ * OTP to verify the moderator. It handles page routing via query params, OTP resend cooldown timing,
+ * and wiring to hooks that send and verify OTPs.
+ *
+ * @returns A React element containing the moderator sign-in and OTP verification user interface.
+ */
 export default function AdminLogin() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { verifyOTP } = useverifyAdminOTP();
