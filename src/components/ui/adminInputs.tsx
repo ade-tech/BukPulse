@@ -16,6 +16,7 @@ interface AdminInputsProps {
   register: UseFormRegister<AdminFormInputs>;
   errors: FieldErrors<AdminFormInputs>;
   getValues: UseFormGetValues<AdminFormInputs>;
+  resendTimeout: () => void;
 }
 
 export default function AdminInputs({
@@ -24,6 +25,7 @@ export default function AdminInputs({
   errors,
   getValues,
   trigger,
+  resendTimeout,
 }: AdminInputsProps) {
   const { checkValidity, isCheckingValidity } = useCheckAdminAddressValidity();
   const [isClosed, setIsClosed] = useState<boolean>(false);
@@ -45,6 +47,7 @@ export default function AdminInputs({
             title: "OTP has been sent!",
           });
         }
+        resendTimeout();
         setIsClosing(true);
         setTimeout(() => {
           setIsClosed(true);

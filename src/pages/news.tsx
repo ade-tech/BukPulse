@@ -31,7 +31,7 @@ import { HiPlus } from "react-icons/hi2";
 import { LuUpload } from "react-icons/lu";
 
 export default function News() {
-  const { currentUser } = useCurrentUser();
+  const { currentUser, isAdmin } = useCurrentUser();
 
   const {
     posts,
@@ -156,213 +156,217 @@ export default function News() {
           </Box>
         )}
 
-        <AppDrawer
-          drawerTitle="Create New Post"
-          placement="bottom"
-          trigger={
-            <IconButton
-              rounded={"full"}
-              size={"xl"}
-              pos={"fixed"}
-              bottom={"28"}
-              right={6}
-              boxShadow={"2xl"}
-              bg={"accent.primary"}
-            >
-              <HiPlus />
-            </IconButton>
-          }
-          drawerContent={(store) => {
-            const submitFn: SubmitHandler<CreateNewsInput> = ({
-              poster_id = currentUser?.id!,
-              post_image,
-              post_caption,
-            }) => {
-              createNews(
-                { post_caption, post_image, poster_id },
-                {
-                  onSuccess: (data) => {
-                    playSound(sounds.success);
-                    notifyFollowers(
-                      {
-                        actorId: poster_id,
-                        title: `${data?.profiles?.name || "Someone"} posted an update!`,
-                        body: post_caption || "Check out this new post!",
-                        url: `/news/${data?.id}`,
-                        tag: "news_post",
-                      },
-                      {
-                        onError: () => {
-                          toaster.error({
-                            title: "Notification sending Error",
-                          });
+        {isAdmin && (
+          <AppDrawer
+            drawerTitle="Create New Post"
+            placement="bottom"
+            trigger={
+              <IconButton
+                rounded={"full"}
+                size={"xl"}
+                pos={"fixed"}
+                bottom={"28"}
+                right={6}
+                boxShadow={"2xl"}
+                bg={"accent.primary"}
+              >
+                <HiPlus />
+              </IconButton>
+            }
+            drawerContent={(store) => {
+              const submitFn: SubmitHandler<CreateNewsInput> = ({
+                poster_id = currentUser?.id!,
+                post_image,
+                post_caption,
+              }) => {
+                createNews(
+                  { post_caption, post_image, poster_id },
+                  {
+                    onSuccess: (data) => {
+                      playSound(sounds.success);
+                      notifyFollowers(
+                        {
+                          actorId: poster_id,
+                          title: `${data?.profiles?.name || "Someone"} posted an update!`,
+                          body: post_caption || "Check out this new post!",
+                          url: `/news/${data?.id}`,
+                          tag: "news_post",
                         },
-                      },
-                    );
+                        {
+                          onError: () => {
+                            toaster.error({
+                              title: "Notification sending Error",
+                            });
+                          },
+                        },
+                      );
 
-                    store.setOpen(false);
-                    reset();
-                    toaster.success({
-                      title: "Posted Successfully ✅",
-                    });
+                      store.setOpen(false);
+                      reset();
+                      toaster.success({
+                        title: "Posted Successfully ✅",
+                      });
+                    },
+                    onError: () => {
+                      toaster.error({
+                        title: "We could not make that happen!",
+                      });
+                    },
                   },
-                  onError: () => {
-                    toaster.error({
-                      title: "We could not make that happen!",
-                    });
-                  },
-                },
-              );
-            };
-            return (
-              <form className="mt-6! mb-6! flex flex-col gap-3">
-                <Field.Root w={"full"} invalid={!!errors.post_caption}>
-                  <Textarea
-                    {...register("post_caption")}
-                    rounded={"lg"}
-                    size={"xl"}
-                    color={"text.primary"}
-                    fontSize={"sm"}
-                    focusRing={"none"}
-                    _focus={{
-                      outline: "none",
-                      border: "none",
-                    }}
-                    bg={"bg.surface"}
-                    placeholder={"Caption"}
-                    resize={"none"}
-                    _placeholder={{
-                      fontSize: "sm",
-                      color: "text.secondary",
-                      fontWeight: "light",
-                    }}
-                  />
-                  {errors.post_caption && (
-                    <Field.ErrorText>
-                      {errors.post_caption?.message}
-                    </Field.ErrorText>
-                  )}
-                </Field.Root>
-                <Box
-                  aspectRatio={1 / 1}
-                  bg={"bg.surface"}
-                  rounded={"lg"}
-                  borderWidth={2}
-                  borderStyle={"dashed"}
-                  pos={"relative"}
-                  display={"flex"}
-                  flexDir={"column"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  onClick={() => imageInputRef?.current?.click()}
-                  overflow={"hidden"}
-                  className="group"
-                >
+                );
+              };
+              return (
+                <form className="mt-6! mb-6! flex flex-col gap-3">
+                  <Field.Root w={"full"} invalid={!!errors.post_caption}>
+                    <Textarea
+                      {...register("post_caption")}
+                      rounded={"lg"}
+                      size={"xl"}
+                      color={"text.primary"}
+                      fontSize={"sm"}
+                      focusRing={"none"}
+                      _focus={{
+                        outline: "none",
+                        border: "none",
+                      }}
+                      bg={"bg.surface"}
+                      placeholder={"Caption"}
+                      resize={"none"}
+                      _placeholder={{
+                        fontSize: "sm",
+                        color: "text.secondary",
+                        fontWeight: "light",
+                      }}
+                    />
+                    {errors.post_caption && (
+                      <Field.ErrorText>
+                        {errors.post_caption?.message}
+                      </Field.ErrorText>
+                    )}
+                  </Field.Root>
                   <Box
-                    pos={"absolute"}
-                    w={"full"}
-                    h={"full"}
-                    display={!hasImage ? "flex" : "none"}
+                    aspectRatio={1 / 1}
+                    bg={"bg.surface"}
+                    rounded={"lg"}
+                    borderWidth={2}
+                    borderStyle={"dashed"}
+                    pos={"relative"}
+                    display={"flex"}
                     flexDir={"column"}
                     alignItems={"center"}
                     justifyContent={"center"}
-                    bg={hasImage ? "bg.surface/70" : "none"}
-                    _groupHover={{
-                      display: "flex",
-                      bg: "bg.surface/70",
-                    }}
+                    onClick={() => imageInputRef?.current?.click()}
+                    overflow={"hidden"}
+                    className="group"
                   >
-                    <Icon size="md" color="accent.primary" mb={2}>
-                      <LuUpload />
-                    </Icon>
-                    <Box>Click here to Add Event Image</Box>
-                    <Box color="text.secondary">.png, .jpg up to 5MB</Box>
-                  </Box>
-
-                  {imagePreview !== null && (
-                    <Image
-                      roundedTop={"lg"}
-                      src={imagePreview}
-                      width="100%"
-                      height="100%"
-                      objectFit="cover"
-                      objectPosition={"top"}
-                    />
-                  )}
-                  {hasImage && (
-                    <MiniButton
+                    <Box
                       pos={"absolute"}
-                      right={2}
-                      top={2}
-                      size={"2xs"}
-                      bg={"red.500"}
-                      fontSize={"2xs"}
-                      color={"white"}
-                      fontWeight={"light"}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setValue("post_image" as any, undefined);
-                        if (imageInputRef.current)
-                          imageInputRef.current.value = "";
+                      w={"full"}
+                      h={"full"}
+                      display={!hasImage ? "flex" : "none"}
+                      flexDir={"column"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      bg={hasImage ? "bg.surface/70" : "none"}
+                      _groupHover={{
+                        display: "flex",
+                        bg: "bg.surface/70",
                       }}
-                      variant={"solid"}
-                      zIndex={10}
                     >
-                      Clear
-                    </MiniButton>
-                  )}
+                      <Icon size="md" color="accent.primary" mb={2}>
+                        <LuUpload />
+                      </Icon>
+                      <Box>Click here to Add Event Image</Box>
+                      <Box color="text.secondary">.png, .jpg up to 5MB</Box>
+                    </Box>
 
-                  <Controller
-                    control={control}
-                    name="post_image"
-                    rules={{
-                      validate: {
-                        fileSize: (files: FileList) => {
-                          if (!files?.[0]) return true;
-                          return files[0].size <= 5 * 1024 * 1024 || "Max 5MB";
-                        },
-                        fileType: (files: FileList) => {
-                          if (!files?.[0]) return true;
-                          return (
-                            ["image/jpeg", "image/png"].includes(
-                              files[0].type,
-                            ) || "Only jpg/png"
-                          );
-                        },
-                      },
-                    }}
-                    render={({ field: { onChange, onBlur, name } }) => (
-                      <Input
-                        display={"none"}
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            onChange(e.target.files);
-                          }
-                        }}
-                        onBlur={onBlur}
-                        name={name}
-                        ref={imageInputRef}
+                    {imagePreview !== null && (
+                      <Image
+                        roundedTop={"lg"}
+                        src={imagePreview}
+                        width="100%"
+                        height="100%"
+                        objectFit="cover"
+                        objectPosition={"top"}
                       />
                     )}
-                  />
-                </Box>
+                    {hasImage && (
+                      <MiniButton
+                        pos={"absolute"}
+                        right={2}
+                        top={2}
+                        size={"2xs"}
+                        bg={"red.500"}
+                        fontSize={"2xs"}
+                        color={"white"}
+                        fontWeight={"light"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setValue("post_image" as any, undefined);
+                          if (imageInputRef.current)
+                            imageInputRef.current.value = "";
+                        }}
+                        variant={"solid"}
+                        zIndex={10}
+                      >
+                        Clear
+                      </MiniButton>
+                    )}
 
-                <Button
-                  onClick={handleSubmit(submitFn)}
-                  disabled={isCreatingNews}
-                  w={"full"}
-                  size={"xl"}
-                  bg={"accent.primary"}
-                  rounded={"lg"}
-                >
-                  Publish
-                </Button>
-              </form>
-            );
-          }}
-        />
+                    <Controller
+                      control={control}
+                      name="post_image"
+                      rules={{
+                        validate: {
+                          fileSize: (files: FileList) => {
+                            if (!files?.[0]) return true;
+                            return (
+                              files[0].size <= 5 * 1024 * 1024 || "Max 5MB"
+                            );
+                          },
+                          fileType: (files: FileList) => {
+                            if (!files?.[0]) return true;
+                            return (
+                              ["image/jpeg", "image/png"].includes(
+                                files[0].type,
+                              ) || "Only jpg/png"
+                            );
+                          },
+                        },
+                      }}
+                      render={({ field: { onChange, onBlur, name } }) => (
+                        <Input
+                          display={"none"}
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files) {
+                              onChange(e.target.files);
+                            }
+                          }}
+                          onBlur={onBlur}
+                          name={name}
+                          ref={imageInputRef}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  <Button
+                    onClick={handleSubmit(submitFn)}
+                    disabled={isCreatingNews}
+                    w={"full"}
+                    size={"xl"}
+                    bg={"accent.primary"}
+                    rounded={"lg"}
+                  >
+                    Publish
+                  </Button>
+                </form>
+              );
+            }}
+          />
+        )}
       </Box>
     </Stack>
   );

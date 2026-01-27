@@ -6,6 +6,7 @@ import type {
 import {
   checkAdminAddressValidity,
   logout,
+  sendOTP,
   studentSignUp,
   updateNewUser,
   updateUserProfile as updateUserProfileAPI,
@@ -76,4 +77,12 @@ export function useUpdateNewUser() {
   });
 
   return { updateUser, isUpdatingUser };
+}
+
+export function useSendOTP() {
+  const { mutate: send, isPending: isSending } = useMutation({
+    mutationFn: sendOTP,
+  });
+
+  return { send, isSending };
 }

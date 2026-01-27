@@ -6,13 +6,16 @@ import {
   PinInput,
   Stack,
   Text,
+  Button,
 } from "@chakra-ui/react";
 import { HiArrowLeft } from "react-icons/hi2";
 import { Link, useSearchParams } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import AdminInputs from "@/components/ui/adminInputs";
-import { useverifyAdminOTP } from "@/hooks/useAuth";
+import { useSendOTP, useverifyAdminOTP } from "@/hooks/useAuth";
 import MiniButton from "@/components/ui/miniButton";
+import { useEffect, useRef, useState } from "react";
+import { toaster } from "@/components/ui/toaster";
 
 export interface AdminFormInputs {
   email: string;
@@ -22,6 +25,9 @@ export interface AdminFormInputs {
 export default function AdminLogin() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { verifyOTP } = useverifyAdminOTP();
+  const { send, isSending } = useSendOTP();
+  const [canResendOTP, setCanResendOTP] = useState<boolean>(false);
+  const timeoutID = useRef<number | null>(null);
 
   const {
     control,
@@ -34,6 +40,24 @@ export default function AdminLogin() {
     mode: "onChange",
   });
   const page = Number(searchParams.get("page")) || 1;
+
+  function resendTimeout() {
+    if (timeoutID.current) {
+      clearTimeout(timeoutID.current);
+      timeoutID.current = null;
+    }
+    timeoutID.current = window.setTimeout(() => {
+      setCanResendOTP(true);
+    }, 60000);
+  }
+  useEffect(() => {
+    return () => {
+      if (timeoutID.current) {
+        clearTimeout(timeoutID.current);
+      }
+    };
+  }, []);
+
   return (
     <Stack
       bg={"bg.page"}
@@ -83,6 +107,7 @@ export default function AdminLogin() {
       <form className="w-full flex overflow-hidden flex-col gap-4 items-center flex-1 pt-24">
         {page === 1 && (
           <AdminInputs
+            resendTimeout={resendTimeout}
             errors={errors}
             register={register}
             trigger={trigger}
@@ -123,6 +148,28 @@ export default function AdminLogin() {
                 )}
               />
             </Field.Root>
+            <Button
+              variant={"ghost"}
+              mt={14}
+              bg={"none"}
+              fontWeight={"bold"}
+              color={"accent.primary"}
+              disabled={!canResendOTP || isSending}
+              onClick={() => {
+                send(getValues("email"), {
+                  onSuccess: () => {
+                    setCanResendOTP(false);
+                    resendTimeout();
+                  },
+                  onError: () =>
+                    toaster.error({
+                      title: "We could not send OTP",
+                    }),
+                });
+              }}
+            >
+              Resend OTP
+            </Button>
           </Stack>
         )}
       </form>

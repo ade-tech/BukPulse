@@ -10,25 +10,30 @@ import type { User } from "@supabase/supabase-js";
 import { prepareImageUpload } from "@/lib/helper";
 
 export const checkAdminAddressValidity = async (
-  email: string
+  email: string,
 ): Promise<UserConfirmationRespnse> => {
   const { data, error } = await supabase.functions.invoke("user-confirmation", {
     body: { email },
   });
   if (error) throw new Error("Unauthorized Email");
   if ((data as UserConfirmationRespnse).allowed) {
-    const { error: otpError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: false,
-      },
-    });
-
-    if (otpError) throw new Error("OTP could not be sent");
+    await sendOTP(email);
   }
 
   return data;
 };
+
+export async function sendOTP(email: string) {
+  const { error: otpError } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      shouldCreateUser: false,
+    },
+  });
+
+  if (otpError) throw new Error("OTP could not be sent");
+}
+
 export const verifyAdminOTP = async ({
   email,
   token,
