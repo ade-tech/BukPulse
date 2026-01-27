@@ -19,6 +19,13 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { HiArrowLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
 
+/**
+ * Renders a form for creating a new moderator with image, email, name, fixed role ("Admin"), and description.
+ *
+ * On submit it calls the createModerator handler; on success it navigates back one step and displays a success toaster, and on error displays an error toaster with the error message.
+ *
+ * @returns The React element for the "Create Moderator" UI.
+ */
 export default function NewModerator() {
   const navigate = useNavigate();
   const {

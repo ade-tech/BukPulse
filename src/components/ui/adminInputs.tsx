@@ -19,6 +19,17 @@ interface AdminInputsProps {
   resendTimeout: () => void;
 }
 
+/**
+ * Renders an email input and Next button that validate the address, verify admin eligibility, send an OTP, and close the input UI on success.
+ *
+ * @param onClick - Callback invoked after a successful eligibility check and UI close.
+ * @param trigger - Form trigger function used to validate the `email` field.
+ * @param register - Form register function used to bind the `email` input.
+ * @param errors - Form field errors for displaying validation feedback.
+ * @param getValues - Function to read current form values, used to obtain the `email`.
+ * @param resendTimeout - Starts the resend timeout when an OTP has been sent.
+ * @returns The admin email input form UI.
+ */
 export default function AdminInputs({
   onClick,
   register,

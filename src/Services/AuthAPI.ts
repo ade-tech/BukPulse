@@ -23,6 +23,12 @@ export const checkAdminAddressValidity = async (
   return data;
 };
 
+/**
+ * Sends a one-time password (OTP) to the given email address for authentication.
+ *
+ * @param email - The recipient email address for the OTP
+ * @throws Error if the OTP could not be sent
+ */
 export async function sendOTP(email: string) {
   const { error: otpError } = await supabase.auth.signInWithOtp({
     email,
