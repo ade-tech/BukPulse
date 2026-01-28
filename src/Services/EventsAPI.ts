@@ -61,8 +61,8 @@ export const fetchAllUpcomingEvents = async (creatorId?: string) => {
   const userRole = userData.user.user_metadata.role;
 
   const now = new Date();
-  const todayDate = now.toISOString().split("T")[0];
-  const currentTime = now.toISOString().split("T")[1].split(".")[0];
+  const todayDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
 
   let query = supabase
     .from("events")

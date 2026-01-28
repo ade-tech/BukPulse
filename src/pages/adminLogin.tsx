@@ -51,6 +51,7 @@ export default function AdminLogin() {
   const page = Number(searchParams.get("page")) || 1;
 
   function resendTimeout() {
+    setCanResendOTP(false);
     if (timeoutID.current) {
       clearTimeout(timeoutID.current);
       timeoutID.current = null;
@@ -167,7 +168,6 @@ export default function AdminLogin() {
               onClick={() => {
                 send(getValues("email"), {
                   onSuccess: () => {
-                    setCanResendOTP(false);
                     resendTimeout();
                   },
                   onError: () =>

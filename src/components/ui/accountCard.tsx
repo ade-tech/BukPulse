@@ -18,9 +18,11 @@ import { MdVerified } from "react-icons/md";
 export default function AccountsCard({
   data,
   id,
+  displayOnly = false,
 }: {
   data: Profile;
   id: string;
+  displayOnly?: boolean;
 }) {
   const { followModerator } = useFollowModerator();
   const { data: followStatus } = useCheckFollowStatus({
@@ -58,21 +60,23 @@ export default function AccountsCard({
               <Box as={MdVerified} color="accent.primary" />
             </Text>
             <Spacer />
-            <Button
-              variant={followStatus ? "solid" : "outline"}
-              bg={followStatus ? "accent.primary" : "none"}
-              borderColor={"accent.primary"}
-              borderWidth={followStatus ? "none" : "1px"}
-              color={followStatus ? "text.primary" : "accent.primary"}
-              size={"2xs"}
-              rounded={"full"}
-              onClick={() => {
-                followModerator({ followed_id: data.id, follower_id: id });
-              }}
-            >
-              <HiPlus />
-              {followStatus ? "Following" : "Follow"}
-            </Button>
+            {!displayOnly && (
+              <Button
+                variant={followStatus ? "solid" : "outline"}
+                bg={followStatus ? "accent.primary" : "none"}
+                borderColor={"accent.primary"}
+                borderWidth={followStatus ? "none" : "1px"}
+                color={followStatus ? "text.primary" : "accent.primary"}
+                size={"2xs"}
+                rounded={"full"}
+                onClick={() => {
+                  followModerator({ followed_id: data.id, follower_id: id });
+                }}
+              >
+                <HiPlus />
+                {followStatus ? "Following" : "Follow"}
+              </Button>
+            )}
           </HStack>
         </HStack>
         <Text lineHeight={1} fontWeight={"extralight"} fontSize={"xs"}>

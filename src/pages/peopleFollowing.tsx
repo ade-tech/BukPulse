@@ -12,7 +12,7 @@ import MiniButton from "@/components/ui/miniButton";
 export default function PeopleFollowing() {
   const { currentUser } = useCurrentUser();
   const { followedUsers, isLoadingFollowedUsers } = useFetchFollowedUsers(
-    currentUser?.id || ""
+    currentUser?.id || "",
   );
   const navigate = useNavigate();
 
@@ -41,7 +41,6 @@ export default function PeopleFollowing() {
         </Heading>
       </HStack>
 
-      {/* Content */}
       <Box
         flex={1}
         overflow={"hidden"}
@@ -93,6 +92,7 @@ export default function PeopleFollowing() {
                 key={profile.id}
                 data={profile}
                 id={currentUser?.id || ""}
+                displayOnly={true}
               />
             ))}
           </Stack>

@@ -182,18 +182,24 @@ export default function News() {
             }
             drawerContent={(store) => {
               const submitFn: SubmitHandler<CreateNewsInput> = ({
-                poster_id = currentUser?.id!,
                 post_image,
                 post_caption,
               }) => {
+                if (!currentUser?.id) {
+                  toaster.error({
+                    title: "Authentication Error",
+                  });
+                  return;
+                }
+
                 createNews(
-                  { post_caption, post_image, poster_id },
+                  { post_caption, post_image, poster_id: currentUser.id },
                   {
                     onSuccess: (data) => {
                       playSound(sounds.success);
                       notifyFollowers(
                         {
-                          actorId: poster_id,
+                          actorId: currentUser.id,
                           title: `${data?.profiles?.name || "Someone"} posted an update!`,
                           body: post_caption || "Check out this new post!",
                           url: `/news/${data?.id}`,
@@ -345,7 +351,7 @@ export default function News() {
                         <Input
                           display={"none"}
                           type="file"
-                          accept="image/*"
+                          accept="image/jpeg, image/png"
                           onChange={(e) => {
                             if (e.target.files) {
                               onChange(e.target.files);

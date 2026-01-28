@@ -153,7 +153,7 @@ export default function UserOnbaording() {
               }}
               top={2}
               bg={"bg.surface"}
-              left={5}
+              left={0}
               pos={"absolute"}
             >
               <HiArrowLeft />

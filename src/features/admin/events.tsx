@@ -136,7 +136,12 @@ export default function Events() {
     return (
       <Stack>
         {pastEvents.map((event) => (
-          <EventListCard key={event.id} data={event} usedBy="admin" />
+          <EventListCard
+            key={event.id}
+            data={event}
+            usedBy="admin"
+            state={{ from: "adminhistory" }}
+          />
         ))}
       </Stack>
     );

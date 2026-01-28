@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { HiArrowLeft } from "react-icons/hi2";
 import MiniButton from "./miniButton";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import {
   useApproveEvent,
   useFetchEvent,
@@ -57,6 +57,11 @@ export default function EventDetails() {
   const { attend, isPending: isAttendingMutate } = useAttendEvent();
   const { unattend, isPending: isUnattendingMutate } = useUnattendEvent();
   const { sendNotification } = useSendPushNotification();
+  const location = useLocation();
+  const from = location.state?.from;
+  const hideButtons = from === "history";
+  const hideAdminFn = from === "adminhistory";
+
   const {
     register,
     handleSubmit,
@@ -160,173 +165,178 @@ export default function EventDetails() {
               <Text>{eventData?.event_location}</Text>
             </HStack>
           </Stack>
-          <ButtonGroup w={"11/12"} mt={5}>
-            {isSuperAdmin ? (
-              <>
-                {eventData?.event_status === "pending" && (
-                  <Button
-                    rounded={"full"}
-                    w={"1/2"}
-                    disabled={isPending}
-                    bg={"accent.primary"}
-                    onClick={() => {
-                      approveEvent(eventData?.id!, {
-                        onSuccess: () => {
-                          notifyAllUsers({
-                            actorId: currentUser?.id!,
-                            title: `New Event: ${eventData.event_title}`,
-                            url: `/events/${eventData.id}`,
-                            body: `${eventData.event_description}`,
-                            tag: "new-event",
-                          });
-                          playSound(sounds.success);
-                          toaster.create({
-                            title: "Event Approved!",
-                          });
-                          navigate(-1);
-                        },
-                      });
-                    }}
-                  >
-                    Approve
-                  </Button>
-                )}
-                <AppDrawer
-                  placement="bottom"
-                  trigger={
+          {hideAdminFn && (
+            <ButtonGroup w={"11/12"} mt={5}>
+              {isSuperAdmin ? (
+                <>
+                  {eventData?.event_status === "pending" && (
                     <Button
                       rounded={"full"}
                       w={"1/2"}
-                      color={"white"}
-                      bg={"red.600"}
-                      variant={"solid"}
-                    >
-                      Unapprove
-                    </Button>
-                  }
-                  drawerTitle="Reject Event Approval"
-                  drawerContent={(store) => {
-                    const submitFn: SubmitHandler<EventRejectionFormInput> = ({
-                      rejection_reason,
-                    }) => {
-                      rejectEvent(
-                        {
-                          event_id: eventData?.id!,
-                          reason: rejection_reason,
-                        },
-                        {
-                          onSuccess: (data) => {
-                            sendNotification({
-                              userIds: [data.creator_id],
-                              title: "Event Approval Rejected",
-                              body: `Event was rejected because ${data.rejection_reason}`,
-                              url: `/events/${data.id}`,
-                              tag: "event-rejection",
-                            });
-                            toaster.create({
-                              title: "Approval Rejection Successful!",
+                      disabled={isPending}
+                      bg={"accent.primary"}
+                      onClick={() => {
+                        approveEvent(eventData?.id!, {
+                          onSuccess: () => {
+                            notifyAllUsers({
+                              actorId: currentUser?.id!,
+                              title: `New Event: ${eventData.event_title}`,
+                              url: `/events/${eventData.id}`,
+                              body: `${eventData.event_description}`,
+                              tag: "new-event",
                             });
                             playSound(sounds.success);
-                            store.setOpen(false);
+                            toaster.create({
+                              title: "Event Approved!",
+                            });
                             navigate(-1);
                           },
-                        },
-                      );
-                    };
-                    return (
-                      <form className="mt-6! mb-6! flex flex-col gap-3">
-                        <Field.Root
-                          w={"full"}
-                          invalid={!!errors.rejection_reason}
-                        >
-                          <Textarea
-                            {...register("rejection_reason", {
-                              required: "You reject an event without a reason",
-                              validate: (input) => {
-                                return (
-                                  input.length > 10 || "Enter a valid reason!"
-                                );
-                              },
-                            })}
-                            rounded={"lg"}
-                            size={"xl"}
-                            color={"text.primary"}
-                            fontSize={"sm"}
-                            focusRing={"none"}
-                            _focus={{
-                              outline: "none",
-                              border: "none",
-                            }}
-                            bg={"bg.surface"}
-                            placeholder={"Enter Rejection Reason"}
-                            resize={"none"}
-                            _placeholder={{
-                              fontSize: "sm",
-                              color: "text.secondary",
-                              fontWeight: "light",
-                            }}
-                          />
-                          {errors.rejection_reason && (
-                            <Field.ErrorText>
-                              {errors.rejection_reason.message}
-                            </Field.ErrorText>
-                          )}
-                        </Field.Root>
-                        <Button
-                          onClick={handleSubmit(submitFn)}
-                          disabled={isRejecting}
-                          w={"full"}
-                          size={"xl"}
-                          bg={"red.600"}
-                          rounded={"lg"}
-                        >
-                          Reject Approval Request
-                        </Button>
-                      </form>
-                    );
-                  }}
-                />{" "}
-              </>
-            ) : (
-              <HStack w={"full"} justifyContent={"space-between"}>
-                <Button
-                  w={"3/5"}
-                  size={"xl"}
-                  bg={isAttending ? "red.600" : "accent.primary"}
-                  rounded={"lg"}
-                  disabled={
-                    isChecking ||
-                    isLoadingAttendees ||
-                    isAttendingMutate ||
-                    isUnattendingMutate
-                  }
-                  onClick={() => {
-                    if (isAttending) {
-                      unattend(eventData?.id!);
-                      playSound(sounds.error);
-                      toaster.create({
-                        title: "You have unattended the event",
-                      });
-                    } else {
-                      attend(eventData?.id!);
-                      playSound(sounds.success);
-                      toaster.create({ title: "You are now attending" });
-                    }
-                  }}
-                >
-                  {(isAttendingMutate || isUnattendingMutate) && (
-                    <Spinner size="sm" mr={3} />
+                        });
+                      }}
+                    >
+                      Approve
+                    </Button>
                   )}
-                  {isAttending ? "Unattend" : "Attend Event"}
-                </Button>
-                <Text color={"text.secondary"}>
-                  {isLoadingAttendees
-                    ? "..."
-                    : `${attendeesCount ?? 0} attending`}
-                </Text>
-              </HStack>
-            )}
-          </ButtonGroup>
+                  <AppDrawer
+                    placement="bottom"
+                    trigger={
+                      <Button
+                        rounded={"full"}
+                        w={"1/2"}
+                        color={"white"}
+                        bg={"red.600"}
+                        variant={"solid"}
+                      >
+                        Unapprove
+                      </Button>
+                    }
+                    drawerTitle="Reject Event Approval"
+                    drawerContent={(store) => {
+                      const submitFn: SubmitHandler<
+                        EventRejectionFormInput
+                      > = ({ rejection_reason }) => {
+                        rejectEvent(
+                          {
+                            event_id: eventData?.id!,
+                            reason: rejection_reason,
+                          },
+                          {
+                            onSuccess: (data) => {
+                              sendNotification({
+                                userIds: [data.creator_id],
+                                title: "Event Approval Rejected",
+                                body: `Event was rejected because ${data.rejection_reason}`,
+                                url: `/events/${data.id}`,
+                                tag: "event-rejection",
+                              });
+                              toaster.create({
+                                title: "Approval Rejection Successful!",
+                              });
+                              playSound(sounds.success);
+                              store.setOpen(false);
+                              navigate(-1);
+                            },
+                          },
+                        );
+                      };
+                      return (
+                        <form className="mt-6! mb-6! flex flex-col gap-3">
+                          <Field.Root
+                            w={"full"}
+                            invalid={!!errors.rejection_reason}
+                          >
+                            <Textarea
+                              {...register("rejection_reason", {
+                                required:
+                                  "You reject an event without a reason",
+                                validate: (input) => {
+                                  return (
+                                    input.length > 10 || "Enter a valid reason!"
+                                  );
+                                },
+                              })}
+                              rounded={"lg"}
+                              size={"xl"}
+                              color={"text.primary"}
+                              fontSize={"sm"}
+                              focusRing={"none"}
+                              _focus={{
+                                outline: "none",
+                                border: "none",
+                              }}
+                              bg={"bg.surface"}
+                              placeholder={"Enter Rejection Reason"}
+                              resize={"none"}
+                              _placeholder={{
+                                fontSize: "sm",
+                                color: "text.secondary",
+                                fontWeight: "light",
+                              }}
+                            />
+                            {errors.rejection_reason && (
+                              <Field.ErrorText>
+                                {errors.rejection_reason.message}
+                              </Field.ErrorText>
+                            )}
+                          </Field.Root>
+                          <Button
+                            onClick={handleSubmit(submitFn)}
+                            disabled={isRejecting}
+                            w={"full"}
+                            size={"xl"}
+                            bg={"red.600"}
+                            rounded={"lg"}
+                          >
+                            Reject Approval Request
+                          </Button>
+                        </form>
+                      );
+                    }}
+                  />{" "}
+                </>
+              ) : (
+                hideButtons && (
+                  <HStack w={"full"} justifyContent={"space-between"}>
+                    <Button
+                      w={"3/5"}
+                      size={"xl"}
+                      bg={isAttending ? "red.600" : "accent.primary"}
+                      rounded={"lg"}
+                      disabled={
+                        isChecking ||
+                        isLoadingAttendees ||
+                        isAttendingMutate ||
+                        isUnattendingMutate
+                      }
+                      onClick={() => {
+                        if (isAttending) {
+                          unattend(eventData?.id!);
+                          playSound(sounds.error);
+                          toaster.create({
+                            title: "You have unattended the event",
+                          });
+                        } else {
+                          attend(eventData?.id!);
+                          playSound(sounds.success);
+                          toaster.create({ title: "You are now attending" });
+                        }
+                      }}
+                    >
+                      {(isAttendingMutate || isUnattendingMutate) && (
+                        <Spinner size="sm" mr={3} />
+                      )}
+                      {isAttending ? "Unattend" : "Attend Event"}
+                    </Button>
+                    <Text color={"text.secondary"}>
+                      {isLoadingAttendees
+                        ? "..."
+                        : `${attendeesCount ?? 0} attending`}
+                    </Text>
+                  </HStack>
+                )
+              )}
+            </ButtonGroup>
+          )}
         </Box>
       )}
     </Box>

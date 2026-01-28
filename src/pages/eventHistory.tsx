@@ -86,7 +86,12 @@ export default function EventHistory() {
         ) : (
           <Stack gap={3}>
             {pastAttendedEvents.map((event) => (
-              <EventListCard key={event.id} data={event} usedBy="user" />
+              <EventListCard
+                key={event.id}
+                data={event}
+                usedBy="user"
+                state={{ from: "history" }}
+              />
             ))}
           </Stack>
         )}

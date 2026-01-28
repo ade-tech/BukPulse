@@ -35,8 +35,8 @@ export default function AccountsToFollow({
           setStep((curStep) => (curStep !== 0 ? (curStep -= 1) : curStep));
         }}
         top={1}
+        left={0}
         bg={"bg.surface"}
-        left={5}
         pos={"absolute"}
       >
         <HiArrowLeft />

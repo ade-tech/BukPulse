@@ -21,9 +21,14 @@ import { MdVerified } from "react-icons/md";
 export default function EventListCard({
   data,
   usedBy = "admin",
+  state,
 }: {
   data: Event;
+  isHistory?: boolean;
   usedBy?: "admin" | "user";
+  state?: {
+    from: string;
+  };
 }) {
   return (
     <Link
@@ -33,6 +38,7 @@ export default function EventListCard({
           ? `/admin/approve-events/${data.id}`
           : `/events/${data.id}`
       }
+      state={state}
     >
       <Box
         flexBasis={"1/4"}
