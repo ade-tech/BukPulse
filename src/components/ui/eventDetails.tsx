@@ -46,6 +46,15 @@ interface EventRejectionFormInput {
   rejection_reason: string;
 }
 
+/**
+ * Renders a detailed view of an event including metadata, image, and contextual actions.
+ *
+ * Shows attend/unattend controls for regular users and approve/reject workflows for super admins.
+ * Which controls are shown is determined by the current user role and the navigation origin state
+ * (e.g., `location.state.from` can hide attendee buttons or admin functions).
+ *
+ * @returns The React element for the event details screen.
+ */
 export default function EventDetails() {
   const { id } = useParams();
   const { isSuperAdmin, currentUser } = useCurrentUser();

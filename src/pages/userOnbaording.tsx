@@ -20,6 +20,13 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { HiArrowLeft } from "react-icons/hi2";
 
+/**
+ * Render the multi-step user onboarding flow for picking a profile image, entering a name, and selecting accounts to follow.
+ *
+ * Renders step-specific UI, manages local step state and form validation, and invokes the user profile update handler when submitting name/image data.
+ *
+ * @returns A JSX element that displays the onboarding user interface
+ */
 export default function UserOnbaording() {
   const [step, setStep] = useState<number>(0);
   const { currentUser } = useCurrentUser();
