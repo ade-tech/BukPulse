@@ -55,6 +55,13 @@ const inputCategories = createListCollection({
   ],
 });
 
+/**
+ * Render the events management UI for admins, including event creation and lists of upcoming and past events.
+ *
+ * The component adapts its view based on the current user's role: regular admins see a past-events centered layout with a floating create drawer, while super admins see tabbed Upcoming and Past views. It also contains the event creation form with image handling and validation.
+ *
+ * @returns The Events React element that displays event lists, the create-event drawer/form, and role-specific controls and states.
+ */
 export default function Events() {
   const {
     register,

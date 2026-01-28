@@ -24,10 +24,10 @@ export const checkAdminAddressValidity = async (
 };
 
 /**
- * Sends a one-time password (OTP) to the given email address for authentication.
+ * Send a one-time password (OTP) to the specified email for authentication.
  *
- * @param email - The recipient email address for the OTP
- * @throws Error if the OTP could not be sent
+ * @param email - The recipient email address
+ * @throws Error if Supabase fails to send the OTP
  */
 export async function sendOTP(email: string) {
   const { error: otpError } = await supabase.auth.signInWithOtp({
@@ -165,6 +165,11 @@ export async function updateUserProfile({
   if (error) throw new Error("We could not update your profile");
 }
 
+/**
+ * Marks the currently authenticated user as no longer new by clearing the `is_new` flag.
+ *
+ * @throws Error when the profile update fails (message: "An Error Occured 101")
+ */
 export async function updateNewUser() {
   const { error: profileUpdate } = await supabase.auth.updateUser({
     data: { is_new: false },

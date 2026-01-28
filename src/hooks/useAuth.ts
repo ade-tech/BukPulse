@@ -63,6 +63,11 @@ export function useUpdateUserProfile() {
   return { updateUserProfile, isUpdatingUserProfile };
 }
 
+/**
+ * Fetches the list of all moderators.
+ *
+ * @returns An object with `data` (the fetched moderators array or `undefined` if not loaded) and `isLoading` (`true` while the request is in progress, `false` otherwise)
+ */
 export function useFetchModerators() {
   const { data, isLoading } = useQuery({
     queryKey: ["All Moderators"],

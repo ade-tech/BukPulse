@@ -20,11 +20,11 @@ import { HiArrowLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
 
 /**
- * Renders a form for creating a new moderator with image, email, name, fixed role ("Admin"), and description.
+ * Render a form to create a moderator with image, email, name, fixed role ("Admin"), and description.
  *
- * On submit it calls the createModerator handler; on success it navigates back one step and displays a success toaster, and on error displays an error toaster with the error message.
+ * Submits form data to the createModerator handler; on success navigates back one step and shows a success toaster, on error shows an error toaster with the error message.
  *
- * @returns The React element for the "Create Moderator" UI.
+ * @returns The React element for the Create Moderator UI
  */
 export default function NewModerator() {
   const navigate = useNavigate();

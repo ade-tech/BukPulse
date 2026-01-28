@@ -15,6 +15,14 @@ import {
 import { HiPlus } from "react-icons/hi2";
 import { MdVerified } from "react-icons/md";
 
+/**
+ * Render a user account card showing avatar, display name, description, and an optional follow button.
+ *
+ * @param data - The profile to display (name, image_url, id, description).
+ * @param id - The current user id used as the follower when toggling follow state.
+ * @param displayOnly - If `true`, hides the follow button and renders the card in read-only mode.
+ * @returns The account card as a JSX element.
+ */
 export default function AccountsCard({
   data,
   id,

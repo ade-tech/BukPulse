@@ -8,6 +8,13 @@ import EventListCard, {
 } from "@/components/ui/eventListCard";
 import MiniButton from "@/components/ui/miniButton";
 
+/**
+ * Display the Events History view that shows loading placeholders, an empty state, or a list of past attended events.
+ *
+ * The component fetches past attended events, provides a back navigation control, and passes a `state` of `{ from: "history" }` to each event card when rendering the list.
+ *
+ * @returns The Events History JSX element
+ */
 export default function EventHistory() {
   const { pastAttendedEvents, isLoadingPastEvents } =
     useFetchPastAttendedEvents();

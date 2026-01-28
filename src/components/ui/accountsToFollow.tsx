@@ -11,6 +11,15 @@ interface AccountsToFollow {
   user_id: string;
 }
 
+/**
+ * Render the "Moderators you might like" onboarding step that lets the user follow suggested moderators and advance.
+ *
+ * Clicking the "Next" button updates the user and navigates to the home route; the button is disabled until the user has followed at least one moderator or while loading/updating.
+ *
+ * @param setStep - Function to update the current onboarding step index
+ * @param user_id - ID of the current user used to personalize follow actions
+ * @returns The JSX UI for selecting moderators and proceeding in the onboarding flow
+ */
 export default function AccountsToFollow({
   setStep,
   user_id,

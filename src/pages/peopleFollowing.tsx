@@ -9,6 +9,11 @@ import AccountsCard, {
 } from "@/components/ui/accountCard";
 import MiniButton from "@/components/ui/miniButton";
 
+/**
+ * Renders the "People you follow" screen with a back button, a header, and a scrollable content area that shows loading skeletons while followed users load, an empty-state message when none exist, or a read-only list of followed accounts.
+ *
+ * @returns The React element for the People Following page.
+ */
 export default function PeopleFollowing() {
   const { currentUser } = useCurrentUser();
   const { followedUsers, isLoadingFollowedUsers } = useFetchFollowedUsers(
