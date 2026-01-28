@@ -18,12 +18,28 @@ import { formatNumbers } from "@/lib/FormatNumbers";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdVerified } from "react-icons/md";
 
+/**
+ * Render a compact event card that links to either the admin approval page or the public event page.
+ *
+ * The card displays the event image, truncated title, organizer name with verification, formatted date and time,
+ * attendee count, and a truncated location. When `usedBy` is `"admin"`, the link target is `/admin/approve-events/{id}`, otherwise `/events/{id}`. The provided `state` is forwarded to the link.
+ *
+ * @param data - The event data to display
+ * @param usedBy - Context for the card; `"admin"` links to the admin approval route, `"user"` links to the public event route
+ * @param state - Optional location state to forward through the link (e.g., `{ from: string }`)
+ * @returns The rendered event card as a JSX element
+ */
 export default function EventListCard({
   data,
   usedBy = "admin",
+  state,
 }: {
   data: Event;
+  isHistory?: boolean;
   usedBy?: "admin" | "user";
+  state?: {
+    from: string;
+  };
 }) {
   return (
     <Link
@@ -33,6 +49,7 @@ export default function EventListCard({
           ? `/admin/approve-events/${data.id}`
           : `/events/${data.id}`
       }
+      state={state}
     >
       <Box
         flexBasis={"1/4"}

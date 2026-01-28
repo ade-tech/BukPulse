@@ -15,12 +15,22 @@ import {
 import { HiPlus } from "react-icons/hi2";
 import { MdVerified } from "react-icons/md";
 
+/**
+ * Render a user account card showing avatar, display name, description, and an optional follow button.
+ *
+ * @param data - The profile to display (name, image_url, id, description).
+ * @param id - The current user id used as the follower when toggling follow state.
+ * @param displayOnly - If `true`, hides the follow button and renders the card in read-only mode.
+ * @returns The account card as a JSX element.
+ */
 export default function AccountsCard({
   data,
   id,
+  displayOnly = false,
 }: {
   data: Profile;
   id: string;
+  displayOnly?: boolean;
 }) {
   const { followModerator } = useFollowModerator();
   const { data: followStatus } = useCheckFollowStatus({
@@ -58,21 +68,23 @@ export default function AccountsCard({
               <Box as={MdVerified} color="accent.primary" />
             </Text>
             <Spacer />
-            <Button
-              variant={followStatus ? "solid" : "outline"}
-              bg={followStatus ? "accent.primary" : "none"}
-              borderColor={"accent.primary"}
-              borderWidth={followStatus ? "none" : "1px"}
-              color={followStatus ? "text.primary" : "accent.primary"}
-              size={"2xs"}
-              rounded={"full"}
-              onClick={() => {
-                followModerator({ followed_id: data.id, follower_id: id });
-              }}
-            >
-              <HiPlus />
-              {followStatus ? "Following" : "Follow"}
-            </Button>
+            {!displayOnly && (
+              <Button
+                variant={followStatus ? "solid" : "outline"}
+                bg={followStatus ? "accent.primary" : "none"}
+                borderColor={"accent.primary"}
+                borderWidth={followStatus ? "none" : "1px"}
+                color={followStatus ? "text.primary" : "accent.primary"}
+                size={"2xs"}
+                rounded={"full"}
+                onClick={() => {
+                  followModerator({ followed_id: data.id, follower_id: id });
+                }}
+              >
+                <HiPlus />
+                {followStatus ? "Following" : "Follow"}
+              </Button>
+            )}
           </HStack>
         </HStack>
         <Text lineHeight={1} fontWeight={"extralight"} fontSize={"xs"}>

@@ -63,6 +63,11 @@ export function useUpdateUserProfile() {
   return { updateUserProfile, isUpdatingUserProfile };
 }
 
+/**
+ * Fetches the list of all moderators.
+ *
+ * @returns An object with `data` (the fetched moderators array or `undefined` if not loaded) and `isLoading` (`true` while the request is in progress, `false` otherwise)
+ */
 export function useFetchModerators() {
   const { data, isLoading } = useQuery({
     queryKey: ["All Moderators"],
@@ -71,6 +76,13 @@ export function useFetchModerators() {
   return { data, isLoading };
 }
 
+/**
+ * Creates a mutation hook for updating a new user's data.
+ *
+ * @returns An object containing:
+ * - `updateUser` — the mutation function to trigger the update.
+ * - `isUpdatingUser` — `true` if the update is in progress, `false` otherwise.
+ */
 export function useUpdateNewUser() {
   const { mutate: updateUser, isPending: isUpdatingUser } = useMutation({
     mutationFn: updateNewUser,
@@ -79,6 +91,13 @@ export function useUpdateNewUser() {
   return { updateUser, isUpdatingUser };
 }
 
+/**
+ * Create a React Query mutation hook for sending a one-time password (OTP).
+ *
+ * @returns An object containing:
+ * - `send` — Mutation function that triggers sending the OTP.
+ * - `isSending` — `true` while the send mutation is pending, `false` otherwise.
+ */
 export function useSendOTP() {
   const { mutate: send, isPending: isSending } = useMutation({
     mutationFn: sendOTP,

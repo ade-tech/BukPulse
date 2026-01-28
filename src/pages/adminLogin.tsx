@@ -22,6 +22,15 @@ export interface AdminFormInputs {
   otp: string[];
 }
 
+/**
+ * Render the moderator sign-in interface with email collection, OTP entry, resend cooldown, and verification.
+ *
+ * The component manages a two-step flow using a `page` query parameter: collect an email to send a 6-digit
+ * OTP, then accept the OTP to verify the moderator. It enforces a 60-second resend cooldown and wires
+ * to hooks that send and verify OTPs.
+ *
+ * @returns The rendered React element for the moderator sign-in and OTP verification UI.
+ */
 export default function AdminLogin() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { verifyOTP } = useverifyAdminOTP();
@@ -41,7 +50,13 @@ export default function AdminLogin() {
   });
   const page = Number(searchParams.get("page")) || 1;
 
+  /**
+   * Disable OTP resend and schedule re-enabling after a 60-second cooldown.
+   *
+   * Immediately disables the "Resend OTP" control, clears any existing cooldown timer, and starts a new 60-second timer that re-enables the resend action when it expires.
+   */
   function resendTimeout() {
+    setCanResendOTP(false);
     if (timeoutID.current) {
       clearTimeout(timeoutID.current);
       timeoutID.current = null;
@@ -158,7 +173,6 @@ export default function AdminLogin() {
               onClick={() => {
                 send(getValues("email"), {
                   onSuccess: () => {
-                    setCanResendOTP(false);
                     resendTimeout();
                   },
                   onError: () =>
