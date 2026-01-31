@@ -3,7 +3,6 @@ import { NavLink, Outlet, useLocation } from "react-router";
 import Menu from "./ui/menu";
 import Logo from "./ui/logo";
 import { useCurrentUser } from "@/contexts/AuthContext";
-import { IoMdNotifications } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 
 /**
