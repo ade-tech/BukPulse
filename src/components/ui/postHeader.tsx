@@ -9,11 +9,13 @@ import {
   Button,
   Span,
 } from "@chakra-ui/react";
+import { Link } from "react-router";
 import type { User } from "@supabase/supabase-js";
 import { MdVerified } from "react-icons/md";
 
 interface PostHeaderProps {
   profiles: Post["profiles"];
+  poster_id: string;
   isOwnPost: boolean;
   handleFollow: () => void;
   isChecking: boolean;
@@ -29,6 +31,7 @@ export default function PostHeader({
   isFollowing,
   isOwnPost,
   created_at,
+  poster_id,
   currentUser,
   isMakeEffect,
   handleFollow,
@@ -50,8 +53,19 @@ export default function PostHeader({
             fontWeight={"semibold"}
             lineHeight={1}
           >
-            {profiles?.name}
-            <Box as={MdVerified} color="accent.primary" />
+            <Link
+              to={`/account/${poster_id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              {profiles?.name}
+              <Box as={MdVerified} color="accent.primary" />
+            </Link>
             <Span
               fontSize={"sm"}
               mt={0.5}

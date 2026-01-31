@@ -18,6 +18,7 @@ export default function Menu() {
       /^\/news\/[^/]+$/,
       /^\/events\/[^/]+$/,
       /^\/account$/,
+      /^\/account\/[^/]+$/,
     ];
 
     return hiddenRoutes.some((pattern) => pattern.test(path));

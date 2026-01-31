@@ -76,11 +76,22 @@ export default function EventCard() {
     </Stack>
   );
 }
-export function EventAdminCard({ data }: { data: Event }) {
+export function EventAdminCard({
+  data,
+  isOrdinaryAdmin = false,
+}: {
+  data: Event;
+  isOrdinaryAdmin?: boolean;
+}) {
+  const linkState = isOrdinaryAdmin && { from: "history" };
+  const linkPath = isOrdinaryAdmin
+    ? `/events/${data.id}`
+    : `/admin/approve-events/${data.id}`;
   return (
     <Link
-      to={`/admin/approve-events/${data.id}`}
+      to={linkPath}
       style={{ textDecoration: "none", width: "100%" }}
+      state={linkState}
     >
       <Stack
         w={"full"}

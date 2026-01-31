@@ -69,6 +69,7 @@ export default function PostCard({
         )}
         <Box flex={1}>
           <PostHeader
+            poster_id={data.poster_id}
             created_at={data.created_at}
             isMakeEffect={isFollowingModertor}
             profiles={data.profiles}

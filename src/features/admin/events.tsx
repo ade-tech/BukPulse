@@ -55,13 +55,6 @@ const inputCategories = createListCollection({
   ],
 });
 
-/**
- * Render the events management UI for admins, including event creation and lists of upcoming and past events.
- *
- * The component adapts its view based on the current user's role: regular admins see a past-events centered layout with a floating create drawer, while super admins see tabbed Upcoming and Past views. It also contains the event creation form with image handling and validation.
- *
- * @returns The Events React element that displays event lists, the create-event drawer/form, and role-specific controls and states.
- */
 export default function Events() {
   const {
     register,
@@ -75,6 +68,7 @@ export default function Events() {
   const {
     isLoading: isAuthLoading,
     isSuperAdmin,
+    isAdmin,
     currentUser,
   } = useCurrentUser();
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -86,7 +80,10 @@ export default function Events() {
   const adminID = useGetSuperAdminId();
   const hasImage = imagePreview !== null;
 
+  // Super admin sees ALL events, regular admin sees only THEIR events
   const creatorId = !isSuperAdmin && currentUser ? currentUser.id : undefined;
+  const isOrdinaryAdmin = isAdmin && !isSuperAdmin;
+
   const { upcomingEventsData, isFetchingEvents } =
     useFetchAllUpcomingEvents(creatorId);
   const { pastEvents, isLoadingPastEvents } = useFetchAllPastEvents(creatorId);
@@ -116,7 +113,44 @@ export default function Events() {
     </Box>
   );
 
-  // Shared past events rendering
+  // Render upcoming events
+  const renderUpcomingEvents = () => {
+    if (isFetchingEvents) {
+      return (
+        <Stack gap={3}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <EventsCardSkeleton key={i} />
+          ))}
+        </Stack>
+      );
+    }
+
+    if (!upcomingEventsData || upcomingEventsData.length === 0) {
+      return (
+        <EmptyState
+          message={
+            isSuperAdmin
+              ? "No upcoming events found"
+              : "You haven't created any upcoming events yet"
+          }
+        />
+      );
+    }
+
+    return (
+      <Stack gap={3}>
+        {upcomingEventsData.map((event) => (
+          <EventAdminCard
+            key={event.id}
+            data={event}
+            isOrdinaryAdmin={isOrdinaryAdmin}
+          />
+        ))}
+      </Stack>
+    );
+  };
+
+  // Render past events
   const renderPastEvents = () => {
     if (isLoadingPastEvents) {
       return (
@@ -141,7 +175,7 @@ export default function Events() {
     }
 
     return (
-      <Stack>
+      <Stack gap={3}>
         {pastEvents.map((event) => (
           <EventListCard
             key={event.id}
@@ -182,7 +216,7 @@ export default function Events() {
             store.setOpen(false);
             reset();
             toaster.create({ title: "Event creation is Successful!" });
-            console.log(isSuperAdmin, currentUser);
+
             if (isSuperAdmin) {
               notifyAllUsers({
                 actorId: currentUser?.id!,
@@ -458,34 +492,7 @@ export default function Events() {
     />
   );
 
-  // Admin view (no tabs, just past events)
-  if (!isSuperAdmin) {
-    return (
-      <Box
-        w="full"
-        h="full"
-        maxW="570px"
-        mx="auto"
-        px={4}
-        py={5}
-        display="flex"
-        flexDir="column"
-        pos="relative"
-      >
-        <Box
-          flex={1}
-          overflow="hidden"
-          overflowY="auto"
-          className="no-scrollbar"
-        >
-          {renderPastEvents()}
-        </Box>
-        {CreateEventButton}
-      </Box>
-    );
-  }
-
-  // Super admin view (with tabs)
+  // Both admin and super_admin see tabbed view
   return (
     <Box
       w="full"
@@ -550,23 +557,7 @@ export default function Events() {
           className="no-scrollbar"
         >
           {/* Upcoming Tab */}
-          <Tabs.Content value="upcoming">
-            {isFetchingEvents ? (
-              <Stack gap={3}>
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <EventsCardSkeleton key={i} />
-                ))}
-              </Stack>
-            ) : !upcomingEventsData || upcomingEventsData.length === 0 ? (
-              <EmptyState message="No upcoming events found" />
-            ) : (
-              <Stack gap={3}>
-                {upcomingEventsData.map((event) => (
-                  <EventAdminCard key={event.id} data={event} />
-                ))}
-              </Stack>
-            )}
-          </Tabs.Content>
+          <Tabs.Content value="upcoming">{renderUpcomingEvents()}</Tabs.Content>
 
           {/* Past Tab */}
           <Tabs.Content value="past">{renderPastEvents()}</Tabs.Content>
