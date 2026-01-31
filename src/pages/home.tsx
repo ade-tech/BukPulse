@@ -78,7 +78,7 @@ export default function Home() {
         posts.map((curPost, index) => (
           <Box key={curPost.id}>
             {index === 10 && (
-              <Box mb={6}>
+              <Box mb={3} mt={2}>
                 <Text fontWeight="bold" mb={3} fontSize="lg">
                   Latest Events
                 </Text>
@@ -102,7 +102,7 @@ export default function Home() {
                       ))
                     : latestEvents && latestEvents.length > 0
                       ? latestEvents.slice(0, 6).map((event) => (
-                          <Box key={event.id} minW="280px" flexShrink={0}>
+                          <Box mt={2} key={event.id} minW="0px" flexShrink={0}>
                             <EventAdminCard data={event} />
                           </Box>
                         ))

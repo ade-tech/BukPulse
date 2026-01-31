@@ -63,22 +63,9 @@ export default function AppLayout() {
                 boxShadow={"sm"}
                 backdropFilter="saturate(180%) blur(6px)"
                 rounded={"full"}
-                py={"2"}
+                py={3}
                 px={3}
               >
-                <NavLink
-                  to={"/notification"}
-                  className="flex justify-center gap-1 flex-col items-center rounded-full h-full"
-                >
-                  {({ isActive }: { isActive: boolean }) => (
-                    <Box
-                      as={IoMdNotifications}
-                      boxSize={6}
-                      color={isActive ? "accent.primary" : "text.primary"}
-                      transition="all 0.2s ease-in-out"
-                    />
-                  )}
-                </NavLink>
                 <NavLink
                   to={"/search"}
                   className="flex justify-center gap-1 flex-col items-center rounded-full h-full"

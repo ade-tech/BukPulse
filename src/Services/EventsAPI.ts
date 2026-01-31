@@ -88,7 +88,11 @@ export const FetchLatestEvents = async () => {
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .order("created_at", { ascending: false });
+    .gte("event_date", new Date().toISOString().split("T")[0])
+    .eq("event_status", "approved")
+    .order("event_date", { ascending: true })
+    .order("event_time", { ascending: true });
+
   if (error) throw error;
   return data as Event[];
 };
