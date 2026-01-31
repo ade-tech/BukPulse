@@ -17,11 +17,12 @@ import { MdVerified } from "react-icons/md";
 import { Link } from "react-router";
 
 /**
- * Render a user account card showing avatar, display name, description, and an optional follow button.
+ * Renders a user account card showing avatar, display name, description, and an optional follow button.
  *
- * @param data - The profile to display (name, image_url, id, description).
+ * @param data - The profile to display (includes name, image_url, id, and description).
  * @param id - The current user id used as the follower when toggling follow state.
  * @param displayOnly - If `true`, hides the follow button and renders the card in read-only mode.
+ * @param searchResult - If `true`, uses a compact layout suitable for search results.
  * @returns The account card as a JSX element.
  */
 export default function AccountsCard({
@@ -109,6 +110,12 @@ export default function AccountsCard({
     </Box>
   );
 }
+/**
+ * Renders a loading skeleton placeholder for an account card.
+ *
+ * @param isLast - When `true`, the bottom border is removed to indicate the last item.
+ * @returns The JSX element representing the account card skeleton placeholder.
+ */
 export function AccountsCardSkeleton({ isLast = false }: { isLast?: boolean }) {
   return (
     <Box

@@ -18,6 +18,14 @@ import type { Event } from "@/lib/types";
 import { Link } from "react-router";
 import { Capitalize } from "@/lib/Captialize";
 
+/**
+ * Renders a static event card UI used as a visual preview or placeholder.
+ *
+ * The card includes a header image, title, organizer, date/time, location, and action buttons.
+ * All displayed content is static and not driven by props or state.
+ *
+ * @returns The event card as a JSX element
+ */
 export default function EventCard() {
   return (
     <Stack
@@ -76,6 +84,13 @@ export default function EventCard() {
     </Stack>
   );
 }
+/**
+ * Renders an admin-facing event card that links to either the public event page or the admin approval page.
+ *
+ * @param data - Event data used to populate the card (title, image, date, time, location, and status).
+ * @param isOrdinaryAdmin - When true, the card links to `/events/{id}` and includes a link state of `{ from: "history" }`; when false, the card links to `/admin/approve-events/{id}`.
+ * @returns A JSX element representing the clickable event card.
+ */
 export function EventAdminCard({
   data,
   isOrdinaryAdmin = false,

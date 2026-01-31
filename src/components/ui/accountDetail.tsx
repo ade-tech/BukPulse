@@ -23,6 +23,13 @@ import {
   useGetUserOtherProfileData,
 } from "@/hooks/useProfile";
 
+/**
+ * Renders a user account detail view including avatar, bio, follower/post counts, and a grid of the user's posts.
+ *
+ * Displays a loading skeleton while profile or additional profile data is loading, shows a "Profile not found" message if the profile is absent, and renders an empty-state message when the user has no posts.
+ *
+ * @returns The component UI for the account detail view (loading state, not-found state, empty-posts state, or populated profile with post grid).
+ */
 export function AccountDetails() {
   const { id } = useParams();
   const { profile, isLoading } = useGetProfileFromId(id!);
@@ -161,6 +168,11 @@ export function AccountDetails() {
   );
 }
 
+/**
+ * Renders a skeleton placeholder for the admin account details view while profile and related data load.
+ *
+ * @returns A JSX element containing a circular avatar skeleton, title/description skeletons, follower/post count skeletons, and a 3x3 grid of image skeleton tiles.
+ */
 export function AdminAccountPreLoader() {
   return (
     <Box
@@ -200,6 +212,11 @@ export function AdminAccountPreLoader() {
     </Box>
   );
 }
+/**
+ * Render a compact skeleton placeholder for a user's account header while profile data loads.
+ *
+ * @returns A JSX element containing a circular avatar skeleton and skeleton lines that mimic the user's name and description.
+ */
 export function UserAccountPreLoader() {
   return (
     <Box

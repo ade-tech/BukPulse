@@ -25,6 +25,20 @@ interface PostHeaderProps {
   created_at: string;
 }
 
+/**
+ * Renders the post header including the author's avatar, a link to their account with verification icon, relative post time, description, and a conditional Follow button.
+ *
+ * @param profiles - Profile data for the author (name, image_url, description)
+ * @param poster_id - Author's ID used to build the account link (/account/{poster_id})
+ * @param isChecking - Whether follow state is currently being checked; hides the Follow button when true
+ * @param isFollowing - Whether the current user already follows the author; hides the Follow button when true
+ * @param isOwnPost - Whether the post belongs to the current user; hides the Follow button when true
+ * @param created_at - Timestamp string for when the post was created (used to display relative time)
+ * @param currentUser - The currently signed-in user, or null if unauthenticated
+ * @param isMakeEffect - Whether a follow/unfollow effect is in progress; disables the Follow button when true
+ * @param handleFollow - Callback invoked when the Follow button is clicked
+ * @returns The JSX element representing the post header
+ */
 export default function PostHeader({
   profiles,
   isChecking,

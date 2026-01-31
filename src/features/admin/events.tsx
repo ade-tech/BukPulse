@@ -55,6 +55,15 @@ const inputCategories = createListCollection({
   ],
 });
 
+/**
+ * Render the admin events management UI with tabs for Upcoming and Past events and a drawer-based form to create new events.
+ *
+ * The component is role-aware: super admins see all events while regular admins see only their own. It shows loading skeletons, empty states, and list cards for events, and provides a floating "Create New Event" drawer that handles image upload, validation, and submission.
+ *
+ * On successful event creation the form resets and the component triggers notifications: super admins broadcast to all users; regular admins notify the super admin for approval when appropriate.
+ *
+ * @returns The rendered admin events management interface (tabbed Upcoming/Past views, event lists or skeletons/empty states, and a floating create-event drawer/form).
+ */
 export default function Events() {
   const {
     register,

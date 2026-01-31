@@ -6,6 +6,13 @@ import { useCurrentUser } from "@/contexts/AuthContext";
 import { IoMdNotifications } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 
+/**
+ * Top-level application layout that conditionally shows header actions and the bottom menu.
+ *
+ * Renders a full-height page container with a Logo header, an action icon group (notifications and search), the nested route Outlet, and a Menu. The header (Logo and icons) and Menu are hidden on "clean" pages (exact paths `/search` and `/notification`). The action icons and Menu are shown only when there is a current user whose `user_metadata.is_new` is falsy and the current path does not match hidden routes (`/news/:id`, `/events/:id`, or `/account`).
+ *
+ * @returns The rendered layout element containing the conditional header, Outlet for nested routes, and conditional Menu.
+ */
 export default function AppLayout() {
   const { currentUser } = useCurrentUser();
   const location = useLocation();
