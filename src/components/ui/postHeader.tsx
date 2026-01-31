@@ -9,11 +9,13 @@ import {
   Button,
   Span,
 } from "@chakra-ui/react";
+import { Link } from "react-router";
 import type { User } from "@supabase/supabase-js";
 import { MdVerified } from "react-icons/md";
 
 interface PostHeaderProps {
   profiles: Post["profiles"];
+  poster_id: string;
   isOwnPost: boolean;
   handleFollow: () => void;
   isChecking: boolean;
@@ -23,12 +25,27 @@ interface PostHeaderProps {
   created_at: string;
 }
 
+/**
+ * Renders the post header including the author's avatar, a link to their account with verification icon, relative post time, description, and a conditional Follow button.
+ *
+ * @param profiles - Profile data for the author (name, image_url, description)
+ * @param poster_id - Author's ID used to build the account link (/account/{poster_id})
+ * @param isChecking - Whether follow state is currently being checked; hides the Follow button when true
+ * @param isFollowing - Whether the current user already follows the author; hides the Follow button when true
+ * @param isOwnPost - Whether the post belongs to the current user; hides the Follow button when true
+ * @param created_at - Timestamp string for when the post was created (used to display relative time)
+ * @param currentUser - The currently signed-in user, or null if unauthenticated
+ * @param isMakeEffect - Whether a follow/unfollow effect is in progress; disables the Follow button when true
+ * @param handleFollow - Callback invoked when the Follow button is clicked
+ * @returns The JSX element representing the post header
+ */
 export default function PostHeader({
   profiles,
   isChecking,
   isFollowing,
   isOwnPost,
   created_at,
+  poster_id,
   currentUser,
   isMakeEffect,
   handleFollow,
@@ -50,8 +67,19 @@ export default function PostHeader({
             fontWeight={"semibold"}
             lineHeight={1}
           >
-            {profiles?.name}
-            <Box as={MdVerified} color="accent.primary" />
+            <Link
+              to={`/account/${poster_id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              {profiles?.name}
+              <Box as={MdVerified} color="accent.primary" />
+            </Link>
             <Span
               fontSize={"sm"}
               mt={0.5}

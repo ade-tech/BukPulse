@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "./components/ui/toaster";
 import { Route, Routes } from "react-router";
 import Login from "./pages/login";
@@ -30,6 +29,9 @@ import EventHistory from "./pages/eventHistory";
 import PeopleFollowing from "./pages/peopleFollowing";
 import { PwaInstallDrawer } from "./components/ui/PWAInstallPrompt";
 import NewsDetail from "./components/ui/NewsDetail";
+import Search from "./pages/search";
+import Notification from "./pages/notification";
+import { AccountDetails } from "./components/ui/accountDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,13 +41,21 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Root application component that configures app-level providers and defines the public, protected, and admin routes.
+ *
+ * The component mounts global providers (React Query client, authentication context, PWA install UI) and renders
+ * top-level UI (toasts). It also declares the application's route hierarchy, including public, protected, and
+ * admin-scoped routes and a fallback error route.
+ *
+ * @returns The root React element tree for the application.
+ */
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <PwaInstallDrawer />
       <AuthContextProvider>
         <Toaster />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         <Routes>
           <Route element={<AppLayout />}>
             <Route element={<PublicRoute />}>
@@ -60,8 +70,11 @@ function App() {
               <Route path="/news" element={<News />} />
               <Route path="/news/:id" element={<NewsDetail />} />
               <Route path="/account" element={<Accounts />} />
+              <Route path="/account/:id" element={<AccountDetails />} />
               <Route path="/event-history" element={<EventHistory />} />
               <Route path="/people-following" element={<PeopleFollowing />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/notifications" element={<Notification />} />
             </Route>
             <Route element={<AdminRoutes />}>
               <Route path="/admin">

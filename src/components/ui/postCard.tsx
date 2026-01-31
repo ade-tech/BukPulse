@@ -18,6 +18,16 @@ import MiniButton from "./miniButton";
 import { HiArrowLeft } from "react-icons/hi2";
 import { useState } from "react";
 
+/**
+ * Render a post card showing the post header, caption (with optional truncation), optional image, and action controls.
+ *
+ * The caption is truncated to 200 characters by default and can be toggled between truncated and full text when not in detail mode.
+ *
+ * @param data - Post data to display (header info, caption, image URL, likes, comments, etc.)
+ * @param isShowingDetail - When true, render the detail view variant (shows a back button and disables caption truncation toggling)
+ * @param isFull - When true, use the full-page background style for the card
+ * @returns The post card React element
+ */
 export default function PostCard({
   data,
   isShowingDetail = false,
@@ -69,6 +79,7 @@ export default function PostCard({
         )}
         <Box flex={1}>
           <PostHeader
+            poster_id={data.poster_id}
             created_at={data.created_at}
             isMakeEffect={isFollowingModertor}
             profiles={data.profiles}

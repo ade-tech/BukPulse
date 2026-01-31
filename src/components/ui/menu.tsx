@@ -8,6 +8,21 @@ import { useLocation } from "react-router";
 
 import MenuBlock from "./menuBlock";
 import { useCurrentUser } from "@/contexts/AuthContext";
+/**
+ * Render the bottom navigation menu for the app.
+ *
+ * The menu shows navigation items: "For You", "Events", "News", and "Accounts".
+ * When the current user is a super admin (and user data has finished loading), an additional
+ * "Console" item is included and the layout adjusts accordingly.
+ *
+ * The menu is hidden (returns `null`) for routes matching:
+ * - `/news/:id`
+ * - `/events/:id`
+ * - `/account`
+ * - `/account/:id`
+ *
+ * @returns The navigation bar JSX element, or `null` when the menu should be hidden for the current route.
+ */
 export default function Menu() {
   const { isSuperAdmin, isLoading } = useCurrentUser();
   const location = useLocation();
@@ -18,6 +33,7 @@ export default function Menu() {
       /^\/news\/[^/]+$/,
       /^\/events\/[^/]+$/,
       /^\/account$/,
+      /^\/account\/[^/]+$/,
     ];
 
     return hiddenRoutes.some((pattern) => pattern.test(path));

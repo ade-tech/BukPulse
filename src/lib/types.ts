@@ -196,3 +196,8 @@ export interface Comment {
     role: string;
   } | null;
 }
+export interface SearchResults {
+  post: Post[];
+  event: Event[];
+  account: Profile[];
+}
