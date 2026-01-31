@@ -41,6 +41,15 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Root application component that configures app-level providers and defines the public, protected, and admin routes.
+ *
+ * The component mounts global providers (React Query client, authentication context, PWA install UI) and renders
+ * top-level UI (toasts). It also declares the application's route hierarchy, including public, protected, and
+ * admin-scoped routes and a fallback error route.
+ *
+ * @returns The root React element tree for the application.
+ */
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

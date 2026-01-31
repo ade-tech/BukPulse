@@ -15,6 +15,13 @@ export const useSearch = (query: string) => {
   });
 };
 
+/**
+ * Debounces a value and returns the latest value after the specified delay.
+ *
+ * @param value - The input value to debounce
+ * @param delay - Delay in milliseconds to wait after the last change before updating the returned value (defaults to 300)
+ * @returns The debounced value, updated to match `value` only after it remains unchanged for `delay` milliseconds
+ */
 export function useDebounce<T>(value: T, delay: number = 300): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 

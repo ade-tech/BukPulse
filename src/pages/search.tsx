@@ -13,6 +13,13 @@ import { HiArrowLeft } from "react-icons/hi2";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router";
 
+/**
+ * Render a centered empty-state display with a bold title and an optional subtitle.
+ *
+ * @param title - The main heading text shown prominently
+ * @param subtitle - Optional secondary text shown beneath the title in muted styling
+ * @returns A JSX element containing the formatted empty-state content
+ */
 function EmptyState({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <Stack align="center" justify="center" py={12} gap={2}>
@@ -30,6 +37,13 @@ interface SearchInput {
   keyword: string;
 }
 
+/**
+ * Search page component that provides a debounced keyword input, syncs the query with the URL `q` parameter, and displays tabbed search results.
+ *
+ * The component shows four tabs—Top, News, Moderators, and Events—each rendering loading skeletons while results load, an empty state when no items match, and the corresponding result cards when available. The keyword input is initialized from the URL on mount and kept in sync as the user types (debounced).
+ *
+ * @returns The search page React element containing the input and tabbed results for moderators, posts, and events.
+ */
 export default function Search() {
   const {
     register,
