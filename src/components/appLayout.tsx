@@ -20,7 +20,12 @@ export default function AppLayout() {
   // Updated regex to match "/notification" (singular) as seen in your NavLink
   const cleanPages = [/^\/search$/, /^\/notification$/];
 
-  const hiddenRoutes = [/^\/news\/[^/]+$/, /^\/events\/[^/]+$/, /^\/account$/];
+  const hiddenRoutes = [
+    /^\/news\/[^/]+$/,
+    /^\/events\/[^/]+$/,
+    /^\/account$/,
+    /^\/account\/[^/]+$/,
+  ];
 
   const showCleanPage = cleanPages.some((pattern) =>
     pattern.test(location.pathname),

@@ -1,12 +1,9 @@
 import {
   Box,
-  Button,
-  ButtonGroup,
   HStack,
   Image,
   Skeleton,
   SkeletonText,
-  Span,
   Stack,
   Tag,
   Text,
@@ -17,73 +14,9 @@ import { format, parse } from "date-fns";
 import type { Event } from "@/lib/types";
 import { Link } from "react-router";
 import { Capitalize } from "@/lib/Captialize";
+import { PiUsersFill } from "react-icons/pi";
+import { formatNumbers } from "@/lib/FormatNumbers";
 
-/**
- * Renders a static event card UI used as a visual preview or placeholder.
- *
- * The card includes a header image, title, organizer, date/time, location, and action buttons.
- * All displayed content is static and not driven by props or state.
- *
- * @returns The event card as a JSX element
- */
-export default function EventCard() {
-  return (
-    <Stack
-      w={"full"}
-      bg={"bg.surface"}
-      rounded={"md"}
-      pos={"relative"}
-      maxW="470px"
-      mb={4}
-      pb={4}
-    >
-      <Box
-        aspectRatio={2.5 / 1}
-        w={"full"}
-        bg={"bg.muted"}
-        roundedTop={"lg"}
-        overflow="hidden"
-      >
-        <Image
-          roundedTop={"lg"}
-          src={"/Artboard 1.jpg"}
-          width="100%"
-          height="100%"
-          objectFit="cover"
-        />
-      </Box>
-      <Box px={4} pb={1} mt={2}>
-        <Text lineHeight={1.2} fontWeight={"semibold"} fontSize={"lg"}>
-          The Importance of a good Family
-        </Text>
-        <Stack mt={1} gap={2}>
-          <Text>
-            Event by{" "}
-            <Span fontWeight={"semibold"} color={"accent.primary"}>
-              Adelopo Adekunle
-            </Span>
-          </Text>
-          <HStack fontSize={"sm"} fontWeight={"light"}>
-            <Box as={IoCalendarClear} color={"accent.primary"} boxSize={5} />{" "}
-            <Text>20th Decemeber 2020 . 12PM WAT</Text>
-          </HStack>
-          <HStack fontSize={"sm"} fontWeight={"light"}>
-            <Box as={FaLocationDot} color={"accent.primary"} boxSize={5} />{" "}
-            <Text>Online . Google Meet</Text>
-          </HStack>
-        </Stack>
-        <ButtonGroup w={"full"} mt={3}>
-          <Button rounded={"full"} w={"1/2"} bg={"accent.primary"}>
-            Attend
-          </Button>
-          <Button rounded={"full"} w={"1/2"} variant={"outline"}>
-            Share
-          </Button>
-        </ButtonGroup>
-      </Box>
-    </Stack>
-  );
-}
 /**
  * Renders an admin-facing event card that links to either the public event page or the admin approval page.
  *
@@ -146,11 +79,10 @@ export function EventAdminCard({
             {data.event_title}
           </Text>
           <HStack mt={1} gap={2}>
-            <HStack w={"1/2"} fontSize={"sm"} fontWeight={"light"}>
+            <HStack w={"3/5"} fontSize={"sm"} fontWeight={"light"}>
               <Box as={IoCalendarClear} color={"accent.primary"} boxSize={5} />{" "}
               <Text lineHeight={1.2}>
-                {format(new Date(data.event_date), "do MMM, yyyy")}.
-                <br />{" "}
+                {format(new Date(data.event_date), "do MMM, yyyy")}.{" "}
                 {format(
                   parse(data.event_time, "HH:mm:ss", new Date()),
                   "h:mm a",
@@ -161,6 +93,10 @@ export function EventAdminCard({
               <Box as={FaLocationDot} color={"accent.primary"} boxSize={5} />{" "}
               <Text>{data.event_location}</Text>
             </HStack>
+          </HStack>
+          <HStack mt={2} fontSize={"sm"} fontWeight={"light"}>
+            <Box as={PiUsersFill} color={"accent.primary"} boxSize={5} />{" "}
+            <Text>{formatNumbers(data.attendees)} Attendees</Text>
           </HStack>
         </Box>
       </Stack>

@@ -27,7 +27,13 @@ export const PwaInstallDrawer = () => {
     if (isStandalone) return;
 
     const userAgent = window.navigator.userAgent.toLowerCase();
-    const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
+    // Detect iOS devices more reliably. iPadOS may report as Mac (MacIntel) but
+    // will have touch points > 1. Also fall back to userAgent for classic iOS.
+    const isMacWithTouch =
+      navigator.platform === "MacIntel" &&
+      (navigator as any).maxTouchPoints > 1;
+    const isIosUA = /iphone|ipad|ipod/.test(userAgent);
+    const isIosDevice = isIosUA || isMacWithTouch;
     setIsIOS(isIosDevice);
 
     const lastDismissed = localStorage.getItem("pwa_prompt_dismissed");
@@ -49,6 +55,7 @@ export const PwaInstallDrawer = () => {
     if (isIosDevice) {
       onOpen();
     } else {
+      // Only register beforeinstallprompt for platforms that support it
       window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     }
 

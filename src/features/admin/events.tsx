@@ -189,7 +189,7 @@ export default function Events() {
           <EventListCard
             key={event.id}
             data={event}
-            usedBy="admin"
+            usedBy={isOrdinaryAdmin ? "admin" : "super_admin"}
             state={{ from: "adminhistory" }}
           />
         ))}

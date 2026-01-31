@@ -13,6 +13,8 @@ import {
   Field,
   Textarea,
   Tag,
+  Table,
+  Avatar,
 } from "@chakra-ui/react";
 import { HiArrowLeft } from "react-icons/hi2";
 import MiniButton from "./miniButton";
@@ -24,6 +26,7 @@ import {
 } from "@/hooks/useEvent";
 import {
   useFetchEventAttendees,
+  useFetchEventAttendeeDetails,
   useAttendEvent,
   useUnattendEvent,
   useIsAttending,
@@ -62,14 +65,17 @@ export default function EventDetails() {
   const { eventData, isFetchingEvent } = useFetchEvent(id!);
   const { notifyAllUsers } = useNotifyAllUsers();
   const { attendeesCount, isLoadingAttendees } = useFetchEventAttendees(id!);
+  const { attendeeDetails, isLoadingAttendeeDetails } =
+    useFetchEventAttendeeDetails(id!);
   const { isAttending, isChecking } = useIsAttending(id!);
   const { attend, isPending: isAttendingMutate } = useAttendEvent();
   const { unattend, isPending: isUnattendingMutate } = useUnattendEvent();
   const { sendNotification } = useSendPushNotification();
   const location = useLocation();
   const from = location.state?.from;
-  const hideButtons = from === "history";
-  const hideAdminFn = from === "adminhistory";
+  const isHistory = from === "history";
+  const isAdminHistory = from === "adminhistory";
+  const hideButtons = isHistory;
 
   const {
     register,
@@ -174,7 +180,42 @@ export default function EventDetails() {
               <Text>{eventData?.event_location}</Text>
             </HStack>
           </Stack>
-          {hideAdminFn && (
+          {isAdminHistory ? (
+            <Box w={"full"} mt={5}>
+              {isLoadingAttendeeDetails ? (
+                <Text>Loading attendees...</Text>
+              ) : attendeeDetails && attendeeDetails.length > 0 ? (
+                <Table.Root rounded={"md"} mt={2}>
+                  <Table.Header>
+                    <Table.Row bg={"bg.surface"}>
+                      <Table.ColumnHeader>Profile</Table.ColumnHeader>
+                      <Table.ColumnHeader>Reg. Number</Table.ColumnHeader>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body bg={"bg.surface"}>
+                    {attendeeDetails.map((a: any) => (
+                      <Table.Row key={a.id} bg={"bg.surface"}>
+                        <Table.Cell>
+                          <HStack>
+                            <Avatar.Root size="sm">
+                              <Avatar.Fallback name={a.name} />
+                              <Avatar.Image src={a.image_url} />
+                            </Avatar.Root>
+                            <Text>{a.name}</Text>
+                          </HStack>
+                        </Table.Cell>
+                        <Table.Cell>
+                          {a.reg_number ?? a.regNumber ?? "-"}
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table.Root>
+              ) : (
+                <Text color={"text.secondary"}>No attendees for the event</Text>
+              )}
+            </Box>
+          ) : (
             <ButtonGroup w={"11/12"} mt={5}>
               {isSuperAdmin ? (
                 <>
@@ -206,105 +247,109 @@ export default function EventDetails() {
                       Approve
                     </Button>
                   )}
-                  <AppDrawer
-                    placement="bottom"
-                    trigger={
-                      <Button
-                        rounded={"full"}
-                        w={"1/2"}
-                        color={"white"}
-                        bg={"red.600"}
-                        variant={"solid"}
-                      >
-                        Unapprove
-                      </Button>
-                    }
-                    drawerTitle="Reject Event Approval"
-                    drawerContent={(store) => {
-                      const submitFn: SubmitHandler<
-                        EventRejectionFormInput
-                      > = ({ rejection_reason }) => {
-                        rejectEvent(
-                          {
-                            event_id: eventData?.id!,
-                            reason: rejection_reason,
-                          },
-                          {
-                            onSuccess: (data) => {
-                              sendNotification({
-                                userIds: [data.creator_id],
-                                title: "Event Approval Rejected",
-                                body: `Event was rejected because ${data.rejection_reason}`,
-                                url: `/events/${data.id}`,
-                                tag: "event-rejection",
-                              });
-                              toaster.create({
-                                title: "Approval Rejection Successful!",
-                              });
-                              playSound(sounds.success);
-                              store.setOpen(false);
-                              navigate(-1);
+                  {/* Prevent creator from unapproving their own auto-approved events */}
+                  {!(eventData?.creator_id === currentUser?.id) && (
+                    <AppDrawer
+                      placement="bottom"
+                      trigger={
+                        <Button
+                          rounded={"full"}
+                          w={"1/2"}
+                          color={"white"}
+                          bg={"red.600"}
+                          variant={"solid"}
+                        >
+                          Unapprove
+                        </Button>
+                      }
+                      drawerTitle="Reject Event Approval"
+                      drawerContent={(store) => {
+                        const submitFn: SubmitHandler<
+                          EventRejectionFormInput
+                        > = ({ rejection_reason }) => {
+                          rejectEvent(
+                            {
+                              event_id: eventData?.id!,
+                              reason: rejection_reason,
                             },
-                          },
-                        );
-                      };
-                      return (
-                        <form className="mt-6! mb-6! flex flex-col gap-3">
-                          <Field.Root
-                            w={"full"}
-                            invalid={!!errors.rejection_reason}
-                          >
-                            <Textarea
-                              {...register("rejection_reason", {
-                                required:
-                                  "You reject an event without a reason",
-                                validate: (input) => {
-                                  return (
-                                    input.length > 10 || "Enter a valid reason!"
-                                  );
-                                },
-                              })}
-                              rounded={"lg"}
+                            {
+                              onSuccess: (data) => {
+                                sendNotification({
+                                  userIds: [data.creator_id],
+                                  title: "Event Approval Rejected",
+                                  body: `Event was rejected because ${data.rejection_reason}`,
+                                  url: `/events/${data.id}`,
+                                  tag: "event-rejection",
+                                });
+                                toaster.create({
+                                  title: "Approval Rejection Successful!",
+                                });
+                                playSound(sounds.success);
+                                store.setOpen(false);
+                                navigate(-1);
+                              },
+                            },
+                          );
+                        };
+                        return (
+                          <form className="mt-6! mb-6! flex flex-col gap-3">
+                            <Field.Root
+                              w={"full"}
+                              invalid={!!errors.rejection_reason}
+                            >
+                              <Textarea
+                                {...register("rejection_reason", {
+                                  required:
+                                    "You reject an event without a reason",
+                                  validate: (input) => {
+                                    return (
+                                      input.length > 10 ||
+                                      "Enter a valid reason!"
+                                    );
+                                  },
+                                })}
+                                rounded={"lg"}
+                                size={"xl"}
+                                color={"text.primary"}
+                                fontSize={"sm"}
+                                focusRing={"none"}
+                                _focus={{
+                                  outline: "none",
+                                  border: "none",
+                                }}
+                                bg={"bg.surface"}
+                                placeholder={"Enter Rejection Reason"}
+                                resize={"none"}
+                                _placeholder={{
+                                  fontSize: "sm",
+                                  color: "text.secondary",
+                                  fontWeight: "light",
+                                }}
+                              />
+                              {errors.rejection_reason && (
+                                <Field.ErrorText>
+                                  {errors.rejection_reason.message}
+                                </Field.ErrorText>
+                              )}
+                            </Field.Root>
+                            <Button
+                              onClick={handleSubmit(submitFn)}
+                              disabled={isRejecting}
+                              w={"full"}
                               size={"xl"}
-                              color={"text.primary"}
-                              fontSize={"sm"}
-                              focusRing={"none"}
-                              _focus={{
-                                outline: "none",
-                                border: "none",
-                              }}
-                              bg={"bg.surface"}
-                              placeholder={"Enter Rejection Reason"}
-                              resize={"none"}
-                              _placeholder={{
-                                fontSize: "sm",
-                                color: "text.secondary",
-                                fontWeight: "light",
-                              }}
-                            />
-                            {errors.rejection_reason && (
-                              <Field.ErrorText>
-                                {errors.rejection_reason.message}
-                              </Field.ErrorText>
-                            )}
-                          </Field.Root>
-                          <Button
-                            onClick={handleSubmit(submitFn)}
-                            disabled={isRejecting}
-                            w={"full"}
-                            size={"xl"}
-                            bg={"red.600"}
-                            rounded={"lg"}
-                          >
-                            Reject Approval Request
-                          </Button>
-                        </form>
-                      );
-                    }}
-                  />{" "}
+                              bg={"red.600"}
+                              rounded={"lg"}
+                            >
+                              Reject Approval Request
+                            </Button>
+                          </form>
+                        );
+                      }}
+                    />
+                  )}
                 </>
               ) : (
-                hideButtons && (
+                !hideButtons && (
                   <HStack w={"full"} justifyContent={"space-between"}>
                     <Button
                       w={"3/5"}

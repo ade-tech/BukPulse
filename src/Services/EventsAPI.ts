@@ -201,6 +201,25 @@ export const fetchEventAttendees = async (event_id: string) => {
   return count ?? 0;
 };
 
+export const fetchEventAttendeeDetails = async (event_id: string) => {
+  const { data, error } = await supabase
+    .from("event_attendees")
+    .select("attender_id, profiles ( id, name, image_url, email, reg_number )")
+    .eq("event_id", event_id);
+
+  if (error) throw error;
+
+  // Map to profiles array (some rows may have null profiles)
+  return (
+    (data?.map((row: any) => row.profiles).filter(Boolean) as Array<{
+      id: string;
+      name: string;
+      image_url?: string;
+      email?: string;
+    }>) || []
+  );
+};
+
 export const isUserAttending = async (event_id: string) => {
   const { data: userData, error: authError } = await supabase.auth.getUser();
   if (authError || !userData.user) return false;

@@ -34,6 +34,7 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toaster } from "./toaster";
 import { HiArrowLeft } from "react-icons/hi2";
 import AppDrawer from "./AppDrawer";
+import { useEffect } from "react";
 
 interface NotificationFormInput {
   notificationsEnabled: boolean;
@@ -49,13 +50,17 @@ export function AdminAccount({
   const { otherInfo } = useGetUserOtherProfileData(user_id!);
   const { isSubscribed, loading, subscribe, unsubscribe } =
     usePushNotifications();
-  const { register, watch } = useForm<NotificationFormInput>({
+  const { register, watch, setValue } = useForm<NotificationFormInput>({
     defaultValues: {
       notificationsEnabled: isSubscribed,
     },
   });
 
   const notificationsEnabled = watch("notificationsEnabled");
+
+  useEffect(() => {
+    setValue("notificationsEnabled", isSubscribed);
+  }, [isSubscribed, setValue]);
 
   const handleNotificationToggle = async (enabled: boolean) => {
     try {
@@ -281,13 +286,17 @@ export function UserAccount({
 }: AccountContainerProps) {
   const { isSubscribed, loading, subscribe, unsubscribe } =
     usePushNotifications();
-  const { register, watch } = useForm<NotificationFormInput>({
+  const { register, watch, setValue } = useForm<NotificationFormInput>({
     defaultValues: {
       notificationsEnabled: isSubscribed,
     },
   });
 
   const notificationsEnabled = watch("notificationsEnabled");
+
+  useEffect(() => {
+    setValue("notificationsEnabled", isSubscribed);
+  }, [isSubscribed, setValue]);
 
   const handleNotificationToggle = async (enabled: boolean) => {
     try {

@@ -1,7 +1,9 @@
 import NewPostButton from "@/components/ui/newPostButton";
 import PostCard, { PostCardSkeleton } from "@/components/ui/postCard";
 import { useFetchNewsForFeed, useNewPosts } from "@/hooks/useNews";
-import { Box } from "@chakra-ui/react";
+import { useFetchLatestEvents } from "@/hooks/useEvent";
+import { EventAdminCard, EventsCardSkeleton } from "@/components/ui/eventCard";
+import { Box, HStack, Text, Stack } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
@@ -20,6 +22,8 @@ export default function Home() {
     latestPostDate,
     enabled: true,
   });
+
+  const { latestEvents, isLoadingLatestEvents } = useFetchLatestEvents();
 
   const observerRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -71,7 +75,44 @@ export default function Home() {
         Array.from({ length: 5 }).map((_, i) => <PostCardSkeleton key={i} />)}
 
       {posts &&
-        posts.map((curPost) => <PostCard data={curPost} key={curPost.id} />)}
+        posts.map((curPost, index) => (
+          <Box key={curPost.id}>
+            {index === 10 && (
+              <Box mb={6}>
+                <Text fontWeight="bold" mb={3} fontSize="lg">
+                  Latest Events
+                </Text>
+                <HStack
+                  overflowX="auto"
+                  pb={4}
+                  className="no-scrollbar"
+                  gap={3}
+                >
+                  {isLoadingLatestEvents
+                    ? Array.from({ length: 3 }).map((_, i) => (
+                        <Box
+                          key={i}
+                          minW="280px"
+                          h="300px"
+                          bg="bg.surface"
+                          rounded="lg"
+                        >
+                          <EventsCardSkeleton />
+                        </Box>
+                      ))
+                    : latestEvents && latestEvents.length > 0
+                      ? latestEvents.slice(0, 6).map((event) => (
+                          <Box key={event.id} minW="280px" flexShrink={0}>
+                            <EventAdminCard data={event} />
+                          </Box>
+                        ))
+                      : null}
+                </HStack>
+              </Box>
+            )}
+            <PostCard data={curPost} />
+          </Box>
+        ))}
 
       <Box ref={observerRef} h={10} />
 

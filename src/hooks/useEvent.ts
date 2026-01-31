@@ -11,6 +11,8 @@ import {
   rejectEventApproval,
   fetchPastAttendedEvents,
   fetchAllPastEvents,
+  FetchLatestEvents,
+  fetchEventAttendeeDetails,
 } from "@/Services/EventsAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -62,6 +64,17 @@ export function useFetchEventAttendees(id: string) {
   });
 
   return { attendeesCount, isLoadingAttendees };
+}
+
+export function useFetchEventAttendeeDetails(id: string) {
+  const { data: attendeeDetails, isLoading: isLoadingAttendeeDetails } =
+    useQuery({
+      queryKey: ["EventAttendeeDetails", id],
+      queryFn: () => fetchEventAttendeeDetails(id),
+      enabled: !!id,
+    });
+
+  return { attendeeDetails, isLoadingAttendeeDetails };
 }
 
 export function useIsAttending(id: string) {
@@ -220,4 +233,13 @@ export function useFetchAllPastEvents(creatorId?: string) {
   });
 
   return { pastEvents, isLoadingPastEvents };
+}
+
+export function useFetchLatestEvents() {
+  const { data: latestEvents, isLoading: isLoadingLatestEvents } = useQuery({
+    queryKey: ["Latest Events"],
+    queryFn: FetchLatestEvents,
+  });
+
+  return { latestEvents, isLoadingLatestEvents };
 }

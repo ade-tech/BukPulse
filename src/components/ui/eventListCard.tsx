@@ -36,7 +36,7 @@ export default function EventListCard({
 }: {
   data: Event;
   isHistory?: boolean;
-  usedBy?: "admin" | "user";
+  usedBy?: "admin" | "user" | "super_admin";
   state?: {
     from: string;
   };
@@ -45,7 +45,7 @@ export default function EventListCard({
     <Link
       className="w-full bg-white dark:bg-gray-900 rounded-xl px-3! py-3! flex gap-3 items-center mb-4!"
       to={
-        usedBy === "admin"
+        usedBy === "super_admin"
           ? `/admin/approve-events/${data.id}`
           : `/events/${data.id}`
       }

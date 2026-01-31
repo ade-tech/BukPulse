@@ -11,7 +11,7 @@ import { Stack, Icon, HStack, Tabs, Text } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { HiArrowLeft } from "react-icons/hi2";
 import { useEffect } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
 
 /**
  * Render a centered empty-state display with a bold title and an optional subtitle.
@@ -45,6 +45,7 @@ interface SearchInput {
  * @returns The search page React element containing the input and tabbed results for moderators, posts, and events.
  */
 export default function Search() {
+  const navigate = useNavigate();
   const {
     register,
     watch,
@@ -84,15 +85,24 @@ export default function Search() {
       overflow="hidden"
       pos="relative"
     >
-      <HStack w="full" mt={4} px={4}>
-        <MiniButton ml={0}>
+      <HStack w="full" mt={4} px={4} gap={2}>
+        <MiniButton
+          ml={0}
+          size={"md"}
+          minW="fit-content"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navigate(-1);
+          }}
+        >
           <Icon as={HiArrowLeft} />
         </MiniButton>
         <GeneralInput<SearchInput>
           name="keyword"
           errors={errors}
           register={register}
-          placeholder="Enter Search Keyword"
+          placeholder="Search"
         />
       </HStack>
 
@@ -147,7 +157,11 @@ export default function Search() {
                   (results?.posts?.length ?? 0) === 0)) && (
                 <EmptyState
                   title="No results found"
-                  subtitle={`No moderators or posts found for "${debouncedQuery}"`}
+                  subtitle={
+                    debouncedQuery
+                      ? `No moderators or posts found for "${debouncedQuery}"`
+                      : "Start typing to search"
+                  }
                 />
               )}
 
@@ -187,7 +201,11 @@ export default function Search() {
             ) : (results?.posts?.length ?? 0) === 0 ? (
               <EmptyState
                 title="No posts"
-                subtitle={`No posts found for "${debouncedQuery}"`}
+                subtitle={
+                  debouncedQuery
+                    ? `No posts found for "${debouncedQuery}"`
+                    : "Start typing to search"
+                }
               />
             ) : (
               <Stack>
@@ -219,7 +237,11 @@ export default function Search() {
             ) : (results?.accounts?.length ?? 0) === 0 ? (
               <EmptyState
                 title="No moderators"
-                subtitle={`No moderators found for "${debouncedQuery}"`}
+                subtitle={
+                  debouncedQuery
+                    ? `No moderators found for "${debouncedQuery}"`
+                    : "Start typing to search"
+                }
               />
             ) : (
               <Stack>
@@ -251,7 +273,11 @@ export default function Search() {
             ) : (results?.events?.length ?? 0) === 0 ? (
               <EmptyState
                 title="No events"
-                subtitle={`No events found for "${debouncedQuery}"`}
+                subtitle={
+                  debouncedQuery
+                    ? `No events found for "${debouncedQuery}"`
+                    : "Start typing to search"
+                }
               />
             ) : (
               results?.events?.map((cur) => (
