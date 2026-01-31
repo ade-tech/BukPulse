@@ -3,7 +3,7 @@ import PostCard, { PostCardSkeleton } from "@/components/ui/postCard";
 import { useFetchNewsForFeed, useNewPosts } from "@/hooks/useNews";
 import { useFetchLatestEvents } from "@/hooks/useEvent";
 import { EventAdminCard, EventsCardSkeleton } from "@/components/ui/eventCard";
-import { Box, HStack, Text, Stack } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
