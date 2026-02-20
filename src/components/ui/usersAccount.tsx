@@ -469,7 +469,7 @@ export function UserAccount({
         >
           <AccountItem isLast={true}>
             {
-              <Link to={"/"} className="flex w-full items-center gap-2">
+              <Link to={"/feedback"} className="flex w-full items-center gap-2">
                 <Icon color={"text.secondary"} size={"md"}>
                   <MdFeedback />
                 </Icon>

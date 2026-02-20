@@ -19,7 +19,6 @@ import AdminConsole from "./pages/adminConsole";
 import AdminRoutes from "./components/ui/adminRoutes";
 import AdminEvents from "@/features/admin/events";
 import ApproveEvent from "./features/admin/approveEvent";
-import Feedback from "./features/admin/feedback";
 import FlaggedContents from "./features/admin/flaggedContents";
 import NewModerator from "./features/admin/newModerator";
 import Moderators from "./features/admin/moderators";
@@ -32,6 +31,7 @@ import NewsDetail from "./components/ui/NewsDetail";
 import Search from "./pages/search";
 import Notification from "./pages/notification";
 import { AccountDetails } from "./components/ui/accountDetail";
+import Feedback from "./components/ui/Feedback";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -75,6 +75,7 @@ function App() {
               <Route path="/people-following" element={<PeopleFollowing />} />
               <Route path="/search" element={<Search />} />
               <Route path="/notifications" element={<Notification />} />
+              <Route path="/feedback" element={<Feedback />} />
             </Route>
             <Route element={<AdminRoutes />}>
               <Route path="/admin">
