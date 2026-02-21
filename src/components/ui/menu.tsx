@@ -33,6 +33,7 @@ export default function Menu() {
       /^\/news\/[^/]+$/,
       /^\/events\/[^/]+$/,
       /^\/account$/,
+      /^\/feedback$/,
       /^\/account\/[^/]+$/,
     ];
 
