@@ -82,19 +82,22 @@ function FeedbackItem({
       px={4}
       py={4}
       bg={status === "read" ? "bg.page" : "bg.surface"}
-      borderBottomWidth={"1px"}
+      rounded={"lg"}
     >
       <Link
         to={`/admin/feedback/${id}`}
         className="w-full h-full flex flex-col"
       >
-        <HStack>
+        <HStack alignItems={"center"}>
           <Text lineHeight={1.2} mb={2} fontWeight={"semibold"} fontSize={"lg"}>
-            {title}
+            {title.slice(0, 20)}
+            {title.length > 35 && "..."}
           </Text>
           <Tag.Root
             rounded={"md"}
             colorPalette={status === "unread" ? "orange" : "green"}
+            mb={"2"}
+            px={"2"}
           >
             <Tag.Label>{Capitalize(category || "general")}</Tag.Label>
           </Tag.Root>

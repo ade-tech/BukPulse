@@ -48,3 +48,17 @@ export const fetchFeedbackById = async (feedbackId: string) => {
   if (error) throw error;
   return data as Feedback;
 };
+
+export const markAsRead = async (feedbackId: string) => {
+  const { data, error } = await supabase
+    .from("feedback")
+    .update({
+      status: "read",
+    })
+    .eq("id", feedbackId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Feedback;
+};

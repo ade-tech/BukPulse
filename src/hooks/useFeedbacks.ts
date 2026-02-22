@@ -1,6 +1,7 @@
 import {
   fetchAllFeedback,
   fetchFeedbackById,
+  markAsRead,
   SendFeedback,
 } from "@/Services/FeedbackAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,4 +36,21 @@ export function useFetchFeedback(feedbackId?: string) {
   });
 
   return { data, isLoading, isError, error };
+}
+
+export function useMarkAsRead() {
+  const queryClient = useQueryClient();
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: markAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["Feedbacks"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["Feedback"],
+      });
+    },
+  });
+
+  return { mutate, isPending, isError, error };
 }

@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import MiniButton from "@/components/ui/miniButton";
-import { useFetchFeedback } from "@/hooks/useFeedbacks";
+import { useFetchFeedback, useMarkAsRead } from "@/hooks/useFeedbacks";
 import { Capitalize } from "@/lib/Captialize";
 import {
   Box,
@@ -17,12 +18,19 @@ import { useParams } from "react-router";
 
 export default function FeedbackDetails() {
   const { id } = useParams();
+  const { mutate } = useMarkAsRead();
   const { data: feedback, isLoading, isError, error } = useFetchFeedback(id);
   const displayCategory = feedback
     ? Array.isArray(feedback.category)
       ? feedback.category[0]
       : (feedback.category as string)
     : "general";
+
+  useEffect(() => {
+    if (!isLoading && feedback && feedback.status !== "read") {
+      mutate(id!);
+    }
+  }, [feedback, id, isLoading, mutate]);
 
   return (
     <Box
