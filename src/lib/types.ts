@@ -201,3 +201,13 @@ export interface SearchResults {
   event: Event[];
   account: Profile[];
 }
+
+export interface Feedback {
+  id: string;
+  created_at: string;
+  category: string;
+  title: string;
+  description: string;
+  status: string;
+  creator_id: string;
+}

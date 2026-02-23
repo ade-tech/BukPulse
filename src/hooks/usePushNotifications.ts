@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import {
   notifyAllUsers as notifyAllUsersAPI,
   notifyFollowers as notifyFollowersAPI,
+  notifySuperAdmin,
   sendPushNotification,
 } from "@/Services/NotificationAPI";
 
@@ -202,4 +203,12 @@ export const useNotifyAllUsers = () => {
     });
 
   return { notifyAllUsers, isNotifyingAllUsers };
+};
+
+export const useNotifySuperAdmin = () => {
+  const { mutate: notifyAdmin, isPending: isNotifyingAdmin } = useMutation({
+    mutationFn: notifySuperAdmin,
+  });
+
+  return { notifyAdmin, isNotifyingAdmin };
 };

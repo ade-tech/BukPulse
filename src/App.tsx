@@ -32,6 +32,8 @@ import Search from "./pages/search";
 import Notification from "./pages/notification";
 import { AccountDetails } from "./components/ui/accountDetail";
 import Feedback from "./components/ui/Feedback";
+import FeedbackDetails from "./components/ui/FeedbackDetails";
+import AdminFeedback from "./features/admin/adminfeedback";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,7 +85,8 @@ function App() {
                 <Route path="view-events" element={<AdminEvents />} />
                 <Route path="approve-events" element={<ApproveEvent />} />
                 <Route path="approve-events/:id" element={<EventDetails />} />
-                <Route path="feedback" element={<Feedback />} />
+                <Route path="feedback" element={<AdminFeedback />} />
+                <Route path="feedback/:id" element={<FeedbackDetails />} />
                 <Route path="flagged-contents" element={<FlaggedContents />} />
                 <Route path="new-moderator" element={<NewModerator />} />
                 <Route path="moderators" element={<Moderators />} />

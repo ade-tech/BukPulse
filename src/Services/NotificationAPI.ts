@@ -172,3 +172,29 @@ export const notifyAllUsers = async ({
     throw error;
   }
 };
+export const notifySuperAdmin = async ({
+  title,
+  body,
+  url,
+  tag,
+}: NotificationParams) => {
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      "notify-super-admin",
+      {
+        body: {
+          title,
+          body,
+          url,
+          tag,
+        },
+      },
+    );
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Failed to notify all users:", error);
+    throw error;
+  }
+};

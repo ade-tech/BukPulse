@@ -18,9 +18,16 @@ import { useSendFeedback } from "@/hooks/useFeedbacks";
 import { toaster } from "./toaster";
 import { useCurrentUser } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router";
+import { useNotifySuperAdmin } from "@/hooks/usePushNotifications";
 
 export interface FeedbackInput {
-  category: string[];
+  category: string;
+  title: string;
+  description: string;
+  creator_id: string;
+}
+interface FeedbackFormInput {
+  category: string;
   title: string;
   description: string;
   creator_id: string;
@@ -35,6 +42,7 @@ const inputCategories = createListCollection({
 
 export default function Feedback() {
   const { send, isSending } = useSendFeedback();
+  const { notifyAdmin } = useNotifySuperAdmin();
   const navigate = useNavigate();
   const { currentUser } = useCurrentUser();
   const {
@@ -43,9 +51,9 @@ export default function Feedback() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FeedbackInput>();
+  } = useForm<FeedbackFormInput>();
 
-  const SubmitFn: SubmitHandler<FeedbackInput> = ({
+  const SubmitFn: SubmitHandler<FeedbackFormInput> = ({
     title,
     category,
     description,
@@ -56,8 +64,19 @@ export default function Feedback() {
       });
       return;
     }
+    if (!category) {
+      toaster.error({
+        title: "Please select a category.",
+      });
+      return;
+    }
     send(
-      { title, category, description, creator_id: currentUser?.id! },
+      {
+        title,
+        category,
+        description,
+        creator_id: currentUser?.id!,
+      },
       {
         onSuccess: () => {
           toaster.success({
@@ -65,6 +84,13 @@ export default function Feedback() {
           });
           reset();
           navigate(-1);
+          notifyAdmin({
+            actorId: currentUser?.id!,
+            title: "We have a new feedback",
+            tag: "bukpulse-feedback",
+            url: "/admin/feedback",
+            body: "Open the app to check the feedback from users",
+          });
         },
         onError: (error) => {
           toaster.error({
@@ -108,7 +134,7 @@ export default function Feedback() {
           className="w-full h-full gap-4 flex flex-col"
           onSubmit={handleSubmit(SubmitFn)}
         >
-          <GeneralInput<FeedbackInput>
+          <GeneralInput<FeedbackFormInput>
             type={"text"}
             placeholder="Feedback title"
             register={register}
@@ -150,8 +176,10 @@ export default function Feedback() {
                 <Select.Root
                   size="lg"
                   name={field.name}
-                  value={field.value}
-                  onValueChange={({ value }) => field.onChange(value)}
+                  value={field.value ? [field.value] : []}
+                  onValueChange={({ value }) =>
+                    field.onChange(value?.[0] || "")
+                  }
                   onInteractOutside={() => field.onBlur()}
                   collection={inputCategories}
                   bg="bg.surface"
