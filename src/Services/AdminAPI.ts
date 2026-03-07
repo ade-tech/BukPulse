@@ -53,3 +53,41 @@ export const getSuperAdminId = async (): Promise<string> => {
   }
   return data.id;
 };
+
+export const banUser = async (
+  userId: string,
+  banDuration: string = "720000h",
+) => {
+  try {
+    const { data, error } = await supabase.functions.invoke("ban-user", {
+      body: {
+        userId,
+        action: "ban",
+        banDuration,
+      },
+    });
+
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const unbanUser = async (userId: string) => {
+  try {
+    const { data, error } = await supabase.functions.invoke("ban-user", {
+      body: {
+        userId,
+        action: "unban",
+      },
+    });
+
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

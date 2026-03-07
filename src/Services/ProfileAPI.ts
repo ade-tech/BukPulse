@@ -27,8 +27,7 @@ export async function getUserOtherProfileData(targetUserId: string) {
       .from("posts")
       .select("*")
       .eq("poster_id", targetUserId)
-      .order("created_at", { ascending: false })
-      .limit(9),
+      .order("created_at", { ascending: false }),
   ]);
 
   if (followers.error) throw followers.error;

@@ -27,6 +27,7 @@ export default function Home() {
 
   const observerRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
+  const hasEvents = latestEvents && latestEvents.length > 0;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -77,7 +78,7 @@ export default function Home() {
       {posts &&
         posts.map((curPost, index) => (
           <Box key={curPost.id}>
-            {index === 10 && (
+            {index === 10 && hasEvents && (
               <Box mb={3} mt={2}>
                 <Text fontWeight="bold" mb={3} fontSize="lg">
                   Latest Events

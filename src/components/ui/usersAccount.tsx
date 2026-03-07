@@ -259,21 +259,34 @@ export function AdminAccount({
             </Text>
           </Box>
         ))}
-      <Grid w={"full"} gap={1} mt={6} templateColumns={"repeat(3, 1fr)"}>
+      <Grid
+        w={"full"}
+        gap={1}
+        mt={6}
+        templateColumns={"repeat(3, 1fr)"}
+        flex={1}
+        overflow={"hidden"}
+        overflowY={"auto"}
+      >
         {otherInfo &&
           otherInfo.posts.length > 0 &&
-          otherInfo.posts.map((curPost) =>
-            curPost.post_image_url ? (
-              <GridItem aspectRatio={1 / 1} bg={"bg.surface"} key={curPost.id}>
+          otherInfo.posts.map((curPost) => (
+            <GridItem
+              aspectRatio={1 / 1.4}
+              bg={"bg.surface"}
+              outline={"none"}
+              key={curPost.id}
+            >
+              <Link className="w-full h-full" to={`/news/${curPost.id}`}>
                 <Image
-                  src={curPost.post_image_url}
+                  src={curPost.post_image_url || "/placeholder.png"}
                   width="100%"
                   height="100%"
                   objectFit="cover"
                 />
-              </GridItem>
-            ) : null,
-          )}
+              </Link>
+            </GridItem>
+          ))}
       </Grid>
     </Box>
   );
