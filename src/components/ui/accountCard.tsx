@@ -45,14 +45,17 @@ export default function AccountsCard({
   return (
     <Box
       w={searchResult ? "3/4" : "full"}
-      minH={"fit-content"}
+      minH={searchResult ? "24" : "fit-content"}
       display={"flex"}
       gap={3}
+      bg={searchResult ? "bg.surface" : "bg.page"}
+      rounded={"md"}
       flexShrink={0}
       justifyContent={"flex-start"}
+      alignItems={searchResult ? "center" : "flex-start"}
       px={4}
       py={4}
-      borderBottomWidth={"1px"}
+      borderBottomWidth={searchResult ? "0" : "1px"}
     >
       <Avatar.Root size={"xl"} colorPalette={"blue"}>
         <Avatar.Fallback name={data.name} />
@@ -62,7 +65,7 @@ export default function AccountsCard({
         <HStack w={"full"}>
           <HStack display={"flex"} w={"full"}>
             <Text
-              fontSize={"md"}
+              fontSize={"sm"}
               display={"flex"}
               gap={1}
               alignItems={"start"}
@@ -84,7 +87,7 @@ export default function AccountsCard({
               </Link>
             </Text>
             <Spacer />
-            {!displayOnly && (
+            {!displayOnly && !followStatus && (
               <Button
                 variant={followStatus ? "solid" : "outline"}
                 bg={followStatus ? "accent.primary" : "none"}

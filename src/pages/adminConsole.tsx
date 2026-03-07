@@ -4,7 +4,6 @@ import { PiListDashesFill } from "react-icons/pi";
 import { IoPersonAdd } from "react-icons/io5";
 import { MdFeedback } from "react-icons/md";
 import { MdEmojiEvents } from "react-icons/md";
-import { PiFlagPennantFill } from "react-icons/pi";
 
 export default function AdminConsole() {
   return (
@@ -83,11 +82,6 @@ export default function AdminConsole() {
           rounded={"xl"}
           color={"accent.primary"}
         >
-          <ConsoleItem
-            to="/admin/flagged-contents"
-            title="Review Flagged Contents"
-            icon={<PiFlagPennantFill />}
-          />
           <ConsoleItem
             to="/admin/feedback"
             title="Review Feedbacks"
