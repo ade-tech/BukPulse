@@ -1,6 +1,8 @@
 import type { OtherProfileInformation, Profile } from "@/lib/types";
 import { supabase } from "./supabase";
 
+const RECENT_POSTS_LIMIT = 9;
+
 export async function getProfileFromId(id: string) {
   const { data, error } = await supabase
     .from("profiles")
@@ -27,7 +29,8 @@ export async function getUserOtherProfileData(targetUserId: string) {
       .from("posts")
       .select("*")
       .eq("poster_id", targetUserId)
-      .order("created_at", { ascending: false }),
+      .order("created_at", { ascending: false })
+      .limit(RECENT_POSTS_LIMIT),
   ]);
 
   if (followers.error) throw followers.error;

@@ -67,7 +67,7 @@ export const fetchAllUpcomingEvents = async (creatorId?: string) => {
   let query = supabase
     .from("events")
     .select("*, profiles ( name )")
-    .eq("event_status", "approved")
+    .or(`event_status.eq.approved,event_status.eq.pending`)
     .or(
       `event_date.gt.${todayDate},and(event_date.eq.${todayDate},event_time.gt.${currentTime})`,
     )

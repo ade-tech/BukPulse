@@ -27,7 +27,7 @@ export default function Home() {
 
   const observerRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
-  const hasEvents = latestEvents && latestEvents.length > 0;
+  const hasEvents = !!latestEvents && latestEvents.length > 0;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -76,44 +76,34 @@ export default function Home() {
         Array.from({ length: 5 }).map((_, i) => <PostCardSkeleton key={i} />)}
 
       {posts &&
-        posts.map((curPost, index) => (
+        posts.map((curPost) => (
           <Box key={curPost.id}>
-            {index === 10 && hasEvents && (
-              <Box mb={3} mt={2}>
-                <Text fontWeight="bold" mb={3} fontSize="lg">
-                  Latest Events
-                </Text>
-                <HStack
-                  overflowX="auto"
-                  pb={4}
-                  className="no-scrollbar"
-                  gap={3}
-                >
-                  {isLoadingLatestEvents
-                    ? Array.from({ length: 3 }).map((_, i) => (
-                        <Box
-                          key={i}
-                          minW="280px"
-                          h="300px"
-                          bg="bg.surface"
-                          rounded="lg"
-                        >
-                          <EventsCardSkeleton />
-                        </Box>
-                      ))
-                    : latestEvents && latestEvents.length > 0
-                      ? latestEvents.slice(0, 6).map((event) => (
-                          <Box mt={2} key={event.id} minW="0px" flexShrink={0}>
-                            <EventAdminCard data={event} />
-                          </Box>
-                        ))
-                      : null}
-                </HStack>
-              </Box>
-            )}
             <PostCard data={curPost} />
           </Box>
         ))}
+
+      {(isLoadingLatestEvents || hasEvents) && (
+        <Box mb={3} mt={2}>
+          <Text fontWeight="bold" mb={3} fontSize="lg">
+            Latest Events
+          </Text>
+          <HStack overflowX="auto" pb={4} className="no-scrollbar" gap={3}>
+            {isLoadingLatestEvents
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <Box key={i} minW="280px" h="300px" bg="bg.surface" rounded="lg">
+                    <EventsCardSkeleton />
+                  </Box>
+                ))
+              : latestEvents && latestEvents.length > 0
+                ? latestEvents.slice(0, 6).map((event) => (
+                    <Box mt={2} key={event.id} minW="0px" flexShrink={0}>
+                      <EventAdminCard data={event} />
+                    </Box>
+                  ))
+                : null}
+          </HStack>
+        </Box>
+      )}
 
       <Box ref={observerRef} h={10} />
 

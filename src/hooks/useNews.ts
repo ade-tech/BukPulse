@@ -18,6 +18,15 @@ import {
   type InfiniteData,
 } from "@tanstack/react-query";
 
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/Services/supabase";
+import { playSound, sounds } from "@/lib/Sounds";
+
+interface UseNewPostsProps {
+  latestPostDate: string | null;
+  enabled?: boolean;
+}
+
 export const useFetchLatestNews = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["Latest News"],
@@ -106,15 +115,6 @@ export const useFetchNewsForFeed = (
     addNewPostsToFeed,
   };
 };
-
-import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/Services/supabase";
-import { playSound, sounds } from "@/lib/Sounds";
-
-interface UseNewPostsProps {
-  latestPostDate: string | null;
-  enabled?: boolean;
-}
 
 export const useNewPosts = ({
   latestPostDate,
