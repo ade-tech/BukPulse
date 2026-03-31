@@ -36,8 +36,8 @@ export default function AccountsCard({
   displayOnly?: boolean;
   searchResult?: boolean;
 }) {
-  const { followModerator } = useFollowModerator();
-  const { data: followStatus } = useCheckFollowStatus({
+  const { followModerator, isFollowingModertor } = useFollowModerator();
+  const { data: followStatus, isLoading: isCheckingFollowStatus } = useCheckFollowStatus({
     followed_id: data.id,
     follower_id: id,
   });
@@ -87,7 +87,7 @@ export default function AccountsCard({
               </Link>
             </Text>
             <Spacer />
-            {!displayOnly && !followStatus && (
+            {!displayOnly && !isCheckingFollowStatus && !followStatus && (
               <Button
                 variant={followStatus ? "solid" : "outline"}
                 bg={followStatus ? "accent.primary" : "none"}
@@ -96,7 +96,9 @@ export default function AccountsCard({
                 color={followStatus ? "text.primary" : "accent.primary"}
                 size={"2xs"}
                 rounded={"full"}
+                disabled={isFollowingModertor}
                 onClick={() => {
+                  if (isCheckingFollowStatus || followStatus) return;
                   followModerator({ followed_id: data.id, follower_id: id });
                 }}
               >

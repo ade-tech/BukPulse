@@ -277,9 +277,14 @@ export function AdminAccount({
               outline={"none"}
               key={curPost.id}
             >
-              <Link className="w-full h-full" to={`/news/${curPost.id}`}>
+              <Link
+                className="w-full h-full"
+                to={`/news/${curPost.id}`}
+                aria-label={curPost.post_caption || `Open post ${curPost.id}`}
+              >
                 <Image
                   src={curPost.post_image_url || "/placeholder.png"}
+                  alt={curPost.post_caption || ""}
                   width="100%"
                   height="100%"
                   objectFit="cover"
